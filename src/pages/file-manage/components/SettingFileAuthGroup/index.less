@@ -1,0 +1,17 @@
+@import (reference) '~antd/es/style/themes/index';
+
+.title {
+  color: @text-color;
+  font-size: 16px;
+}
+.description {
+  color: @disabled-color;
+}
+.person-list {
+  :global {
+    .ant-list {
+      max-height: 450px;
+      overflow-y: auto !important;
+    }
+  }
+}

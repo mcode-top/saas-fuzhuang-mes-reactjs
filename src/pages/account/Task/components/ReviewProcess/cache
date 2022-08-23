@@ -1,0 +1,127 @@
+      // graph.addNode({
+      //   width: TaskNodeWidth,
+      //   height: TaskNodeHeight,
+      //   shape: 'react-shape',
+      //   id: '1',
+      //   ports: {
+      //     groups: {
+      //       top: {
+      //         position: 'top',
+      //         attrs: {
+      //           circle: {
+      //             r: 4,
+      //             magnet: true,
+      //             stroke: '#C2C8D5',
+      //             strokeWidth: 1,
+      //             fill: '#fff',
+      //           },
+      //         },
+      //       },
+      //       bottom: {
+      //         position: 'bottom',
+      //         attrs: {
+      //           circle: {
+      //             r: 4,
+      //             magnet: true,
+      //             stroke: '#C2C8D5',
+      //             strokeWidth: 1,
+      //             fill: '#fff',
+      //           },
+      //         },
+      //       },
+      //     },
+      //   },
+      //   data: {
+      //     status: ActTaskStatusEnum.Running,
+      //     type: ActTaskModelTypeEnum.Start,
+      //     name: '编写请假单',
+      //   },
+      //   component(node) {
+      //     return <DAGTaskNode node={node} />;
+      //   },
+      // });
+      // graph.addNode({
+      //   width: TaskNodeWidth,
+      //   height: TaskNodeHeight,
+      //   shape: 'react-shape',
+      //   id: '2',
+      //   data: {
+      //     status: ActTaskStatusEnum.Disagree,
+      //     type: ActTaskModelTypeEnum.Approve,
+      //     name: '请假审批',
+      //   },
+      //   component(node) {
+      //     return <DAGTaskNode node={node} />;
+      //   },
+      // });
+      // graph.addNode({
+      //   width: TaskNodeWidth,
+      //   height: TaskNodeHeight,
+      //   shape: 'react-shape',
+      //   id: '3',
+      //   data: {
+      //     status: ActTaskStatusEnum.Complete,
+      //     type: ActTaskModelTypeEnum.Condition,
+      //     name: '请假审批',
+      //   },
+      //   component(node) {
+      //     return <DAGTaskNode node={node} />;
+      //   },
+      // });
+      // graph.addNode({
+      //   width: TaskNodeWidth,
+      //   height: TaskNodeHeight,
+      //   shape: 'react-shape',
+      //   id: '4',
+      //   data: {
+      //     status: ActTaskStatusEnum.Running,
+      //     type: ActTaskModelTypeEnum.Recipient,
+      //     name: '请假审批',
+      //   },
+      //   component(node) {
+      //     return <DAGTaskNode node={node} />;
+      //   },
+      // });
+      // graph.addNode({
+      //   width: TaskNodeWidth,
+      //   height: TaskNodeHeight,
+      //   shape: 'react-shape',
+      //   id: '5',
+      //   data: {
+      //     status: ActTaskStatusEnum.Complete,
+      //     type: ActTaskModelTypeEnum.End,
+      //     name: '请假审批',
+      //   },
+      //   component(node) {
+      //     return <DAGTaskNode node={node} />;
+      //   },
+      // });
+      // graph.addEdge({
+      //   shape: 'dag-edge', // 指定使用何种图形，默认值为 'edge'
+      //   source: '1',
+      //   target: '2',
+      // });
+      // graph.addEdge({
+      //   shape: 'dag-edge', // 指定使用何种图形，默认值为 'edge'
+      //   source: '2',
+      //   target: '3',
+      // });
+      // graph.addEdge({
+      //   shape: 'dag-edge', // 指定使用何种图形，默认值为 'edge'
+      //   source: '2',
+      //   target: '4',
+      //   attrs: {
+      //     line: {
+      //       stroke: '#7c68fc', // 指定 path 元素的填充色
+      //       strokeDasharray: 5,
+      //       style: {
+      //         animation: 'running-line 30s infinite linear',
+      //       },
+      //     },
+      //   },
+      // });
+      graph.addEdge({
+        shape: 'dag-edge', // 指定使用何种图形，默认值为 'edge'
+        source: '2',
+        target: '5',
+      });

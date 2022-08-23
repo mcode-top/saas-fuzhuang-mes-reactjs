@@ -1,0 +1,44 @@
+{
+  "id": "3254265",
+  "name": "审批流",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "76027",
+      "name": "条件形",
+      "font_class": "tiaojianxing",
+      "unicode": "e64f",
+      "unicode_decimal": 58959
+    },
+    {
+      "icon_id": "980890",
+      "name": "结束",
+      "font_class": "weibiaoti517",
+      "unicode": "e614",
+      "unicode_decimal": 58900
+    },
+    {
+      "icon_id": "996545",
+      "name": "开始",
+      "font_class": "ai23",
+      "unicode": "e68a",
+      "unicode_decimal": 59018
+    },
+    {
+      "icon_id": "14865357",
+      "name": "审批",
+      "font_class": "shenpi-lv",
+      "unicode": "e6f6",
+      "unicode_decimal": 59126
+    },
+    {
+      "icon_id": "25599990",
+      "name": "抄送",
+      "font_class": "chaosong",
+      "unicode": "e68b",
+      "unicode_decimal": 59019
+    }
+  ]
+}
