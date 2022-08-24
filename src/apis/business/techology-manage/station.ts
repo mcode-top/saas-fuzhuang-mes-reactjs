@@ -37,3 +37,9 @@ export function fetchManyRemoveStation(ids: number[]) {
     data: { ids }
   })
 }
+/**@name 获取全部工位列表(仅name与id) */
+export function fetchNameListStation() {
+  return request<RESULT_SUCCESS<{ name: string, id: number }[]>>("/station/all/name-to-id", {
+    method: "GET",
+  })
+}

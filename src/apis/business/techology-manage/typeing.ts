@@ -5,3 +5,9 @@ export type StationPageParamQuery = {
   createdAt?: Date[],
   updatedAt?: Date[],
 }
+export type WorkProcessPageParamQuery = {
+  name?: string,
+  remark?: string,
+  createdAt?: Date[],
+  updatedAt?: Date[],
+}

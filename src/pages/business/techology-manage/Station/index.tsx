@@ -48,6 +48,7 @@ const TableAlertOptionDom: React.FC<{
           await fetchManyRemoveStation(props.selectedRowKeys as number[]).then(() => {
             props?.action?.clearSelected?.();
             props?.action?.reload();
+            message.success('删除成功');
           })
         }
       >

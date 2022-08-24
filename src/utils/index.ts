@@ -78,3 +78,15 @@ export function loadingRefresh(promise: Promise<any>, setLoading: (v: boolean) =
   })
   return promise
 }
+
+/**@name 对象数组属性名称更改 */
+export function arrayAttributeChange<T = Record<any, any>>(data: T[], changeAttr: [keyof T, string][]) {
+  return data.map((value) => {
+    const temp = { ...value }
+    changeAttr.forEach(item => {
+      Reflect.deleteProperty(temp as any, item[0])
+      temp[item[1]] = value[item[0]]
+    })
+    return temp
+  })
+}
