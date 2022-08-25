@@ -79,7 +79,7 @@ export default WorkPriceTableModal;
 /**@name 编辑工价单 */
 const WorkPriceEditTable = forwardRef(
   (props: { value: any; disabled: boolean }, ref: React.Ref<any>) => {
-    const editableFormRef = useRef<EditableFormInstance>();
+    const editableFormRef = useRef<EditableFormInstance>(null);
     const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
 
     const [dataSource, setDataSource] = useState<any[]>([]);
@@ -218,7 +218,7 @@ const WorkPriceEditTable = forwardRef(
 
 /**@name 工价单表格操作条 */
 const WorkPriceEditTableToolBar = (
-  editableFormRef: React.MutableRefObject<EditableFormInstance<any> | undefined>,
+  editableFormRef: React.MutableRefObject<EditableFormInstance<any> | undefined | null>,
   setDataSource,
   setEditableRowKeys,
 ) => {
@@ -294,6 +294,7 @@ const WorkPriceEditTableToolBar = (
   ];
 };
 
+/**@name 导出Excel */
 export function busWorkPriceExportExcel(data: BusWorkPriceItem[] | undefined) {
   let ws;
   if (data && Array.isArray(data) && data.length > 0) {

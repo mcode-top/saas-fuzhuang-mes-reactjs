@@ -18,3 +18,12 @@ export type WorkPricePageParamQuery = {
   createdAt?: Date[],
   updatedAt?: Date[],
 }
+
+export type SizeTemplateItemPageParamQuery = {
+  name?: string,
+  remark?: string,
+  parentId: number | undefined
+  specification?: string
+  createdAt?: Date[],
+  updatedAt?: Date[],
+}
