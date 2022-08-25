@@ -17,7 +17,7 @@ import react, { useEffect, useRef } from 'react';
 import React from 'react';
 import { Access } from 'umi';
 import SizeTemplateItemTableModal from './TableModal';
-import type { BusSizeTemplateItemType } from './typing';
+import type { BusSizeTemplateItemType, BusSizeTemplateParentType } from './typing';
 
 /**@name 表格栏操作 */
 const TableBarDom = (action: ActionType | undefined, selectId: number | undefined) => {
@@ -117,7 +117,10 @@ const TableOperationDom: React.FC<{
   );
 };
 
-const BusSizeTemplateTable: React.FC<{ selectId: number | undefined }> = (props) => {
+const BusSizeTemplateTable: React.FC<{
+  selectId: number | undefined;
+  selectNode: BusSizeTemplateParentType | undefined;
+}> = (props) => {
   const actionRef = useRef<ActionType>();
   useEffect(() => {
     actionRef.current?.reload();
@@ -153,7 +156,13 @@ const BusSizeTemplateTable: React.FC<{ selectId: number | undefined }> = (props)
     <ProTable
       columns={columns}
       rowKey="id"
-      headerTitle={props.selectId === undefined ? '全部尺码列表' : '尺码列表'}
+      headerTitle={
+        props.selectId === undefined
+          ? '全部尺码列表'
+          : `${props.selectNode?.name}${
+              props.selectNode?.remark ? `(${props.selectNode?.remark})` : ''
+            }尺码列表`
+      }
       actionRef={actionRef}
       tableAlertOptionRender={({ selectedRowKeys }) => {
         return <TableAlertOptionDom selectedRowKeys={selectedRowKeys} action={actionRef.current} />;

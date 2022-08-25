@@ -21,7 +21,7 @@ import storageDataSource from '@/utils/storage';
 import { STORAGE_SIZE_TEMPLATE_LIST } from '@/configs/storage.config';
 
 const BusSizeTemplateLeftList: React.FC<{
-  onSelect: (selectId: number | undefined) => void;
+  onSelect: (selectId: number | undefined, node: BusSizeTemplateParentType | undefined) => void;
 }> = (props) => {
   const [list, setList] = useState<BusSizeTemplateParentType[]>([]);
   const [rightNode, setRightNode] = useState<BusSizeTemplateParentType>();
@@ -35,7 +35,10 @@ const BusSizeTemplateLeftList: React.FC<{
   /**@name 查看尺码模板对话框*/
   const watchModalRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    props?.onSelect?.(selectId);
+    props?.onSelect?.(
+      selectId,
+      list.find((i) => i.id === selectId),
+    );
   }, [selectId]);
   useEffect(() => {
     requestList();
