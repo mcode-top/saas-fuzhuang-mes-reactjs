@@ -61,7 +61,6 @@ const WorkProcessTableModal: React.FC<{
       <ProFormSelect
         label="绑定工位"
         disabled={disabled}
-        rules={[{ required: true }]}
         name="stationId"
         request={async () => {
           return arrayAttributeChange(

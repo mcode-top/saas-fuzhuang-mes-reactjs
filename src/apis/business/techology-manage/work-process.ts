@@ -37,3 +37,9 @@ export function fetchManyRemoveWorkProcess(ids: number[]) {
     data: { ids }
   })
 }
+/**@name 获取全部工序列表(仅name与id) */
+export function fetchNameListWorkProcess() {
+  return request<RESULT_SUCCESS<{ name: string, id: number }[]>>("/work-process/all/name-to-id", {
+    method: "GET",
+  })
+}

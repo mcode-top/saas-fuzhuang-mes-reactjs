@@ -150,3 +150,53 @@ export async function downloadSystemFile(value: number | string) {
   }
   await downloadAction(result.url, result.filename);
 }
+
+/**@name 选择本地文件 */
+export function SelectLocalFile(options?: { multiple?: boolean, accept?: string }): Promise<File | File[]> {
+  return new Promise((resolve, reject) => {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.multiple = options?.multiple === true;
+    fileInput.click();
+    fileInput.accept = options?.accept || ""
+    fileInput.onerror = (err) => {
+      message.error("选择本地失败失败");
+      console.error(err);
+      reject(err)
+    }
+    fileInput.onchange = (event) => {
+      if (fileInput.files) {
+        if (fileInput.multiple) {
+          const files: File[] = [];
+          for (let index = 0; index < fileInput.files.length; index++) {
+            files.push(fileInput.files[index]);
+          }
+          resolve(files)
+        } else {
+          resolve(fileInput.files[0])
+        }
+      } else {
+        message.error("选择本地失败失败");
+        console.error(event);
+        reject(event)
+      }
+    };
+  })
+}
+
+/**@name 将文件类型转换为字符 */
+export function fileToBinaryString(file: File): Promise<ArrayBuffer | string | null | undefined> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      resolve(e?.target?.result)
+    }
+    reader.onerror = function (err) {
+      console.error(err);
+      message.error("文件转换失败")
+      reject(err);
+    }
+    reader.readAsBinaryString(file);
+  })
+
+}

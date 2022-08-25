@@ -1,5 +1,5 @@
 /**
- * 工位管理
+ * 工序管理
  */
 import {
   fetchManyRemoveWorkProcess,
@@ -22,8 +22,8 @@ import type { BusWorkProcessType } from './typing';
 const TableBarDom = (action: ActionType | undefined) => {
   return [
     <WorkProcessTableModal
-      key="新增工位"
-      title="新增工位"
+      key="新增工序"
+      title="新增工序"
       node={{ type: 'create' }}
       onFinish={() => {
         message.success('新增成功');
@@ -31,7 +31,7 @@ const TableBarDom = (action: ActionType | undefined) => {
       }}
     >
       <Button type="primary" key="create">
-        新增工位
+        新增工序
       </Button>
     </WorkProcessTableModal>,
   ];
@@ -119,7 +119,7 @@ const BusStation: React.FC = () => {
       dataIndex: 'name',
     },
     {
-      title: '绑定工位',
+      title: '绑定工序',
       dataIndex: 'station',
       renderText(text, record, index, action) {
         return text?.name;
