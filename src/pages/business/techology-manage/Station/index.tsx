@@ -85,7 +85,7 @@ const TableOperationDom: React.FC<{
                   title="查看工位"
                   node={{ type: 'watch', value: formatUserList(props.record) }}
                 >
-                  <span>查看工位</span>
+                  <div>查看工位</div>
                 </StationTableModal>
               ),
             },
@@ -101,7 +101,7 @@ const TableOperationDom: React.FC<{
                   }}
                   node={{ type: 'update', value: formatUserList(props.record) }}
                 >
-                  <span>修改工位</span>
+                  <div>修改工位</div>
                 </StationTableModal>
               ),
             },

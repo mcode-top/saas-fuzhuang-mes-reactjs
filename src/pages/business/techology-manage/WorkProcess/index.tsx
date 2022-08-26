@@ -79,7 +79,7 @@ const TableOperationDom: React.FC<{
                   title="查看工序"
                   node={{ type: 'watch', value: props.record }}
                 >
-                  <span>查看工序</span>
+                  <div>查看工序</div>
                 </WorkProcessTableModal>
               ),
             },
@@ -95,7 +95,7 @@ const TableOperationDom: React.FC<{
                   }}
                   node={{ type: 'update', value: props.record }}
                 >
-                  <span>修改工序</span>
+                  <div>修改工序</div>
                 </WorkProcessTableModal>
               ),
             },

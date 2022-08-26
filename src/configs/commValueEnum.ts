@@ -5,6 +5,7 @@
  */
 
 import { MessageLevelEnum, MessageReadStatusEnum, MessageTypeEnum } from "@/apis/message/typing"
+import { BusMaterialTypeEnum } from "@/pages/business/techology-manage/Material/typing"
 
 export const UserValueEnum = {
   Sex: new Map([
@@ -70,4 +71,12 @@ export const MessageValueEnum = {
     [true, { text: '已禁用', status: 'Error' }],
     [false, { text: '使用中', status: 'Success' }],
   ])
+}
+
+/**@name 物料类型 */
+export const MaterialValueEnum = {
+  Type: new Map([
+    [BusMaterialTypeEnum.Material, { text: '材料' }],
+    [BusMaterialTypeEnum.Product, { text: '成衣', }],
+  ]),
 }

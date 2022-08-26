@@ -1,6 +1,6 @@
 import { BusWorkPriceType } from "@/pages/business/techology-manage/WorkPrice/typing";
 import { request } from "umi";
-import { WorkPricePageParamQuery } from "./typeing";
+import { WorkPricePageParamQuery } from "./typing";
 
 /**@name 创建工价 */
 export function fetchCreateWorkPrice(data: BusWorkPriceType) {

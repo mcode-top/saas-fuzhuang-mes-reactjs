@@ -1,9 +1,4 @@
 import { arrayToObject } from '@/utils';
-/*
- * @Author: mmmmmmmm
- * @Date: 2022-03-29 20:10:01
- * 用户名列
- */
 
 import { getAllRoles } from "@/apis/comm";
 import { STORAGE_ROLE_LIST } from "@/configs/storage.config";

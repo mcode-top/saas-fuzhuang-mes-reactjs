@@ -1,6 +1,6 @@
 import { BusSizeTemplateItemType, BusSizeTemplateParentType } from './../../../pages/business/techology-manage/SizeTemplate/typing';
 import { request } from "umi";
-import { SizeTemplateItemPageParamQuery } from "./typeing";
+import { SizeTemplateItemPageParamQuery } from "./typing";
 
 /**@name 创建尺码模板 */
 export function fetchCreateSizeTemplateParent(data: BusSizeTemplateParentType) {

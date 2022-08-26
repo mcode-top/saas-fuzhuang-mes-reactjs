@@ -85,7 +85,7 @@ const TableOperationDom: React.FC<{
                   title="查看尺码"
                   node={{ type: 'watch', value: props.record }}
                 >
-                  <span>查看尺码</span>
+                  <div>查看尺码</div>
                 </SizeTemplateItemTableModal>
               ),
             },
@@ -102,7 +102,7 @@ const TableOperationDom: React.FC<{
                   }}
                   node={{ type: 'update', value: props.record }}
                 >
-                  <span>修改尺码</span>
+                  <div>修改尺码</div>
                 </SizeTemplateItemTableModal>
               ),
             },

@@ -1,6 +1,6 @@
 import { BusWorkProcessType } from "@/pages/business/techology-manage/WorkProcess/typing";
 import { request } from "umi";
-import { WorkProcessPageParamQuery } from "./typeing";
+import { WorkProcessPageParamQuery } from "./typing";
 
 /**@name 创建工序 */
 export function fetchCreateWorkProcess(data: BusWorkProcessType) {

@@ -1,11 +1,10 @@
 /**
  * 工价管理
  */
-import { fetchWorkPriceList } from '@/apis/business/techology-manage/work-price';
 import {
-  fetchManyRemoveWorkProcess,
-  fetchWorkProcessList,
-} from '@/apis/business/techology-manage/work-process';
+  fetchManyRemoveWorkPrice,
+  fetchWorkPriceList,
+} from '@/apis/business/techology-manage/work-price';
 import LoadingButton from '@/components/Comm/LoadingButton';
 import { nestPaginationTable } from '@/utils/proTablePageQuery';
 import { SettingOutlined } from '@ant-design/icons';
@@ -16,13 +15,13 @@ import react, { useRef } from 'react';
 
 import React from 'react';
 import { Access } from 'umi';
-import WorkProcessTableModal, { busWorkPriceExportExcel } from './TableModal';
+import WorkPriceTableModal, { busWorkPriceExportExcel } from './TableModal';
 import type { BusWorkPriceType } from './typing';
 
 /**@name 表格栏操作 */
 const TableBarDom = (action: ActionType | undefined) => {
   return [
-    <WorkProcessTableModal
+    <WorkPriceTableModal
       key="新增工价"
       title="新增工价"
       node={{ type: 'create' }}
@@ -34,7 +33,7 @@ const TableBarDom = (action: ActionType | undefined) => {
       <Button type="primary" key="create">
         新增工价
       </Button>
-    </WorkProcessTableModal>,
+    </WorkPriceTableModal>,
   ];
 };
 
@@ -47,7 +46,7 @@ const TableAlertOptionDom: React.FC<{
     <Space size={16}>
       <LoadingButton
         onLoadingClick={async () =>
-          await fetchManyRemoveWorkProcess(props.selectedRowKeys as number[]).then(() => {
+          await fetchManyRemoveWorkPrice(props.selectedRowKeys as number[]).then(() => {
             props?.action?.clearSelected?.();
             props?.action?.reload();
             message.success('删除成功');
@@ -76,18 +75,15 @@ const TableOperationDom: React.FC<{
             {
               key: 'watch',
               label: (
-                <WorkProcessTableModal
-                  title="查看工价"
-                  node={{ type: 'watch', value: props.record }}
-                >
-                  <span>查看工价</span>
-                </WorkProcessTableModal>
+                <WorkPriceTableModal title="查看工价" node={{ type: 'watch', value: props.record }}>
+                  <div>查看工价</div>
+                </WorkPriceTableModal>
               ),
             },
             {
               key: 'modify',
               label: (
-                <WorkProcessTableModal
+                <WorkPriceTableModal
                   key="修改工价"
                   title="修改工价"
                   onFinish={() => {
@@ -96,8 +92,8 @@ const TableOperationDom: React.FC<{
                   }}
                   node={{ type: 'update', value: props.record }}
                 >
-                  <span>修改工价</span>
-                </WorkProcessTableModal>
+                  <div>修改工价</div>
+                </WorkPriceTableModal>
               ),
             },
             {

@@ -1,6 +1,6 @@
 import { BusStationType } from "@/pages/business/techology-manage/Station/typing";
 import { request } from "umi";
-import { StationPageParamQuery } from "./typeing";
+import { StationPageParamQuery } from "./typing";
 
 /**@name 创建工位 */
 export function fetchCreateStation(data: BusStationType) {

@@ -1,3 +1,5 @@
+import { BusMaterialTypeEnum } from "@/pages/business/techology-manage/Material/typing"
+
 export type StationPageParamQuery = {
   name?: string,
   device?: string,
@@ -24,6 +26,17 @@ export type SizeTemplateItemPageParamQuery = {
   remark?: string,
   parentId: number | undefined
   specification?: string
+  createdAt?: Date[],
+  updatedAt?: Date[],
+}
+
+export type MaterialPageParamQuery = {
+  code?: string
+  name?: string
+  type?: BusMaterialTypeEnum
+  unit?: string
+  price?: number
+  remark?: string
   createdAt?: Date[],
   updatedAt?: Date[],
 }

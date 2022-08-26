@@ -157,8 +157,9 @@ const WorkPriceEditTable = forwardRef(
       {
         title: '工价',
         dataIndex: 'price',
-        renderFormItem: (_, { record }) => {
-          return <InputNumber />;
+        valueType: 'money',
+        fieldProps: {
+          min: 0,
         },
         formItemProps: () => {
           return {
