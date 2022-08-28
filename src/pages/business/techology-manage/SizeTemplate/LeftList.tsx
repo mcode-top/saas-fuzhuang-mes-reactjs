@@ -149,7 +149,7 @@ const RightMenuDom = forwardRef(
     },
     ref: React.Ref<RightMenuInstance>,
   ) => {
-    const MenuId = 'dept';
+    const MenuId = 'sizeTemplate';
     const { show } = useContextMenu({
       id: MenuId,
     });
@@ -158,23 +158,6 @@ const RightMenuDom = forwardRef(
     }));
     return (
       <Menu id={MenuId}>
-        <SizeTemplateParentListModal
-          node={{ type: 'watch', value: props.record }}
-          title="查看尺码模板"
-        >
-          <Item
-            key="watch"
-            onClick={() => {
-              props?.watchRef?.current?.click?.();
-            }}
-          >
-            <Space>
-              <SelectOutlined />
-              查看尺码模板
-            </Space>
-          </Item>
-        </SizeTemplateParentListModal>
-
         <Item
           key="modify"
           onClick={() => {

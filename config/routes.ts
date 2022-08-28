@@ -66,6 +66,24 @@ const originRoutes: Router[] = [
       },
     ],
   },
+
+  {
+    name: '人员管理',
+    path: '/person',
+    access: 'canAdmin',
+    routes: [
+      {
+        path: '/person/users',
+        name: '用户管理',
+        component: './person/Users',
+      },
+      {
+        path: '/person/roles',
+        name: '角色管理',
+        component: './person/Roles',
+      },
+    ],
+  },
   {
     name: '文件管理',
     white: true,
@@ -86,21 +104,9 @@ const originRoutes: Router[] = [
     ],
   },
   {
-    name: '人员管理',
-    path: '/person',
-    access: 'canAdmin',
-    routes: [
-      {
-        path: '/person/users',
-        name: '用户管理',
-        component: './person/Users',
-      },
-      {
-        path: '/person/roles',
-        name: '角色管理',
-        component: './person/Roles',
-      },
-    ],
+    name: "客户管理",
+    path: "/customer",
+    component: "./business/customer"
   },
   {
     name: '工艺管理',

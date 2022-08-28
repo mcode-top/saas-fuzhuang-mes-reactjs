@@ -1,3 +1,4 @@
+import { BusCustomerTypeEnum } from './../apis/business/customer/typing';
 /*
  * @Author: mmmmmmmm
  * @Date: 2022-03-03 12:58:57
@@ -78,5 +79,13 @@ export const MaterialValueEnum = {
   Type: new Map([
     [BusMaterialTypeEnum.Material, { text: '材料' }],
     [BusMaterialTypeEnum.Product, { text: '成衣', }],
+  ]),
+}
+
+/**@name 客户类型 */
+export const CustomerCompanyValueEnum = {
+  Type: new Map([
+    [BusCustomerTypeEnum.Normal, { text: '普通客户' }],
+    [BusCustomerTypeEnum.VIP, { text: 'VIP客户', }],
   ]),
 }
