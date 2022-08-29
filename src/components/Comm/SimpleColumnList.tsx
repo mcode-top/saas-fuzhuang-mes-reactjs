@@ -23,7 +23,7 @@ export type SimpleColumnListRef = {
   reset: () => any;
 };
 /**@name 简单列表 */
-function SimpleColumnList<T extends object>(
+function SimpleColumnList<T extends {}>(
   props: SimpleColumnListProps<T>,
   ref: React.Ref<SimpleColumnListRef>,
 ) {
@@ -140,6 +140,12 @@ function SimpleColumnList<T extends object>(
       }}
     />
   );
+}
+
+declare module 'react' {
+  function forwardRef<T, P = {}>(
+    render: (props: P, ref: React.Ref<T>) => React.ReactElement | null,
+  ): (props: P & React.RefAttributes<T>) => React.ReactElement | null;
 }
 
 export default React.forwardRef(SimpleColumnList);

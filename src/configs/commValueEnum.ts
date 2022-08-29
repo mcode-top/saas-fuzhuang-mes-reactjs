@@ -7,6 +7,7 @@ import { BusCustomerTypeEnum } from './../apis/business/customer/typing';
 
 import { MessageLevelEnum, MessageReadStatusEnum, MessageTypeEnum } from "@/apis/message/typing"
 import { BusMaterialTypeEnum } from "@/pages/business/techology-manage/Material/typing"
+import { BusWarehouseLogTypeEnum, BusWarehouseTypeEnum } from '@/apis/business/warehouse/typing';
 
 export const UserValueEnum = {
   Sex: new Map([
@@ -87,5 +88,19 @@ export const CustomerCompanyValueEnum = {
   Type: new Map([
     [BusCustomerTypeEnum.Normal, { text: '普通客户' }],
     [BusCustomerTypeEnum.VIP, { text: 'VIP客户', }],
+  ]),
+}
+/**@name 仓库类型 */
+export const WarehouseEnumValueEnum = {
+  /**@name 仓库存放货品类型 */
+  WarehouseType: new Map([
+    [BusWarehouseTypeEnum.Product, { text: '成品', }],
+    [BusWarehouseTypeEnum.Material, { text: '材料', }],
+    [BusWarehouseTypeEnum.Both, { text: '混合', }],
+  ]),
+  /**@name 出入库记录类型 */
+  LogType: new Map([
+    [BusWarehouseLogTypeEnum.Out, { text: '出库' }],
+    [BusWarehouseLogTypeEnum.In, { text: '入库', }],
   ]),
 }

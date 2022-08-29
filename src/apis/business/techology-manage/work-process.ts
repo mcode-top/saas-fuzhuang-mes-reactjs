@@ -17,7 +17,7 @@ export function fetchUpdateWorkProcess(data: BusWorkProcessType & { id: number }
   return request<RESULT_SUCCESS<any>>(
     '/work-process',
     {
-      method: 'Patch',
+      method: 'PATCH',
       data
     },
   );

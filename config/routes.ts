@@ -104,6 +104,11 @@ const originRoutes: Router[] = [
     ],
   },
   {
+    name: "仓库管理",
+    path: "/warehouse",
+    component: "./business/warehouse"
+  },
+  {
     name: "客户管理",
     path: "/customer",
     component: "./business/customer"

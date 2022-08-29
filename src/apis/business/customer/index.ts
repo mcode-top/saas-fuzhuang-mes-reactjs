@@ -17,7 +17,7 @@ export function fetchUpdateCustomerCompany(data: BusCustomerCompanyType) {
   return request<RESULT_SUCCESS<any>>(
     '/customer/company',
     {
-      method: 'Patch',
+      method: 'PATCH',
       data
     },
   );
@@ -48,7 +48,7 @@ export function fetchUpdateCustomerContacter(data: BusCustomerContacterType) {
   return request<RESULT_SUCCESS<any>>(
     '/customer/contacter',
     {
-      method: 'Patch',
+      method: 'PATCH',
       data
     },
   );
@@ -79,7 +79,7 @@ export function fetchUpdateCustomerAddress(data: BusCustomerAddressType) {
   return request<RESULT_SUCCESS<any>>(
     '/customer/address',
     {
-      method: 'Patch',
+      method: 'PATCH',
       data
     },
   );

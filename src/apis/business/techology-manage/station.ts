@@ -17,7 +17,7 @@ export function fetchUpdateStation(data: BusStationType & { id: number }) {
   return request<RESULT_SUCCESS<any>>(
     '/station',
     {
-      method: 'Patch',
+      method: 'PATCH',
       data
     },
   );

@@ -1,24 +1,20 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState, useEffect } from 'react';
 import type { BusSizeTemplateParentType } from './typing';
-import type { TriggerEvent, ContextMenuParams } from 'react-contexify';
-import { Menu, Item, Separator, Submenu, useContextMenu } from 'react-contexify';
+import { Menu, Item, useContextMenu } from 'react-contexify';
 import {
   MinusOutlined,
   PlusOutlined,
   QuestionCircleOutlined,
   ReloadOutlined,
-  SelectOutlined,
 } from '@ant-design/icons';
 import { Button, Card, message, Modal, Space, Tooltip, Tree } from 'antd';
 import LoadingButton from '@/components/Comm/LoadingButton';
 import styles from './index.less';
-import {
-  fetchNameListSizeTemplateParent,
-  fetchRemoveOneParent,
-} from '@/apis/business/techology-manage/size-template';
+import { fetchRemoveOneParent } from '@/apis/business/techology-manage/size-template';
 import SizeTemplateParentListModal from './ListModal';
 import storageDataSource from '@/utils/storage';
 import { STORAGE_SIZE_TEMPLATE_LIST } from '@/configs/storage.config';
+import type { RightMenuInstance } from '@/components/typing';
 
 const BusSizeTemplateLeftList: React.FC<{
   onSelect: (selectId: number | undefined, node: BusSizeTemplateParentType | undefined) => void;
@@ -129,15 +125,6 @@ const BusSizeTemplateLeftList: React.FC<{
   );
 };
 
-/**@name 菜单实例 */
-type RightMenuInstance = {
-  /**@name 显示右键菜单 */
-  show: (
-    event: TriggerEvent,
-    params?: Pick<ContextMenuParams, 'id' | 'props' | 'position'> | undefined,
-  ) => void;
-};
-
 /**@name 右键菜单 */
 const RightMenuDom = forwardRef(
   (
@@ -180,6 +167,7 @@ const RightMenuDom = forwardRef(
                   try {
                     await fetchRemoveOneParent(props.record.id as any);
                     props.refresh();
+                    message.success('删除成功');
                     resolve(true);
                   } catch (error) {
                     reject(error);

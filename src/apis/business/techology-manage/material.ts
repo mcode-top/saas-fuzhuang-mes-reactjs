@@ -28,7 +28,7 @@ export function fetchUpdateMaterial(data: BusMaterialType & { id: number }) {
   return request<RESULT_SUCCESS<any>>(
     '/material',
     {
-      method: 'Patch',
+      method: 'PATCH',
       data
     },
   );

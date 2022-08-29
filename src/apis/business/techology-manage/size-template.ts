@@ -17,7 +17,7 @@ export function fetchUpdateSizeTemplateParent(data: BusSizeTemplateParentType & 
   return request<RESULT_SUCCESS<any>>(
     '/size-template/parent',
     {
-      method: 'Patch',
+      method: 'PATCH',
       data
     },
   );
@@ -48,7 +48,7 @@ export function fetchUpdateSizeTemplateItem(data: BusSizeTemplateItemType & { id
   return request<RESULT_SUCCESS<any>>(
     '/size-template/item',
     {
-      method: 'Patch',
+      method: 'PATCH',
       data
     },
   );

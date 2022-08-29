@@ -17,7 +17,7 @@ export function fetchUpdateWorkPrice(data: BusWorkPriceType & { id: number }) {
   return request<RESULT_SUCCESS<any>>(
     '/work-price',
     {
-      method: 'Patch',
+      method: 'PATCH',
       data
     },
   );
