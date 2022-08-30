@@ -9,6 +9,7 @@ import ProForm, { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pr
 
 import React, { forwardRef, useImperativeHandle, useRef, useState, useEffect } from 'react';
 import type { BusMaterialType } from './typing';
+import { BusMaterialTypeEnum } from './typing';
 import { MaterialValueEnum } from '@/configs/commValueEnum';
 import {
   fetchCreateMaterial,
@@ -112,7 +113,9 @@ const MaterialTableModal: React.FC<{
       <BusMaterialSelect
         multiple={true}
         label="物料编码组合列表"
+        help="仅支持添加物料类型为材料的物料编码"
         disabled={disabled}
+        materialType={BusMaterialTypeEnum.Material}
         name="codes"
       />
       <ProFormTextArea label="备注信息" disabled={disabled} name="remark" />

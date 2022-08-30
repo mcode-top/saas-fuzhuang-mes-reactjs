@@ -1,3 +1,4 @@
+import type { BusMaterialTypeEnum } from '@/pages/business/techology-manage/Material/typing';
 import type { BusMaterialType } from '@/pages/business/techology-manage/Material/typing';
 import { request } from 'umi';
 import type { MaterialPageParamQuery } from './typing';
@@ -40,13 +41,11 @@ export function fetchManyRemoveMaterial(codes: string[]) {
   });
 }
 /**@name 根据搜索编码获取物料列表(仅name与code) */
-export function fetchNameListMaterial(searchMaterial: string) {
-  return request<RESULT_SUCCESS<{ name: string; code: number }[]>>(
-    '/material/all/name-to-id/' + searchMaterial,
-    {
-      method: 'GET',
-    },
-  );
+export function fetchNameListMaterial(data: { search: string; type?: BusMaterialTypeEnum }) {
+  return request<RESULT_SUCCESS<{ name: string; code: number }[]>>('/material/all/name-to-id', {
+    method: 'GET',
+    params: data,
+  });
 }
 
 /**@name 根据搜索编码获取物料列表(仅name与code) */

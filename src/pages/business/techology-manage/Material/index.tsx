@@ -203,11 +203,11 @@ export default BusStation;
 export function exportExcel() {
   const ws = utils.json_to_sheet([
     {
-      物料编码: '填写物料编码',
-      物料名称: '填写物料名称',
-      类型: '填写材料或成衣',
-      单位: '填写单位',
-      单价: 0,
+      物料编码: '必填,填写物料编码',
+      物料名称: '必填,填写物料名称',
+      类型: '必填,填写材料或成衣',
+      单位: '必填,填写单位',
+      单价: '必填,单价',
       备注: '填写备注',
     },
   ]);
@@ -353,7 +353,7 @@ function HintModal(data: BusMaterialType[], action: ActionType | undefined) {
         });
       },
       okText: '确定导入',
-      onCancel: resolve,
+      onCancel: () => resolve(null),
     });
   });
 }

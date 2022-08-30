@@ -1,19 +1,14 @@
-import { fetchCustomerCompanyList } from '@/apis/business/customer';
-import { BusCustomerCompanyType } from '@/apis/business/customer/typing';
 import { fetchRemoveWarehouseShelf, fetchWarehouseIdToShelfList } from '@/apis/business/warehouse';
 import type { BusWarehouseShelfType } from '@/apis/business/warehouse/typing';
-import SimpleColumnList, { SimpleColumnListRef } from '@/components/Comm/SimpleColumnList';
+import SimpleColumnList from '@/components/Comm/SimpleColumnList';
 import type { RightMenuInstance } from '@/components/typing';
 import {
   EyeOutlined,
   InsertRowRightOutlined,
   MinusOutlined,
   PlusOutlined,
-  QuestionCircleOutlined,
-  SelectOutlined,
-  ShopOutlined,
 } from '@ant-design/icons';
-import { Button, Card, Divider, Input, message, Modal, Space, Table, Tooltip } from 'antd';
+import { Button, Card, message, Modal, Space } from 'antd';
 import React, { useContext, useImperativeHandle } from 'react';
 import { useState } from 'react';
 import { Item, Menu, useContextMenu } from 'react-contexify';
@@ -77,6 +72,8 @@ const ShelfSimpleSelectList: React.FC = () => {
         }
         selectKey={wContext.currentShelfNode?.id}
         onChange={(key, record) => {
+          console.log(key, record);
+
           wContext.setCurrentShelfNode?.(record);
         }}
         tableProps={{

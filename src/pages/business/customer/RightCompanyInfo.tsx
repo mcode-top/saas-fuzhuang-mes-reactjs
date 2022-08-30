@@ -1,11 +1,13 @@
 import { fetchRemoveCustomerCompany, fetchUpdateCustomerCompany } from '@/apis/business/customer';
-import { BusCustomerCompanyType } from '@/apis/business/customer/typing';
+import type { BusCustomerCompanyType } from '@/apis/business/customer/typing';
 import LoadingButton from '@/components/Comm/LoadingButton';
 import { CustomerCompanyValueEnum } from '@/configs/commValueEnum';
-import ProDescriptions, { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
+import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
+import ProDescriptions from '@ant-design/pro-descriptions';
 import { PageContainer } from '@ant-design/pro-layout';
-import { ProCoreActionType } from '@ant-design/pro-utils';
-import { Button, Form, FormInstance, Popconfirm, Tabs } from 'antd';
+import type { ProCoreActionType } from '@ant-design/pro-utils';
+import type { FormInstance } from 'antd';
+import { Button, Form, Popconfirm, Tabs } from 'antd';
 import { useState } from 'react';
 import CustomerAddressList from './address/CustomerAddressList';
 import CustomerContacterList from './contacter/CustomerContacterList';
@@ -15,7 +17,7 @@ const RightCompanyInfo: React.FC<{
   onChange: (type: 'value' | 'company') => any;
 }> = (props) => {
   const [readonly, setReadonly] = useState<boolean>(true);
-  const formRef = Form.useForm()[0];
+  const [formRef] = Form.useForm();
   return (
     <PageContainer
       style={{ margin: 0 }}
@@ -59,6 +61,16 @@ const RightCompanyInfo: React.FC<{
         >
           保存
         </LoadingButton>,
+        <Button
+          hidden={readonly}
+          key="cancel"
+          onClick={() => {
+            formRef.resetFields();
+            setReadonly(true);
+          }}
+        >
+          取消修改
+        </Button>,
         <Popconfirm
           key="Popconfirm"
           title="如果删除客户公司则联系人与地址将不存在，您确定要删除当前客户公司吗？"

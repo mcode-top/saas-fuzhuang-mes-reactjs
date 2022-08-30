@@ -1,59 +1,121 @@
-/**
- * 工位管理
- */
 import { fetchManyRemoveStation, fetchStationList } from '@/apis/business/techology-manage/station';
 import { fetchShelfIdToGoodsList } from '@/apis/business/warehouse';
-import type { BusWarehouseGoodsType } from '@/apis/business/warehouse/typing';
+import type {
+  BusWarehouseGoodsType,
+  BusWarehouseShelfType,
+} from '@/apis/business/warehouse/typing';
+import { BusWarehouseLogTypeEnum } from '@/apis/business/warehouse/typing';
+import { BusWarehouseTypeEnum } from '@/apis/business/warehouse/typing';
 import type { UserListItem } from '@/apis/person/typings';
 import { fetchUserList } from '@/apis/person/users';
 import LoadingButton from '@/components/Comm/LoadingButton';
 import { nestPaginationTable } from '@/utils/proTablePageQuery';
 import { SettingOutlined } from '@ant-design/icons';
+import { ProFormDigitRange } from '@ant-design/pro-form';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { Button, Dropdown, Menu, message, Space, Table } from 'antd';
-import react, { useContext, useRef } from 'react';
-
+import react, { useContext, useEffect, useRef, useState } from 'react';
+import BusMaterialSelect from '@/pages/business/techology-manage/Material/components/MaterialSelect';
 import React from 'react';
 import { WarehouseContext } from '../context';
+import GoodsPutInModal from './GoodsPutInModal';
+import { BusMaterialTypeEnum } from '../../techology-manage/Material/typing';
+import { formatWarehouseEnumToMaterialEnum } from '../helper';
+import GoodsPutOutModal from './GoddsPutOutModal';
+import GoodsOutInLogModal from '../Log/GoodsOutInLogModal';
+import { GoodsExcelPutInTemplate, GoodsImportExcelPutIn } from './GoodsExcelOperation';
+import ExcelHintGoodsPutInModal from './CheckExcelGoodsPutInModal';
+import ManyPutOutInGoods from './ManyPutOutInGoods';
 
 /**@name 表格栏操作 */
-const TableBarDom = (action: ActionType | undefined) => {
+const TableBarDom = (
+  action: ActionType | undefined,
+  shelfNode: BusWarehouseShelfType | undefined,
+) => {
+  const [v, setV] = useState<any>();
+  const excelRef = React.useRef<any>();
+  if (!shelfNode) {
+    return [];
+  }
   return [
-    // <StationTableModal
-    //   key="新增工位"
-    //   title="新增工位"
-    //   node={{ type: 'create' }}
-    //   onFinish={() => {
-    //     message.success('新增成功');
-    //     action?.reload();
-    //   }}
-    // >
-    //   <Button type="primary" key="create">
-    //     新增工位
-    //   </Button>
-    // </StationTableModal>,
+    <GoodsPutInModal
+      key="其他货品入库"
+      title="其他货品入库"
+      node={{ type: 'create', value: { shelfId: shelfNode.id } }}
+      onFinish={() => {
+        message.success('货品入库成功');
+        action?.reload();
+      }}
+    >
+      <Button type="primary" key="create">
+        其他货品入库
+      </Button>
+    </GoodsPutInModal>,
+    <ExcelHintGoodsPutInModal
+      onFinish={() => {
+        action?.reload?.();
+      }}
+      key="excel-modal"
+      shelfId={shelfNode.id}
+      data={v}
+      actionRef={action as any}
+    >
+      <div key="excel-modal" ref={excelRef} />
+    </ExcelHintGoodsPutInModal>,
+    <Button
+      type="primary"
+      key="excel-export"
+      onClick={async () => {
+        const data = await GoodsImportExcelPutIn();
+        setV(data);
+        excelRef?.current?.click?.();
+      }}
+    >
+      Excel批量导入库
+    </Button>,
+
+    <Button key="excel-template-download" type="primary" onClick={GoodsExcelPutInTemplate}>
+      Excel入库模板下载
+    </Button>,
   ];
 };
-
 /**@name 表格选择操作 */
 const TableAlertOptionDom: React.FC<{
   selectedRowKeys: (string | number)[];
+  selectedRows: any[];
   action: ActionType | undefined;
 }> = (props) => {
+  const wContext = useContext(WarehouseContext);
+
   return (
     <Space size={16}>
-      <LoadingButton
-        onLoadingClick={async () =>
-          await fetchManyRemoveStation(props.selectedRowKeys as number[]).then(() => {
-            props?.action?.clearSelected?.();
-            props?.action?.reload();
-            message.success('删除成功');
-          })
-        }
+      <ManyPutOutInGoods
+        warehouseType={wContext.currentWarehouse?.type as any}
+        type={BusWarehouseLogTypeEnum.In}
+        title="批量入库"
+        value={props.selectedRows}
+        onFinish={() => {
+          message.success('操作成功');
+          wContext.goodsAction?.current?.clearSelected?.();
+          wContext.goodsAction?.current?.reload();
+        }}
       >
-        批量删除
-      </LoadingButton>
+        <Button type="primary">批量入库</Button>
+      </ManyPutOutInGoods>
+      <ManyPutOutInGoods
+        warehouseType={wContext.currentWarehouse?.type as any}
+        type={BusWarehouseLogTypeEnum.Out}
+        title="批量出库"
+        value={props.selectedRows}
+        onFinish={() => {
+          message.success('操作成功');
+          wContext.goodsAction?.current?.clearSelected?.();
+          wContext.goodsAction?.current?.reload();
+        }}
+      >
+        <Button type="primary">批量出库</Button>
+      </ManyPutOutInGoods>
     </Space>
   );
 };
@@ -63,6 +125,8 @@ const TableOperationDom: React.FC<{
   record: BusWarehouseGoodsType;
   action: ActionType | undefined;
 }> = (props) => {
+  const wContext = useContext(WarehouseContext);
+
   return (
     <Dropdown
       key="Dropdown"
@@ -72,27 +136,46 @@ const TableOperationDom: React.FC<{
           key="menu"
           items={[
             {
-              key: 'watch',
+              key: 'put-out-in',
               label: (
-                <div>查看工位</div>
-                // <StationTableModal title="查看工位" node={{ type: 'watch', value: props.record }}>
-                // </StationTableModal>
+                <GoodsOutInLogModal
+                  warehouseName={wContext.currentWarehouse?.name as string}
+                  value={props.record}
+                >
+                  <div>查看出入库记录</div>
+                </GoodsOutInLogModal>
               ),
             },
             {
-              key: 'modify',
+              key: 'put-out',
               label: (
-                // <StationTableModal
-                //   key="修改工位"
-                //   title="修改工位"
-                //   onFinish={() => {
-                //     message.success('修改成功');
-                //     props?.action?.reload();
-                //   }}
-                //   node={{ type: 'update', value: props.record }}
-                // >
-                // </StationTableModal>
-                <div>修改工位</div>
+                <GoodsPutOutModal
+                  type="put-out"
+                  title="货品出库"
+                  value={props.record}
+                  onFinish={() => {
+                    message.success('出库成功');
+                    props.action?.reload();
+                  }}
+                >
+                  <div>货品出库</div>
+                </GoodsPutOutModal>
+              ),
+            },
+            {
+              key: 'update-remark',
+              label: (
+                <GoodsPutOutModal
+                  type="update-remark"
+                  title="修改货品备注"
+                  value={props.record}
+                  onFinish={() => {
+                    message.success('修改货品备注成功');
+                    props.action?.reload();
+                  }}
+                >
+                  <div>修改备注</div>
+                </GoodsPutOutModal>
               ),
             },
           ]}
@@ -108,20 +191,80 @@ const TableOperationDom: React.FC<{
 
 const BusWarehouseGoodsTable: React.FC = () => {
   const wContext = useContext(WarehouseContext);
-
+  useEffect(() => {
+    wContext.goodsAction?.current?.reload();
+  }, [wContext.currentShelfNode]);
   const columns: ProColumns<BusWarehouseGoodsType>[] = [
     {
-      title: '物料编码',
+      title: '物料信息',
       dataIndex: 'materialCode',
+      renderFormItem: () => {
+        return (
+          <BusMaterialSelect
+            multiple={false}
+            materialType={formatWarehouseEnumToMaterialEnum(wContext.currentWarehouse?.type)}
+          />
+        );
+      },
+      renderText(text, record, index, action) {
+        return `${record.material?.name}(${record.material?.code})`;
+      },
+    },
+    {
+      title: '计量单位',
+      dataIndex: '计量单位',
+      width: 80,
+      renderText(text, record, index, action) {
+        return `${record.material?.unit}`;
+      },
+      hideInSearch: true,
+    },
+    {
+      title: '尺码规格',
+      dataIndex: '尺码规格',
+      width: 150,
+      ellipsis: true,
+      hideInSearch: true,
+      renderText(text, record, index, action) {
+        if (!record.size) {
+          return <span style={{ color: '#bfbfbf' }}>无尺码</span>;
+        }
+        return `${record.size?.name}${
+          record.size?.specification ? `(${record.size?.specification})` : ''
+        }`;
+      },
+      hideInTable: wContext.currentWarehouse?.type === BusWarehouseTypeEnum.Material,
     },
     {
       title: '库存数量',
       dataIndex: 'quantity',
+      sorter: true,
+      width: 100,
+      renderFormItem: () => {
+        return <ProFormDigitRange placeholder="查询库存范围" />;
+      },
     },
+
     {
       title: '备注信息',
       ellipsis: true,
       dataIndex: 'remark',
+      width: 150,
+    },
+    {
+      title: '创建时间',
+      key: 'showTime',
+      dataIndex: 'createdAt',
+      valueType: 'dateTime',
+      sorter: true,
+      width: 150,
+      hideInSearch: true,
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'createdAt',
+      valueType: 'dateRange',
+      hideInTable: true,
     },
     {
       title: '操作',
@@ -139,11 +282,25 @@ const BusWarehouseGoodsTable: React.FC = () => {
       columns={columns}
       rowKey="id"
       headerTitle="货品列表"
+      size="small"
       actionRef={wContext.goodsAction}
-      // tableAlertOptionRender={({ selectedRowKeys }) => {
-      //   return <TableAlertOptionDom selectedRowKeys={selectedRowKeys} action={actionRef.current} />;
-      // }}
-      toolBarRender={TableBarDom}
+      toolBarRender={(action) => TableBarDom(action, wContext.currentShelfNode)}
+      search={{
+        filterType: 'light',
+      }}
+      pagination={{
+        pageSize: 10,
+        size: 'small',
+      }}
+      tableAlertOptionRender={({ selectedRowKeys, selectedRows }) => {
+        return (
+          <TableAlertOptionDom
+            selectedRows={selectedRows}
+            selectedRowKeys={selectedRowKeys}
+            action={wContext.goodsAction?.current as ActionType}
+          />
+        );
+      }}
       rowSelection={{
         // 自定义选择项参考: https://ant.design/components/table-cn/#components-table-demo-row-selection-custom
         // 注释该行则默认不显示下拉选项

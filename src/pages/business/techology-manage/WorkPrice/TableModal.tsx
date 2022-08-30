@@ -311,8 +311,8 @@ export function busWorkPriceExportExcel(data: BusWorkPriceItem[] | undefined) {
   } else {
     ws = utils.json_to_sheet([
       {
-        工序名称: '这里填写工序名称',
-        工价: '这里填写工价',
+        工序名称: '必填,填写工序名称',
+        工价: '必填,填写工价',
       },
     ]);
   }

@@ -4,7 +4,10 @@ import type {
   BusWarehouseShelfType,
   BusWarehouseType,
   BusWarehouseGoodsPageParamQuery,
-  BusWarehousePutOutInGoodsDto,
+  BusWarehousePutInGoodsDto,
+  BusWarehouseGoodsOutInLogPageParamQuery,
+  ExcelManyPutInGoodsDto,
+  ManyPutOutInDto,
 } from './typing';
 import { request } from 'umi';
 
@@ -67,16 +70,39 @@ export function fetchWarehouseIdToShelfList(warehouseId: number) {
 }
 
 /**@name 货品出库 */
-export function fetchWarehouseGoodsPutOut(data: BusWarehousePutOutInGoodsDto) {
+export function fetchWarehouseGoodsPutOut(data: BusWarehousePutInGoodsDto) {
   return request('/warehouse/goods/put-out', {
     method: 'POST',
     data,
   });
 }
 /**@name 货品入库 */
-export function fetchWarehouseGoodsPutIn(data: BusWarehousePutOutInGoodsDto) {
+export function fetchWarehouseGoodsPutIn(data: BusWarehousePutInGoodsDto) {
   return request('/warehouse/goods/put-in', {
     method: 'POST',
+    data,
+  });
+}
+
+/**@name Excel货品批量入库 */
+export function fetchWarehouseExcelManyPutInGoods(data: ExcelManyPutInGoodsDto) {
+  return request('/warehouse/goods/excel-put-in', {
+    method: 'POST',
+    data,
+  });
+}
+/**@name 批量货品出入库 */
+export function fetchWarehouseManyPutOutInGoods(data: ManyPutOutInDto) {
+  return request('/warehouse/goods/many-put-out-in', {
+    method: 'POST',
+    data,
+  });
+}
+
+/**@name 修改货品备注信息 */
+export function fetchUpdateWarehouseGoodsRemark(data: { goodsId: number; remark: string }) {
+  return request('/warehouse/goods', {
+    method: 'Patch',
     data,
   });
 }
@@ -88,6 +114,19 @@ export function fetchShelfIdToGoodsList(
 ) {
   return request<RESULT_SUCCESS<PAGINATION_QUERY.Result<BusWarehouseGoodsType>>>(
     '/warehouse/goods/page/' + shelfId,
+    {
+      method: 'POST',
+      data,
+    },
+  );
+}
+/**@name 通过货品Id获取出入库记录分页 */
+export function fetchGoodsIdToOutInLogList(
+  goodsId: number,
+  data: PAGINATION_QUERY.Param<BusWarehouseGoodsOutInLogPageParamQuery>,
+) {
+  return request<RESULT_SUCCESS<PAGINATION_QUERY.Result<BusWarehouseGoodsType>>>(
+    '/warehouse/log/page/' + goodsId,
     {
       method: 'POST',
       data,

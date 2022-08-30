@@ -99,7 +99,7 @@ export const WarehouseEnumValueEnum = {
   ]),
   /**@name 出入库记录类型 */
   LogType: new Map([
-    [BusWarehouseLogTypeEnum.Out, { text: '出库' }],
-    [BusWarehouseLogTypeEnum.In, { text: '入库' }],
+    [BusWarehouseLogTypeEnum.Out, { text: '出库', color: '#2a6e3f' }],
+    [BusWarehouseLogTypeEnum.In, { text: '入库', color: '#c12c1f' }],
   ]),
 };
