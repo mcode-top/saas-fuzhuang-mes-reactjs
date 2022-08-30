@@ -23,6 +23,7 @@ declare let ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION: 'site' | undefine
 
 declare const REACT_APP_ENV: 'test' | 'dev' | 'pre' | false;
 interface Window {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
   tabsAction: import('use-switch-tabs').ActionType;
   routerBase: string;
 }

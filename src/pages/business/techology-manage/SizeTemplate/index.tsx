@@ -21,7 +21,6 @@ const BusSizeTemplateDom: React.FC = () => {
         />
       </Col>
       <Col span={18}>
-
         <BusSizeTemplateTable selectId={select?.selectId} selectNode={select?.node} />
       </Col>
     </Row>

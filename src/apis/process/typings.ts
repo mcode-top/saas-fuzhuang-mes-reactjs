@@ -1,29 +1,29 @@
-import type { UserListItem } from "../person/typings"
+import type { UserListItem } from '../person/typings';
 
 /**
-* 审批流 - 任务执行状态
-*/
+ * 审批流 - 任务执行状态
+ */
 export enum ActTaskStatusEnum {
   Normal = '0',
   Running = '1',
   Complete = '2',
   Agree = '3',
   Disagree = '4',
-  Disable = '5'
+  Disable = '5',
 }
 /**
-* 审批流 - 流程状态
-*/
+ * 审批流 - 流程状态
+ */
 export enum ActProcessStatusEnum {
   Running = '0',
   Complete = '1',
   Stop = '2',
   Pause = '3',
-  Reject = '4'
+  Reject = '4',
 }
 /**
-* 审批流 - 任务类型
-*/
+ * 审批流 - 任务类型
+ */
 export enum ActTaskModelTypeEnum {
   /**
    * 开始节点 & 编写表单节点
@@ -44,28 +44,28 @@ export enum ActTaskModelTypeEnum {
   /**
    * 条件节点 用于分叉
    */
-  Condition = '4'
+  Condition = '4',
 }
 /**
-* 审批流 - 模型状态
-*/
+ * 审批流 - 模型状态
+ */
 export enum ActTaskModelStatusEnum {
   Disable = '0',
-  Normal = '1'
+  Normal = '1',
 }
 
 /**
-* 审批流 - 审批状态
-*/
+ * 审批流 - 审批状态
+ */
 export enum ActApproveStatusEnum {
   Normal = '0',
   Agree = '1',
   Disagree = '2',
-  Recipient = '3'
+  Recipient = '3',
 }
 /**
-* 审批流 - 审批模式
-*/
+ * 审批流 - 审批模式
+ */
 export enum ActApproveModeEnum {
   /**
    * 依次审批(仅为固定人员时)
@@ -82,8 +82,8 @@ export enum ActApproveModeEnum {
 }
 
 /**
-* 选择审批人员类型
-*/
+ * 选择审批人员类型
+ */
 export enum ActApproveTypeEnum {
   Person = '0',
   Dept = '1',
@@ -96,24 +96,24 @@ export enum ActApproveTypeEnum {
 export enum ActTaskFormDisplayEnum {
   Hide = '0',
   Show = '1',
-  Edit = '2'
+  Edit = '2',
 }
 export type ActTaskModel = {
-  name: string,
-  type: ActTaskModelTypeEnum,
-  id: string,
+  name: string;
+  type: ActTaskModelTypeEnum;
+  id: string;
   /**
    * 其他节点连接该节点
    */
-  from?: string[],
+  from?: string[];
   /**
    * 连接其他节点
    */
-  to?: string[],
-  parameter?: ActTaskParameter,
-  approvers?: ActApprover,
-  orderNum: number
-}
+  to?: string[];
+  parameter?: ActTaskParameter;
+  approvers?: ActApprover;
+  orderNum: number;
+};
 /**
  * 审批流 - 流程实例参数
  */
@@ -122,91 +122,91 @@ export type ActProcessParameter = {
    * 指派人信息
    */
   assignInfo?: {
-    userId: number,
-    opinion: string
-  },
+    userId: number;
+    opinion: string;
+  };
   /**
    * 发起人Id(默认为当前用户)
    */
-  starterId?: number
+  starterId?: number;
   /**
    * 表单可用字段
    */
-  formFields?: { label: string, field: string }[],
+  formFields?: { label: string; field: string }[];
   /**
    * 写入表单值
    */
-  formValues?: Record<string, any>
-} & Record<string, any>
+  formValues?: Record<string, any>;
+} & Record<string, any>;
 /**
  * 审批流 - 任务实例参数
  */
 export type ActTaskParameter = {
-  approvers?: ActApprover & { index?: number },
-  conditions?: any,
+  approvers?: ActApprover & { index?: number };
+  conditions?: any;
   /**
    * 表单字段显示
    */
-  formDisplay?: Record<string, ActTaskFormDisplayEnum>
-} & Record<string, any>
+  formDisplay?: Record<string, ActTaskFormDisplayEnum>;
+} & Record<string, any>;
 
 export type ActProcess = {
   id: number;
-  name: string
-  status: ActProcessStatusEnum
-  parameter?: ActProcessParameter
+  name: string;
+  status: ActProcessStatusEnum;
+  parameter?: ActProcessParameter;
   runningId?: number;
-  runningTask?: ActTask
-  businessKey: string
+  runningTask?: ActTask;
+  businessKey: string;
   modelId: number;
-  model?: any
-  taskList?: ActTask[]
-  approverList?: ActApprover[]
-  operatorId: number
-  operator?: UserListItem
-  assignUser?: UserListItem
-}
+  model?: any;
+  taskList?: ActTask[];
+  approverList?: ActApprover[];
+  operatorId: number;
+  operator?: UserListItem;
+  assignUser?: UserListItem;
+};
 export type ActTask = {
-  id: number
-  name: string
-  status: ActTaskStatusEnum
+  id: number;
+  name: string;
+  status: ActTaskStatusEnum;
   /**
    * 关联模型ID
    */
-  to: string[]
+  to: string[];
   /**
    * 关联模型ID
    */
-  from: string[]
-  type: ActTaskModelTypeEnum
-  parameter?: ActTaskParameter
-  orderNum: number
+  from: string[];
+  type: ActTaskModelTypeEnum;
+  parameter?: ActTaskParameter;
+  orderNum: number;
   /**
    * 需要审批人员列表
    */
-  userList?: UserListItem[]
+  userList?: UserListItem[];
   /**
    * 与流程相关人员 (关联任务模型 从任务模型中动态添加在此)
    */
-  approverList?: ActApprover[]
+  approverList?: ActApprover[];
 
-  processId: number
-  process?: ActProcess
+  processId: number;
+  process?: ActProcess;
   /**
    * 模型ID
    */
-  taskModelId: string
-}
+  taskModelId: string;
+};
 
 export type ActApprover = {
-  processId: number
-  process: ActProcess
-  userId: number
-  user: UserListItem
-  taskId: number
-  task: ActTask
-  status: ActApproveStatusEnum
-  opinion: string
-}
+  processId: number;
+  process: ActProcess;
+  userId: number;
+  user: UserListItem;
+  taskId: number;
+  task: ActTask;
+  status: ActApproveStatusEnum;
+  opinion: string;
+};
 
-export type ActTaskQuery = PartialObject<ActTask>
+export type ActTaskQuery = PartialObject<ActTask>;

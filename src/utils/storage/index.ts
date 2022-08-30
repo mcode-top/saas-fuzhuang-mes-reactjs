@@ -2,11 +2,11 @@
  * @Author: mmmmmmmm
  * @Date: 2022-03-29 19:39:55
  */
-import { cloneDeep } from "lodash"
+import { cloneDeep } from 'lodash';
 export type StorageModule<T = any, U = any> = {
-  key: string,
-  loader: (param: T) => U
-}
+  key: string;
+  loader: (param: T) => U;
+};
 /**
  * 加载被缓存插件
  */
@@ -20,11 +20,10 @@ export class StorageDataSource {
    */
   modules: Record<string, StorageModule> = {};
   constructor() {
-    this.loader()
+    this.loader();
   }
   convertKey(key: string, params: any) {
-    return key + "+_+" + JSON.stringify(params);
-
+    return key + '+_+' + JSON.stringify(params);
   }
   /**
    * 获取缓存值
@@ -40,12 +39,12 @@ export class StorageDataSource {
         if (this.holder[onlyKey] === undefined || this.holder[onlyKey] === null || sync) {
           this.holder[onlyKey] = await this.modules[key].loader(params);
         }
-        resolve(cloneDeep(this.holder[onlyKey]))
+        resolve(cloneDeep(this.holder[onlyKey]));
       } catch (error) {
         console.error(error);
-        reject(error)
+        reject(error);
       }
-    })
+    });
   }
   /**
    * 同步数据
@@ -54,7 +53,6 @@ export class StorageDataSource {
    * @param {*} params 需要传入的参数,如果是同步全部,这会根据键值对传入对应的module中
    */
   syncValue<T = any>(key, loaded = false, params = {}): Promise<T | null> {
-
     return new Promise(async (resolve, reject) => {
       try {
         if (key !== undefined) {
@@ -62,34 +60,38 @@ export class StorageDataSource {
 
           if (loaded) {
             this.holder[onlyKey] = await this.modules[key].loader(params);
-            resolve(cloneDeep(this.holder[onlyKey]))
+            resolve(cloneDeep(this.holder[onlyKey]));
           } else {
             this.holder[onlyKey] = null;
-            resolve(null)
+            resolve(null);
           }
         } else {
           // 同步全部数据
-          await Promise.all(Object.keys(this.holder).map(async cachekey => {
-            const loaderKey = cachekey.split("+_+")[0]
-            if (loaded) {
-              this.holder[cachekey] = await this.modules[loaderKey].loader(params && params[cachekey])
-            } else {
-              this.holder[cachekey] = null
-            }
-          }))
-          resolve(null)
+          await Promise.all(
+            Object.keys(this.holder).map(async (cachekey) => {
+              const loaderKey = cachekey.split('+_+')[0];
+              if (loaded) {
+                this.holder[cachekey] = await this.modules[loaderKey].loader(
+                  params && params[cachekey],
+                );
+              } else {
+                this.holder[cachekey] = null;
+              }
+            }),
+          );
+          resolve(null);
         }
       } catch (error) {
         console.error(error);
         reject(error);
       }
-    })
+    });
   }
   /**
    * 当前key是否在holder中
    */
   hasKey(key) {
-    return Object.keys(this.holder).findIndex(itemKey => itemKey.split("+_+")[0] === key) !== -1
+    return Object.keys(this.holder).findIndex((itemKey) => itemKey.split('+_+')[0] === key) !== -1;
   }
   /**
    * 动态加入缓存模块
@@ -98,24 +100,24 @@ export class StorageDataSource {
    * @param {*} sync 是否加入就同步一次
    * @param {*} params 同步的参数
    */
-  setHolderModule(key: string, module: StorageModule, sync = false, params = {},) {
+  setHolderModule(key: string, module: StorageModule, sync = false, params = {}) {
     return new Promise(async (resolve, reject) => {
       try {
         if (key === undefined || module === undefined) {
-          reject("无效参数名或者方法")
+          reject('无效参数名或者方法');
         } else {
           this.holder[key] = null;
           this.modules[key] = module;
           if (sync) {
-            this.holder[key] = await this.getValue(key, sync, params)
+            this.holder[key] = await this.getValue(key, sync, params);
           }
-          resolve(this.holder[key])
+          resolve(this.holder[key]);
         }
       } catch (error) {
         console.error(error);
         reject(error);
       }
-    })
+    });
   }
   /**
    * 装载模块
@@ -123,17 +125,17 @@ export class StorageDataSource {
   async loader() {
     try {
       const Modules = require.context('./modules', true, /\.ts$/);
-      await Promise.all(Modules.keys().map(async key => {
-
-        const file: StorageModule = await Modules(key);
-        this.modules[file.key] = file;
-        this.holder[file.key] = null;
-      }))
+      await Promise.all(
+        Modules.keys().map(async (key) => {
+          const file: StorageModule = await Modules(key);
+          this.modules[file.key] = file;
+          this.holder[file.key] = null;
+        }),
+      );
     } catch (error) {
-      console.error("加载失败");
+      console.error('加载失败');
     }
   }
 }
 const storageDataSource = new StorageDataSource();
 export default storageDataSource;
-

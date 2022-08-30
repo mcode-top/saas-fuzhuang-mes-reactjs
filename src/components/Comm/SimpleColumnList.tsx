@@ -1,6 +1,6 @@
-import { HomeOutlined } from '@ant-design/icons';
-import { RequestData } from '@ant-design/pro-table';
-import { Table, TableColumnsType, TablePaginationConfig, TableProps } from 'antd';
+import type { RequestData } from '@ant-design/pro-table';
+import type { TableColumnsType, TablePaginationConfig, TableProps } from 'antd';
+import { Table } from 'antd';
 import { isEmpty } from 'lodash';
 import React, { useImperativeHandle } from 'react';
 import { useEffect } from 'react';

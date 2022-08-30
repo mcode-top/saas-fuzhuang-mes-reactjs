@@ -5,8 +5,8 @@ import { BusCustomerTypeEnum } from './../apis/business/customer/typing';
  * @Description: 公用的valueEnum
  */
 
-import { MessageLevelEnum, MessageReadStatusEnum, MessageTypeEnum } from "@/apis/message/typing"
-import { BusMaterialTypeEnum } from "@/pages/business/techology-manage/Material/typing"
+import { MessageLevelEnum, MessageReadStatusEnum, MessageTypeEnum } from '@/apis/message/typing';
+import { BusMaterialTypeEnum } from '@/pages/business/techology-manage/Material/typing';
 import { BusWarehouseLogTypeEnum, BusWarehouseTypeEnum } from '@/apis/business/warehouse/typing';
 
 export const UserValueEnum = {
@@ -18,8 +18,8 @@ export const UserValueEnum = {
   Status: new Map([
     ['0', { text: '禁用', status: 'Error' }],
     ['1', { text: '正常', status: 'Success' }],
-  ])
-}
+  ]),
+};
 export const ProcessValueEnum = {
   ActTaskStatusEnum: new Map([
     ['0', { text: '未执行' }],
@@ -40,7 +40,7 @@ export const ProcessValueEnum = {
     ['0', { text: '未审批' }],
     ['1', { text: '已同意', status: 'Success' }],
     ['2', { text: '不同意', status: 'Error' }],
-    ['3', { text: '抄送状态', }],
+    ['3', { text: '抄送状态' }],
   ]),
   ActApproveModeEnum: new Map([
     ['0', { text: '依次审批' }],
@@ -57,8 +57,7 @@ export const ProcessValueEnum = {
     ['0', { text: '已失效', status: 'Success' }],
     ['1', { text: '使用中', status: 'Error' }],
   ]),
-
-}
+};
 export const MessageValueEnum = {
   MessageReadStatusEnum: new Map([
     [MessageReadStatusEnum.Read, { text: '已读', status: 'Success' }],
@@ -72,35 +71,35 @@ export const MessageValueEnum = {
   MessageDisableStatus: new Map([
     [true, { text: '已禁用', status: 'Error' }],
     [false, { text: '使用中', status: 'Success' }],
-  ])
-}
+  ]),
+};
 
 /**@name 物料类型 */
 export const MaterialValueEnum = {
   Type: new Map([
     [BusMaterialTypeEnum.Material, { text: '材料' }],
-    [BusMaterialTypeEnum.Product, { text: '成衣', }],
+    [BusMaterialTypeEnum.Product, { text: '成衣' }],
   ]),
-}
+};
 
 /**@name 客户类型 */
 export const CustomerCompanyValueEnum = {
   Type: new Map([
     [BusCustomerTypeEnum.Normal, { text: '普通客户' }],
-    [BusCustomerTypeEnum.VIP, { text: 'VIP客户', }],
+    [BusCustomerTypeEnum.VIP, { text: 'VIP客户' }],
   ]),
-}
+};
 /**@name 仓库类型 */
 export const WarehouseEnumValueEnum = {
   /**@name 仓库存放货品类型 */
   WarehouseType: new Map([
-    [BusWarehouseTypeEnum.Product, { text: '成品', }],
-    [BusWarehouseTypeEnum.Material, { text: '材料', }],
-    [BusWarehouseTypeEnum.Both, { text: '混合', }],
+    [BusWarehouseTypeEnum.Product, { text: '成品' }],
+    [BusWarehouseTypeEnum.Material, { text: '材料' }],
+    [BusWarehouseTypeEnum.Both, { text: '混合' }],
   ]),
   /**@name 出入库记录类型 */
   LogType: new Map([
     [BusWarehouseLogTypeEnum.Out, { text: '出库' }],
-    [BusWarehouseLogTypeEnum.In, { text: '入库', }],
+    [BusWarehouseLogTypeEnum.In, { text: '入库' }],
   ]),
-}
+};

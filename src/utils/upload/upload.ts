@@ -38,16 +38,23 @@ export async function uploadFileToOss(
     parentId: number;
     description?: string;
     mode: FileManageModeEnum;
-    progressEvent?: (loadedSize: string, totalSize: string, progress: number) => void
+    progressEvent?: (loadedSize: string, totalSize: string, progress: number) => void;
   },
 ) {
   const ossSign = (await getOssSgin(options.mode, options.parentId)).data;
   const date = moment();
   const form = new FormData();
-  const key = ossSign.dir + '/' + date.format('YYYY-MM-DD') + '/' + date.format('HH_mm_ss_SSS_') + Math.floor(Math.random() * 100000) + file.name;
+  const key =
+    ossSign.dir +
+    '/' +
+    date.format('YYYY-MM-DD') +
+    '/' +
+    date.format('HH_mm_ss_SSS_') +
+    Math.floor(Math.random() * 100000) +
+    file.name;
 
   form.append('name', file.name);
-  form.append('key', key)
+  form.append('key', key);
   form.append('policy', ossSign.policy);
   form.append('OSSAccessKeyId', ossSign.accessid);
   form.append('signature', ossSign.signature);
@@ -60,48 +67,53 @@ export async function uploadFileToOss(
   form.append('file', file);
 
   await xhrUploadFile(ossSign.host, form, (loadedSize, totalSize, progress) => {
-    options?.progressEvent?.(loadedSize, totalSize, progress)
-  })
+    options?.progressEvent?.(loadedSize, totalSize, progress);
+  });
   return {
     name: file.name,
-    position: key
-  }
-
+    position: key,
+  };
 }
-export function xhrUploadFile(url: string, data: FormData, progressEvent?: (loadedSize: string, totalSize: string, progress: number) => void) {
+export function xhrUploadFile(
+  url: string,
+  data: FormData,
+  progressEvent?: (loadedSize: string, totalSize: string, progress: number) => void,
+) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.timeout = 600000;
 
     xhr.upload.onprogress = (event) => {
-
       if (!event.lengthComputable) return;
       const progress = Math.floor((event.loaded / event.total) * 10000) / 100;
       const loadedSize = transformFileSize(event.loaded);
       const totalSize = transformFileSize(event.total);
-      progressEvent?.(loadedSize as string, totalSize as string, progress)
-    }
+      progressEvent?.(loadedSize as string, totalSize as string, progress);
+    };
     xhr.onreadystatechange = function (event) {
       if (xhr.readyState == 4) {
         if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
           console.log(xhr.response);
 
           try {
-            resolve(JSON.parse(xhr.response))
+            resolve(JSON.parse(xhr.response));
           } catch (error) {
             console.error(xhr.response);
-            reject(new Error("返回异常,上传文件失败"))
+            reject(new Error('返回异常,上传文件失败'));
           }
         } else {
-          reject(xhr.response)
+          reject(xhr.response);
         }
       }
-    }
-    xhr.open("POST", url);
+    };
+    xhr.open('POST', url);
     xhr.setRequestHeader(TENANT_HEADER, sessionStorage.getItem(TENANT_SESSION_PATH) as string);
-    xhr.setRequestHeader(TENANT_HEADER_TOKEN, sessionStorage.getItem(TENANT_HEADER_TOKEN) as string);
-    xhr.send(data)
-  })
+    xhr.setRequestHeader(
+      TENANT_HEADER_TOKEN,
+      sessionStorage.getItem(TENANT_HEADER_TOKEN) as string,
+    );
+    xhr.send(data);
+  });
 }
 
 /**
@@ -115,21 +127,24 @@ export function downloadAction(url: string, filename: string = '') {
   const file = new JsFileDownloader({
     url: url,
     filename: filename,
-    autoStart: false
+    autoStart: false,
   });
   const p = file.start();
   file.request.onprogress = (event) => {
-
-    uid = uploadProgress(uid, tips, { loaded: event.loaded, total: event.total })
-  }
+    uid = uploadProgress(uid, tips, { loaded: event.loaded, total: event.total });
+  };
   return p.catch((err) => {
     console.log(err);
     if (uid) {
-      notification.close(uid)
+      notification.close(uid);
     }
-    notification.error({ placement: "bottomLeft", message: "文件" + tips + "下载失败", duration: 5 })
-  })
-};
+    notification.error({
+      placement: 'bottomLeft',
+      message: '文件' + tips + '下载失败',
+      duration: 5,
+    });
+  });
+}
 
 /**
  * 下载系统文件
@@ -141,9 +156,9 @@ export async function downloadSystemFile(value: number | string) {
     filename: string;
   };
   if (isEmpty(value)) {
-    message.warn("下载失败,未知参数")
+    message.warn('下载失败,未知参数');
   }
-  if (typeof value === "number") {
+  if (typeof value === 'number') {
     result = (await getOssFileIdToTimeLink(value)).data;
   } else {
     result = (await getOssPosistionToTimeLink(value)).data;
@@ -152,18 +167,21 @@ export async function downloadSystemFile(value: number | string) {
 }
 
 /**@name 选择本地文件 */
-export function SelectLocalFile(options?: { multiple?: boolean, accept?: string }): Promise<File | File[]> {
+export function SelectLocalFile(options?: {
+  multiple?: boolean;
+  accept?: string;
+}): Promise<File | File[]> {
   return new Promise((resolve, reject) => {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.multiple = options?.multiple === true;
     fileInput.click();
-    fileInput.accept = options?.accept || ""
+    fileInput.accept = options?.accept || '';
     fileInput.onerror = (err) => {
-      message.error("选择本地失败失败");
+      message.error('选择本地失败失败');
       console.error(err);
-      reject(err)
-    }
+      reject(err);
+    };
     fileInput.onchange = (event) => {
       if (fileInput.files) {
         if (fileInput.multiple) {
@@ -171,17 +189,17 @@ export function SelectLocalFile(options?: { multiple?: boolean, accept?: string 
           for (let index = 0; index < fileInput.files.length; index++) {
             files.push(fileInput.files[index]);
           }
-          resolve(files)
+          resolve(files);
         } else {
-          resolve(fileInput.files[0])
+          resolve(fileInput.files[0]);
         }
       } else {
-        message.error("选择本地失败失败");
+        message.error('选择本地失败失败');
         console.error(event);
-        reject(event)
+        reject(event);
       }
     };
-  })
+  });
 }
 
 /**@name 将文件类型转换为字符 */
@@ -189,14 +207,13 @@ export function fileToBinaryString(file: File): Promise<ArrayBuffer | string | n
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = function (e) {
-      resolve(e?.target?.result)
-    }
+      resolve(e?.target?.result);
+    };
     reader.onerror = function (err) {
       console.error(err);
-      message.error("文件转换失败")
+      message.error('文件转换失败');
       reject(err);
-    }
+    };
     reader.readAsBinaryString(file);
-  })
-
+  });
 }

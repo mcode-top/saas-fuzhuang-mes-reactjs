@@ -4,38 +4,34 @@
  * @Description: 文件描述
  */
 
-import { request } from "umi";
-import type { LoginDTO, UserInfo } from "./typings";
+import { request } from 'umi';
+import type { LoginDTO, UserInfo } from './typings';
 
 export function login(data: LoginDTO) {
   return request('/user/login', {
-    method: "POST",
-    data
-  })
+    method: 'POST',
+    data,
+  });
 }
 
 /**
  * 获取当前用户信息(需要携带token才有效)
  */
 export function getCurrentUser() {
-  return request('/user/current/info', { method: "GET" })
+  return request('/user/current/info', { method: 'GET' });
 }
 export function updateCurrentUser(data: Partial<UserInfo>) {
-  return request('/user/account/user-info', { method: "PATCH", data })
+  return request('/user/account/user-info', { method: 'PATCH', data });
 }
-export function updateCurrentUserPassword(data: {
-  newPassword: string;
-  oldPassword: string
-}) {
-  return request('/user/account/user-password', { method: "PATCH", data })
+export function updateCurrentUserPassword(data: { newPassword: string; oldPassword: string }) {
+  return request('/user/account/user-password', { method: 'PATCH', data });
 }
 
 export function updateAvatar(file: File) {
   const form = new FormData();
-  form.append("file", file);
+  form.append('file', file);
   return request<RESULT_SUCCESS<string>>('/user/account/avatar', {
-    method: "POST",
-    data: form
-  })
-
+    method: 'POST',
+    data: form,
+  });
 }

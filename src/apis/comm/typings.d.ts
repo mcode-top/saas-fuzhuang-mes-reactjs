@@ -5,54 +5,54 @@
  */
 declare namespace PAGINATION_QUERY {
   type Param<T = Record<string, any>, U = Record<string, string | null>> = {
-    query?: T,
+    query?: T;
     /**
      * 页码
      */
-    page?: number,
+    page?: number;
     /**
      * 数量
      */
-    limit?: number,
-    order?: U
-  }
+    limit?: number;
+    order?: U;
+  };
   type Result<T = Record<string, any>> = {
-    items: T[],
+    items: T[];
     meta: {
       /**
        * 总数量
        */
-      totalItems: number,
+      totalItems: number;
       /**
        * 当前已查询数量
        */
-      itemCount: number,
+      itemCount: number;
       /**
        * 欲查询数量
        */
-      itemsPerPage: number,
+      itemsPerPage: number;
       /**
        * 总页数
        */
-      totalPages: number,
+      totalPages: number;
       /**
        * 当前页码
        */
-      currentPage: number,
-    }
-  }
+      currentPage: number;
+    };
+  };
 }
 
 declare type RESULT_SUCCESS<T = any> = {
-  msg: string,
-  data: T,
-  code: number
-}
+  msg: string;
+  data: T;
+  code: number;
+};
 
-declare type PartialObject<T> = { [P in keyof T]?: T[P] | undefined; }
+declare type PartialObject<T> = { [P in keyof T]?: T[P] | undefined };
 
 declare type PageDateQuery = Date | string;
-declare type PageRangeDateQuery = [PageDateQuery, PageDateQuery]
+declare type PageRangeDateQuery = [PageDateQuery, PageDateQuery];
 
 /**
  * 人员组
@@ -64,4 +64,4 @@ declare type PersonGroup = {
   roleIds?: number[];
   /**@name 部门Id组 */
   deptIds?: number[];
-}
+};

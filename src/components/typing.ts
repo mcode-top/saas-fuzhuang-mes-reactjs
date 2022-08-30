@@ -1,4 +1,4 @@
-import { ContextMenuParams, TriggerEvent } from "react-contexify";
+import type { ContextMenuParams, TriggerEvent } from 'react-contexify';
 
 /**@name 菜单实例 */
 export type RightMenuInstance = {

@@ -67,6 +67,8 @@
     "butterfly-dag": "^4.2.5",
     "butterfly-react": "0.0.37-beta",
     "classnames": "^2.3.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "js-file-downloader": "^1.1.24",
     "lodash": "^4.17.0",
     "moment": "^2.29.3",

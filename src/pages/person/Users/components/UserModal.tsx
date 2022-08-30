@@ -5,13 +5,7 @@
  */
 import { fetchRoleAuthList } from '@/apis/person/roles';
 import type { OperationDeptDTO, OperationUserDTO } from '@/apis/person/typings';
-import {
-  createDept,
-  createUser,
-  fetchDeptAuthList,
-  updateDept,
-  updateUser,
-} from '@/apis/person/users';
+import { createUser, fetchDeptAuthList, updateUser } from '@/apis/person/users';
 import { UserValueEnum } from '@/configs/commValueEnum';
 import type { ProFormColumnsType, ProFormInstance } from '@ant-design/pro-form';
 import { BetaSchemaForm } from '@ant-design/pro-form';

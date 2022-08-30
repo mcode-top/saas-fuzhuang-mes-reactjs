@@ -1,9 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Tag, message, notification } from 'antd';
-import { groupBy } from 'lodash';
-import moment from 'moment';
-import { useModel, useRequest } from 'umi';
-import { getNotices } from '@/services/ant-design-pro/api';
+import { notification } from 'antd';
+import { useModel } from 'umi';
 
 import NoticeIcon from './components/NoticeIcon';
 import styles from './index.less';
@@ -12,7 +9,6 @@ import { MESSAGE_SOCKET_BRODACAST } from '../message.config';
 import type { MessageSystemType, MessageType } from '@/apis/message/typing';
 import { MessageTypeEnum } from '@/apis/message/typing';
 import { MessageLevelEnum } from '@/apis/message/typing';
-import { messageFindOneById } from '@/apis/message';
 import type { InitialStateType } from '@/app';
 import { loadingRefresh } from '@/utils';
 import LoadingButton from '@/components/Comm/LoadingButton';

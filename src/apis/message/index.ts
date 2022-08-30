@@ -4,18 +4,25 @@
  * @Description: 消息中心接口
  */
 import { request } from 'umi';
-import type { MessagePageOrder, MessagePageQuery, MessageSystemCreateDto, MessageSystemType, MessageType, MessageTypeEnum } from './typing';
+import type {
+  MessagePageOrder,
+  MessagePageQuery,
+  MessageSystemCreateDto,
+  MessageSystemType,
+  MessageType,
+  MessageTypeEnum,
+} from './typing';
 
 /**
  * 通过消息Id获取消息详情
  */
 export function messageFindOneById(messageId: number, type: MessageTypeEnum) {
   return request<RESULT_SUCCESS<MessageType | MessageSystemType>>('/message/' + messageId, {
-    method: "GET",
+    method: 'GET',
     params: {
-      type
-    }
-  })
+      type,
+    },
+  });
 }
 
 /**
@@ -23,41 +30,53 @@ export function messageFindOneById(messageId: number, type: MessageTypeEnum) {
  */
 export function messageSettingRead(messageId: number, type: MessageTypeEnum) {
   return request<RESULT_SUCCESS<MessageType | MessageSystemType>>('/message/read/' + messageId, {
-    method: "GET",
+    method: 'GET',
     params: {
-      type
-    }
-  })
+      type,
+    },
+  });
 }
 
 /**
  * 获取当前个人消息分页
  */
-export function messageCurrentMyMessage(data: PAGINATION_QUERY.Param<MessagePageQuery, MessagePageOrder>) {
+export function messageCurrentMyMessage(
+  data: PAGINATION_QUERY.Param<MessagePageQuery, MessagePageOrder>,
+) {
   return request<RESULT_SUCCESS<PAGINATION_QUERY.Result<MessageType>>>('/message/my/current/page', {
-    method: "POST",
-    data
-  })
+    method: 'POST',
+    data,
+  });
 }
 
 /**
  * 获取当前系统消息分页
  */
-export function messageCurrentSystemMessage(data: PAGINATION_QUERY.Param<MessagePageQuery, MessagePageOrder>) {
-  return request<RESULT_SUCCESS<PAGINATION_QUERY.Result<MessageSystemType>>>('/message/system/current/page', {
-    method: "POST",
-    data
-  })
+export function messageCurrentSystemMessage(
+  data: PAGINATION_QUERY.Param<MessagePageQuery, MessagePageOrder>,
+) {
+  return request<RESULT_SUCCESS<PAGINATION_QUERY.Result<MessageSystemType>>>(
+    '/message/system/current/page',
+    {
+      method: 'POST',
+      data,
+    },
+  );
 }
 
 /**
  * 获取全部系统消息分页 (鉴权)
  */
-export function messageSystemMessage(data: PAGINATION_QUERY.Param<MessagePageQuery, MessagePageOrder>) {
-  return request<RESULT_SUCCESS<PAGINATION_QUERY.Result<MessageSystemType>>>('/message/system/page', {
-    method: "POST",
-    data
-  })
+export function messageSystemMessage(
+  data: PAGINATION_QUERY.Param<MessagePageQuery, MessagePageOrder>,
+) {
+  return request<RESULT_SUCCESS<PAGINATION_QUERY.Result<MessageSystemType>>>(
+    '/message/system/page',
+    {
+      method: 'POST',
+      data,
+    },
+  );
 }
 
 /**
@@ -65,7 +84,7 @@ export function messageSystemMessage(data: PAGINATION_QUERY.Param<MessagePageQue
  */
 export function messageSendSystemMessage(data: MessageSystemCreateDto) {
   return request('/message/system', {
-    method: "POST",
-    data
-  })
+    method: 'POST',
+    data,
+  });
 }

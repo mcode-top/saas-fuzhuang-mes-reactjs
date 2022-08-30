@@ -6,4 +6,4 @@
 /**
  *  广播系统消息
  */
-export const MESSAGE_SOCKET_BRODACAST = "brodacast-message"
+export const MESSAGE_SOCKET_BRODACAST = 'brodacast-message';

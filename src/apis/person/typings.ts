@@ -1,12 +1,12 @@
 export enum MenuTypeEnum {
   CATALOG = '0',
   MENU = '1',
-  LINK = '2'
+  LINK = '2',
 }
 
 export enum ApiTypeEnum {
   CATALOG = '0',
-  LINK = '1'
+  LINK = '1',
 }
 
 export enum ApiMethodEnum {
@@ -30,107 +30,107 @@ export enum ApiDataAccessEnum {
  * @Description: 用户接口传参类型
  */
 export type DeptTreeType = {
-  name: string,
-  id: number,
-  parentId: number,
-  deptKey: string,
-  parentName: string,
-  key: number,
-  children?: DeptTreeType[]
-}
+  name: string;
+  id: number;
+  parentId: number;
+  deptKey: string;
+  parentName: string;
+  key: number;
+  children?: DeptTreeType[];
+};
 export type UserListItem = {
-  id: number,
-  sex: number,
-  status: number,
-  phone: string,
-  username: string,
-  name: string,
-  email: string,
-  dept?: DeptTreeType,
-  deptId?: number,
-  roleList?: RoleTreeType[]
-}
+  id: number;
+  sex: number;
+  status: number;
+  phone: string;
+  username: string;
+  name: string;
+  email: string;
+  dept?: DeptTreeType;
+  deptId?: number;
+  roleList?: RoleTreeType[];
+};
 export type UserListPageParamQuery = {
-  name?: string,
-  username?: string,
-  phone?: string,
-  email?: string,
-  remark?: string,
-  createdAt?: Date[],
-  updatedAt?: Date[],
-  status?: number[],
-  sex?: number[],
-  deptId?: number,
-  ['roleList.id']?: number,
-}
+  name?: string;
+  username?: string;
+  phone?: string;
+  email?: string;
+  remark?: string;
+  createdAt?: Date[];
+  updatedAt?: Date[];
+  status?: number[];
+  sex?: number[];
+  deptId?: number;
+  ['roleList.id']?: number;
+};
 export type UserListPageParamOrder = {
-  updatedAt?: string,
-  createdAt?: string,
-}
+  updatedAt?: string;
+  createdAt?: string;
+};
 export type RoleTreeType = {
-  name: string,
-  id: number,
-  key: number,
-  roleKey: string,
-  label: string,
-  children?: RoleTreeType[],
-  menuList?: MenuTreeType[],
-  apiList?: ApiTreeType[],
-}
+  name: string;
+  id: number;
+  key: number;
+  roleKey: string;
+  label: string;
+  children?: RoleTreeType[];
+  menuList?: MenuTreeType[];
+  apiList?: ApiTreeType[];
+};
 export type MenuTreeType = {
-  name: string,
-  id: number,
-  router?: string,
-  type: MenuTypeEnum,
-  icon?: string,
-  label: string,
-  viewPath?: string,
-  keepAlive: boolean,
-  isShow: boolean,
-  description?: string,
-  parentId: number,
-  children?: MenuTreeType[]
-}
+  name: string;
+  id: number;
+  router?: string;
+  type: MenuTypeEnum;
+  icon?: string;
+  label: string;
+  viewPath?: string;
+  keepAlive: boolean;
+  isShow: boolean;
+  description?: string;
+  parentId: number;
+  children?: MenuTreeType[];
+};
 
 export type ApiTreeType = {
-  name: string,
-  id: number,
-  key: string,
-  uri?: string,
-  type: ApiTypeEnum,
-  auth: boolean,
-  description?: string,
-  children?: ApiTreeType[]
-  parentId: number,
-  dataAccess: number,
-  method: ApiMethodEnum
-}
+  name: string;
+  id: number;
+  key: string;
+  uri?: string;
+  type: ApiTypeEnum;
+  auth: boolean;
+  description?: string;
+  children?: ApiTreeType[];
+  parentId: number;
+  dataAccess: number;
+  method: ApiMethodEnum;
+};
 
 export type OperationDeptDTO = {
   parentId?: number;
   orderNum?: number;
   id?: number;
   name?: string;
-  deptKey?: string
+  deptKey?: string;
 };
 export type OperationUserDTO = {
-  name?: string
-  username?: string
-  password?: string
-  phone?: string
-  email?: string
-  sex?: number
-  remark?: string
-  roleIds?: number[]
-  deptId?: number
-  status?: number
+  name?: string;
+  username?: string;
+  password?: string;
+  phone?: string;
+  email?: string;
+  sex?: number;
+  remark?: string;
+  roleIds?: number[];
+  deptId?: number;
+  status?: number;
 };
 export type OperationRoleDTO = {
-  name?: string
-  id?: number
-  orderNum?: number
-  label?: string
-  remark?: string
-  roleKey?: string
-  parentId?: number
-}
+  name?: string;
+  id?: number;
+  orderNum?: number;
+  label?: string;
+  remark?: string;
+  roleKey?: string;
+  parentId?: number;
+};

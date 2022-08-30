@@ -3,7 +3,7 @@
  * @Date: 2022-02-28 18:41:20
  * @Description: 文件描述
  */
-export const WEB_SOCKET_URL = "ws://localhost:4000"
+export const WEB_SOCKET_URL = 'ws://localhost:4000';
 /**
  * 租户IDsession存储位置
  */

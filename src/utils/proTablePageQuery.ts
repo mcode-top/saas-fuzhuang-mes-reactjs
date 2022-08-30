@@ -34,11 +34,13 @@ export async function nestPaginationTable<T>(
 }
 
 /**@name  获取Nest自定义表格分页*/
-export async function nestPaginationCustomTable(businessKey: string, params: Record<string, any> & {
-  pageSize?: number;
-  current?: number;
-  keyword?: string;
-},
+export async function nestPaginationCustomTable(
+  businessKey: string,
+  params: Record<string, any> & {
+    pageSize?: number;
+    current?: number;
+    keyword?: string;
+  },
   sort: Record<string, SortOrder>,
   filter: Record<string, React.ReactText[] | null>,
 ) {
@@ -46,19 +48,26 @@ export async function nestPaginationCustomTable(businessKey: string, params: Rec
     page: params.current,
     limit: params.pageSize,
     dataParam: {
-      query: omit(params, ['operatorId', 'createdAt', 'updatedAt', 'current', 'pageSize', 'keyword']),
-      order: omit(sort, ['createdAt', 'updatedAt'])
+      query: omit(params, [
+        'operatorId',
+        'createdAt',
+        'updatedAt',
+        'current',
+        'pageSize',
+        'keyword',
+      ]),
+      order: omit(sort, ['createdAt', 'updatedAt']),
     },
     /**@name 基础分页参数 */
     basicParam: {
       query: pick(params, ['operatorId', 'createdAt', 'updatedAt']),
-      order: pick(sort, ['createdAt', 'updatedAt'])
-    }
-  })
+      order: pick(sort, ['createdAt', 'updatedAt']),
+    },
+  });
   return {
     ...omit(result.data, 'items'),
     data: result.data.items,
     success: true,
     total: result.data.meta.totalItems,
-  }
+  };
 }

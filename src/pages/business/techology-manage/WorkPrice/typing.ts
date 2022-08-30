@@ -1,19 +1,19 @@
-import { BusStationType } from "../Station/typing"
+import { BusStationType } from '../Station/typing';
 
 /**@name 工价管理类型 */
 export type BusWorkPriceType = {
-  id?: number
-  name: string
-  data: BusWorkPriceItem[]
-  remark?: string
-}
+  id?: number;
+  name: string;
+  data: BusWorkPriceItem[];
+  remark?: string;
+};
 /**@name 工价详细内容 */
 export type BusWorkPriceItem = {
-  id?: number
+  id?: number;
   /**@name 工序Id */
-  workProcessId: string
+  workProcessId: string;
   /**@name 工序名称 */
-  name: string
+  name: string;
   /**@name 工价 */
-  price: number
-}
+  price: number;
+};

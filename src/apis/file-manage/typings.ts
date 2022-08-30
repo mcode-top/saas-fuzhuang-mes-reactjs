@@ -13,8 +13,7 @@ export type FileManageFileItem = {
   size?: number;
   type: FileManageTypeEnum;
   parentId: number;
-  children?: FileManageFileItem[]
-
+  children?: FileManageFileItem[];
 };
 /**
  * 文件权限组实体
@@ -22,28 +21,28 @@ export type FileManageFileItem = {
 export type FileManageFileAuthGroup = PersonGroup & {
   mode?: FileManageAuthModeEnum;
   id?: number;
-}
+};
 /**
  * 文件权限更新
  */
-export type FileManageUpdateFileAuthDto = Partial<FileManageFileAuthGroup>
+export type FileManageUpdateFileAuthDto = Partial<FileManageFileAuthGroup>;
 
 /**
  * 文件权限连接实体
  */
 export type FileManageFileAuth = {
-  fileId: number,
-  fileAuthGroupId: number,
-  fileAuthGroup: FileManageFileAuthGroup
-}
+  fileId: number;
+  fileAuthGroupId: number;
+  fileAuthGroup: FileManageFileAuthGroup;
+};
 /**
  * 组织文件实体
  */
 export type FileManageOrganizationFileItem = FileManageFileItem & {
-  children?: FileManageOrganizationFileItem[]
-  fileAuths: FileManageFileAuth[],
-  authGroup: FileManageFileAuthGroup[]
-}
+  children?: FileManageOrganizationFileItem[];
+  fileAuths: FileManageFileAuth[];
+  authGroup: FileManageFileAuthGroup[];
+};
 /**
  * 个人文件夹实体
  */
@@ -67,7 +66,7 @@ export type FileManageOpeartionCatalogDto = {
 export type FileManageUpdateFile = {
   name?: string;
   description?: string;
-}
+};
 /**
  * 文件类型
  */

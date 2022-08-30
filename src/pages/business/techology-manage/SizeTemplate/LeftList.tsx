@@ -86,7 +86,7 @@ const BusSizeTemplateLeftList: React.FC<{
           message.success('修改成功');
         }}
       >
-        <div ref={updateModalRef}></div>
+        <div ref={updateModalRef} />
       </SizeTemplateParentListModal>
       <RightMenuDom
         refresh={requestList}

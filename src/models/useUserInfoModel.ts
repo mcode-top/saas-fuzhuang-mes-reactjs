@@ -1,5 +1,5 @@
-import type { UserInfo } from "@/apis/user/typings";
-import { useState } from "react";
+import type { UserInfo } from '@/apis/user/typings';
+import { useState } from 'react';
 
 /*
  * @Author: mmmmmmmm
@@ -9,6 +9,7 @@ import { useState } from "react";
 export default () => {
   const [user, setUser] = useState<UserInfo>();
   return {
-    user, setUser
-  }
-}
+    user,
+    setUser,
+  };
+};
