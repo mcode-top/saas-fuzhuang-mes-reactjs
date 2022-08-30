@@ -1,4 +1,4 @@
-import { UserListItem } from '@/apis/person/typings';
+import type { UserListItem } from '@/apis/person/typings';
 
 /**@name 工位管理类型 */
 export type BusStationType = {

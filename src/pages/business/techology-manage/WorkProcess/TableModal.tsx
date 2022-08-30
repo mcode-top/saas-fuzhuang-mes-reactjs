@@ -6,7 +6,8 @@ import SelectSystemPersonButton from '@/components/Comm/FormlyComponents/SelectS
 import { STORAGE_STATION_LIST } from '@/configs/storage.config';
 import { arrayAttributeChange } from '@/utils';
 import storageDataSource from '@/utils/storage';
-import { ProFormInstance, ProFormSelect } from '@ant-design/pro-form';
+import type { ProFormInstance } from '@ant-design/pro-form';
+import { ProFormSelect } from '@ant-design/pro-form';
 import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import { Button, Form } from 'antd';
 import { useRef } from 'react';

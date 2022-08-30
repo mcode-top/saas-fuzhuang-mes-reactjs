@@ -3,7 +3,7 @@ import { Col, Row } from 'antd';
 import React, { forwardRef, useImperativeHandle, useRef, useState, useEffect } from 'react';
 import BusSizeTemplateLeftList from './LeftList';
 import BusSizeTemplateTable from './Table';
-import { BusSizeTemplateParentType } from './typing';
+import type { BusSizeTemplateParentType } from './typing';
 
 const BusSizeTemplateDom: React.FC = () => {
   const [select, setSelect] = useState<{

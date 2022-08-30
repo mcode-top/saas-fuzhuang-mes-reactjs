@@ -17,7 +17,7 @@ import { SettingOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { Button, Dropdown, Menu, message, Modal, Space, Table, Tabs } from 'antd';
-import { ColumnsType } from 'antd/lib/table';
+import type { ColumnsType } from 'antd/lib/table';
 import { pick, reject } from 'lodash';
 import react, { useRef } from 'react';
 
@@ -25,7 +25,8 @@ import React from 'react';
 import { Access } from 'umi';
 import { read, utils, writeFileXLSX } from 'xlsx';
 import MaterialTableModal from './TableModal';
-import { BusMaterialType, BusMaterialTypeEnum } from './typing';
+import type { BusMaterialType } from './typing';
+import { BusMaterialTypeEnum } from './typing';
 
 /**@name 表格栏操作 */
 const TableBarDom = (action: ActionType | undefined) => {

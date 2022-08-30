@@ -8,7 +8,6 @@ import { createRole, fetchRoleAuthList, updateRole } from '@/apis/person/roles';
 import type { OperationDeptDTO, OperationRoleDTO } from '@/apis/person/typings';
 import { DraggleBetaSchemaFormModal } from '@/components/Comm/DraggleModal';
 import type { ProFormColumnsType, ProFormInstance } from '@ant-design/pro-form';
-import { BetaSchemaForm } from '@ant-design/pro-form';
 import { message } from 'antd';
 import { useRef } from 'react';
 

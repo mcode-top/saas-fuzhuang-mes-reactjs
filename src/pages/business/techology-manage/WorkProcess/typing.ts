@@ -1,4 +1,4 @@
-import { BusStationType } from '../Station/typing';
+import type { BusStationType } from '../Station/typing';
 
 /**@name 工序管理类型 */
 export type BusWorkProcessType = {

@@ -1,9 +1,9 @@
 import { fetchCustomerCompanyList } from '@/apis/business/customer';
 import { BusCustomerCompanyType } from '@/apis/business/customer/typing';
 import { fetchRemoveWarehouseShelf, fetchWarehouseIdToShelfList } from '@/apis/business/warehouse';
-import { BusWarehouseShelfType } from '@/apis/business/warehouse/typing';
+import type { BusWarehouseShelfType } from '@/apis/business/warehouse/typing';
 import SimpleColumnList, { SimpleColumnListRef } from '@/components/Comm/SimpleColumnList';
-import { RightMenuInstance } from '@/components/typing';
+import type { RightMenuInstance } from '@/components/typing';
 import {
   EyeOutlined,
   InsertRowRightOutlined,

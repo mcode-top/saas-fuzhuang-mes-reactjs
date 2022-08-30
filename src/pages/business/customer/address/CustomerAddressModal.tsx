@@ -8,10 +8,10 @@ import {
 import type { BusCustomerAddressType } from '@/apis/business/customer/typing';
 
 import { CustomerCompanyValueEnum } from '@/configs/commValueEnum';
+import type { ProFormInstance } from '@ant-design/pro-form';
 import {
   ModalForm,
   ProFormGroup,
-  ProFormInstance,
   ProFormSelect,
   ProFormText,
   ProFormTextArea,

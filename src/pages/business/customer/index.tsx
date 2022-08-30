@@ -1,27 +1,7 @@
-import { fetchCreateCustomerCompany, fetchUpdateCustomerCompany } from '@/apis/business/customer';
-import { BusCustomerCompanyType } from '@/apis/business/customer/typing';
-import LoadingButton from '@/components/Comm/LoadingButton';
-import { SimpleColumnListRef } from '@/components/Comm/SimpleColumnList';
-import { CustomerCompanyValueEnum } from '@/configs/commValueEnum';
-import ProDescriptions, { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
-import { PageContainer } from '@ant-design/pro-layout';
-import { ProCoreActionType } from '@ant-design/pro-utils';
-import {
-  Button,
-  Card,
-  Col,
-  Descriptions,
-  Empty,
-  Form,
-  FormInstance,
-  Row,
-  Space,
-  Statistic,
-  Table,
-  Tooltip,
-} from 'antd';
+import type { BusCustomerCompanyType } from '@/apis/business/customer/typing';
+import type { SimpleColumnListRef } from '@/components/Comm/SimpleColumnList';
+import { Col, Empty, Row } from 'antd';
 import React, { useState } from 'react';
-import { useImperativeHandle } from 'react';
 import BusCustomerLeftListDom from './LeftList';
 import RightCompanyInfo from './RightCompanyInfo';
 

@@ -3,7 +3,7 @@
  */
 import { fetchManyRemoveStation, fetchStationList } from '@/apis/business/techology-manage/station';
 import { fetchShelfIdToGoodsList } from '@/apis/business/warehouse';
-import { BusWarehouseGoodsType } from '@/apis/business/warehouse/typing';
+import type { BusWarehouseGoodsType } from '@/apis/business/warehouse/typing';
 import type { UserListItem } from '@/apis/person/typings';
 import { fetchUserList } from '@/apis/person/users';
 import LoadingButton from '@/components/Comm/LoadingButton';

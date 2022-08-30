@@ -2,8 +2,12 @@ import {
   fetchCurrentCustomerContacterList,
   fetchRemoveCustomerContacter,
 } from '@/apis/business/customer';
-import { BusCustomerCompanyType, BusCustomerContacterType } from '@/apis/business/customer/typing';
-import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
+import type {
+  BusCustomerCompanyType,
+  BusCustomerContacterType,
+} from '@/apis/business/customer/typing';
+import type { ActionType, ProColumns } from '@ant-design/pro-table';
+import ProTable from '@ant-design/pro-table';
 import { Button, Popconfirm, Space, Table } from 'antd';
 import React, { useEffect } from 'react';
 import BusCustomerContacterModal from './CustomerContacterModal';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { TreeNode } from '@designable/core';
+import type { TreeNode } from '@designable/core';
 import { MonacoInput } from '@designable/react-settings-form';
 import { isEmpty, isPlainObj } from '@formily/shared';
 
@@ -12,7 +12,7 @@ const transformToMarkupSchemaCode = (tree: TreeNode) => {
     if (!node) return '';
     const props = { ...node.props };
     if (node.depth !== 0) {
-      props.name = node.props.name || node.id;
+      props.name = node?.props?.name || node.id;
     }
     return `${Object.keys(props)
       .map((key) => {
@@ -40,14 +40,16 @@ const transformToMarkupSchemaCode = (tree: TreeNode) => {
       .join('');
   };
   const printTag = (node: TreeNode) => {
-    if (node.props.type === 'string') return 'SchemaField.String';
-    if (node.props.type === 'number') return 'SchemaField.Number';
-    if (node.props.type === 'boolean') return 'SchemaField.Boolean';
-    if (node.props.type === 'date') return 'SchemaField.Date';
-    if (node.props.type === 'datetime') return 'SchemaField.DateTime';
-    if (node.props.type === 'array') return 'SchemaField.Array';
-    if (node.props.type === 'object') return 'SchemaField.Object';
-    if (node.props.type === 'void') return 'SchemaField.Void';
+    if (node?.props?.type) {
+      if (node.props.type === 'string') return 'SchemaField.String';
+      if (node.props.type === 'number') return 'SchemaField.Number';
+      if (node.props.type === 'boolean') return 'SchemaField.Boolean';
+      if (node.props.type === 'date') return 'SchemaField.Date';
+      if (node.props.type === 'datetime') return 'SchemaField.DateTime';
+      if (node.props.type === 'array') return 'SchemaField.Array';
+      if (node.props.type === 'object') return 'SchemaField.Object';
+      if (node.props.type === 'void') return 'SchemaField.Void';
+    }
     return 'SchemaField.Markup';
   };
   const printNode = (node: TreeNode) => {

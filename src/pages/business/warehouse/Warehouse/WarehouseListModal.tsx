@@ -2,7 +2,8 @@ import SelectSystemPersonButton from '@/components/Comm/FormlyComponents/SelectS
 import { STORAGE_MATERIAL_LIST, STORAGE_WORK_PROCESS_LIST } from '@/configs/storage.config';
 import { arrayAttributeChange, arrayToObject } from '@/utils';
 import storageDataSource from '@/utils/storage';
-import { ProFormInstance, ProFormMoney } from '@ant-design/pro-form';
+import type { ProFormInstance } from '@ant-design/pro-form';
+import { ProFormMoney } from '@ant-design/pro-form';
 import { ProFormSelect } from '@ant-design/pro-form';
 import ProForm, { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 
@@ -10,7 +11,7 @@ import React, { forwardRef, useImperativeHandle, useRef, useState, useEffect } f
 import { WarehouseEnumValueEnum } from '@/configs/commValueEnum';
 
 import { debounce, throttle } from 'lodash';
-import { BusWarehouseType } from '@/apis/business/warehouse/typing';
+import type { BusWarehouseType } from '@/apis/business/warehouse/typing';
 import { fetchCreateWarehouse, fetchUpdateWarehouse } from '@/apis/business/warehouse';
 
 const WarehouseListModal: React.FC<{

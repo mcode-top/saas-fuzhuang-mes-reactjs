@@ -1,7 +1,7 @@
 import { STORAGE_MATERIAL_LIST } from '@/configs/storage.config';
 import storageDataSource from '@/utils/storage';
 import { ProFormSelect } from '@ant-design/pro-form';
-import { ProFormSelectProps } from '@ant-design/pro-form/lib/components/Select';
+import type { ProFormSelectProps } from '@ant-design/pro-form/lib/components/Select';
 import { throttle } from 'lodash';
 import React from 'react';
 
