@@ -73,8 +73,8 @@ const WarehouseList: React.FC = () => {
       request={async () => {
         return {
           data: await fetchWarehouseList().then((res) => {
-            // 测试使用
-            wContext.setCurrentWarehouse?.(res.data[0]);
+            // // TODO:测试使用
+            // wContext.setCurrentWarehouse?.(res.data[0]);
             return res.data;
           }),
         };

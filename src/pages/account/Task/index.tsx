@@ -57,13 +57,13 @@ export default function UserTask() {
       valueEnum: ProcessValueEnum.ActApproveStatusEnum,
       dataIndex: 'approverList.status',
       hideInSearch: true,
-      renderText: (t, record) => record.approverList?.[0].status,
+      renderText: (t, record) => record.approverList?.[0].log.status,
     },
     {
       title: '审批意见',
       dataIndex: 'approverList.opinion',
       ellipsis: true,
-      renderText: (t, record) => record.approverList?.[0].opinion,
+      renderText: (t, record) => record.approverList?.[0].log.opinion,
     },
     ...COM_PRO_TABLE_TIME.updatedAt,
     ...COM_PRO_TABLE_TIME.createdAt,
@@ -82,7 +82,7 @@ export default function UserTask() {
               accessible={checkStatusIsApprove({
                 processStatus: data?.process?.status,
                 taskType: data?.type,
-                approverStatus: data?.approverList?.[0].status,
+                approverStatus: data?.approverList?.[0].log.status,
               })}
             >
               <ApproveModal
@@ -97,7 +97,7 @@ export default function UserTask() {
               accessible={checkStatusIsStartTask({
                 processStatus: data?.process?.status,
                 taskType: data?.type,
-                approverStatus: data?.approverList?.[0].status,
+                approverStatus: data?.approverList?.[0].log.status,
               })}
             >
               <StartTaskModal key={data.id} task={data} onFinish={() => action?.reload()} />

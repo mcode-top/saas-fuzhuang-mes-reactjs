@@ -198,15 +198,22 @@ export type ActTask = {
   taskModelId: string;
 };
 
+/**@name 审批人节点 */
 export type ActApprover = {
   processId: number;
-  process: ActProcess;
+  process?: ActProcess;
   userId: number;
-  user: UserListItem;
+  user?: UserListItem;
   taskId: number;
-  task: ActTask;
-  status: ActApproveStatusEnum;
-  opinion: string;
+  task?: ActTask;
+  log: ActApproverLog;
 };
 
+/**@name 审批记录 */
+export type ActApproverLog = {
+  approvedId: number;
+  status: ActApproveStatusEnum;
+  opinion: string;
+  approved?: ActApprover;
+};
 export type ActTaskQuery = PartialObject<ActTask>;

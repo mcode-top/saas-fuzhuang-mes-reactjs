@@ -5,9 +5,9 @@
  * @Description: 预览流程状态
  */
 import React, { useEffect, useRef, useState } from 'react';
-import type { Cell, Edge, Node } from '@antv/x6';
-import { Graph, Path } from '@antv/x6';
-import type { ActApprover, ActTask } from '@/apis/process/typings';
+import type { Edge, Node } from '@antv/x6';
+import { Graph } from '@antv/x6';
+import type { ActApprover, ActApproverLog, ActTask } from '@/apis/process/typings';
 import { ActTaskStatusEnum } from '@/apis/process/typings';
 import { ActTaskModelTypeEnum } from '@/apis/process/typings';
 import { CheckCard } from '@ant-design/pro-card';
@@ -18,17 +18,16 @@ import {
   InfoCircleOutlined,
   SyncOutlined,
 } from '@ant-design/icons';
-import { Avatar, Button, Modal, Popover, Table, TableColumnsType, Tooltip } from 'antd';
+import { Modal, Tooltip } from 'antd';
 import '@antv/x6-react-shape';
 import styles from './index.less';
 import { DagreLayout } from '@antv/layout';
 
 import classNames from 'classnames';
-import { fetchProcessToTaskList } from '@/apis/process/process';
+import { fetchProcessToTaskList, fetchTaskIdToApprovedLogList } from '@/apis/process/process';
 import type { ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { ProcessValueEnum } from '@/configs/commValueEnum';
-import { COM_PRO_TABLE_TIME } from '@/configs/index.config';
 const IconFont = createFromIconfontCN({
   scriptUrl: '/icons/process/iconfont.js',
 });
@@ -150,12 +149,12 @@ export class DAGTaskNode extends React.Component<{ node?: Node }> {
   render() {
     const { node } = this.props;
     const data = node?.getData() as ActTask;
-    const columns: ProColumns<ActApprover>[] = [
+    const columns: ProColumns<ActApproverLog>[] = [
       {
         title: '人员名称',
-        dataIndex: 'userId',
-        render: (value: any, record: ActApprover, index: number) => {
-          return data.userList?.find((u) => u.id === value)?.name;
+        dataIndex: '',
+        render: (value: any, record: ActApproverLog, index: number) => {
+          return record?.approved?.user?.name;
         },
       },
       {
@@ -215,7 +214,6 @@ export class DAGTaskNode extends React.Component<{ node?: Node }> {
             </span>
           </div>
         }
-        // description={data.approverList}
         size="small"
         onChange={(checked) => {
           console.log('checked', checked);
@@ -229,7 +227,9 @@ export class DAGTaskNode extends React.Component<{ node?: Node }> {
                 search={false}
                 size="small"
                 columns={columns}
-                dataSource={data.approverList}
+                request={async () => {
+                  return await fetchTaskIdToApprovedLogList(data.id);
+                }}
               />
             ),
           });

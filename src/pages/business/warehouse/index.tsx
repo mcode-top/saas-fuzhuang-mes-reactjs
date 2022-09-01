@@ -1,11 +1,5 @@
-import { fetchRemoveWarehouse, fetchWarehouseList } from '@/apis/business/warehouse';
-import { BusWarehouseType, BusWarehouseTypeEnum } from '@/apis/business/warehouse/typing';
-import { WarehouseEnumValueEnum } from '@/configs/commValueEnum';
-import { HomeOutlined, PlusOutlined, PushpinOutlined, ReloadOutlined } from '@ant-design/icons';
-import ProList from '@ant-design/pro-list';
-import { ActionType } from '@ant-design/pro-table';
-import { Button, Card, Col, Descriptions, message, Modal, Row, Space, Tag } from 'antd';
-import React, { useContext, useEffect, useState } from 'react';
+import { Button, Card, Col, Descriptions, Row } from 'antd';
+import React from 'react';
 import WarehouseTypeTag from './components/WarehouseTypeTag';
 import { useDefaultWarehouse, WarehouseContext } from './context';
 import BusWarehouseGoodsTable from './Goods/GoodsTable';

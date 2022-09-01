@@ -1,6 +1,7 @@
 import { fetchCustomerCompanyList } from '@/apis/business/customer';
-import { BusCustomerCompanyType } from '@/apis/business/customer/typing';
-import SimpleColumnList, { SimpleColumnListRef } from '@/components/Comm/SimpleColumnList';
+import type { BusCustomerCompanyType } from '@/apis/business/customer/typing';
+import type { SimpleColumnListRef } from '@/components/Comm/SimpleColumnList';
+import SimpleColumnList from '@/components/Comm/SimpleColumnList';
 import {
   MinusOutlined,
   PlusOutlined,
