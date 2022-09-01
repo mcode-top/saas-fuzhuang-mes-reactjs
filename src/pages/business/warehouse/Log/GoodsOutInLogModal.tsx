@@ -1,7 +1,7 @@
 import type { ProFormInstance } from '@ant-design/pro-form';
 import { ModalForm } from '@ant-design/pro-form';
 
-import React, { useRef } from 'react';
+import React, { useContext, useRef } from 'react';
 
 import type {
   BusWarehouseGoodsType,
@@ -11,6 +11,7 @@ import type {
 import { BusWarehouseTypeEnum } from '@/apis/business/warehouse/typing';
 import { Descriptions } from 'antd';
 import BusGoodsOutInLogTable from './GoodsOutInLogTable';
+import { WarehouseContext } from '../context';
 
 /**@name 货品出入库记录对话框 */
 const GoodsOutInLogModal: React.FC<{
@@ -20,6 +21,8 @@ const GoodsOutInLogModal: React.FC<{
 }> = (props) => {
   const formRef = useRef<ProFormInstance>();
   const goods = props.value;
+  const wContext = useContext(WarehouseContext);
+
   const goodsName = `${goods?.material?.name}(${goods?.material?.code})`;
   return (
     <ModalForm<BusWarehousePutInGoodsDto>
@@ -35,7 +38,7 @@ const GoodsOutInLogModal: React.FC<{
           <Descriptions.Item label="货架名称">{goods?.shelf?.name}</Descriptions.Item>
           <Descriptions.Item label="物料信息">{goodsName}</Descriptions.Item>
           <Descriptions.Item label="计量单位">{`${goods.material?.unit}`}</Descriptions.Item>
-          {goods?.shelf?.warehouse?.type === BusWarehouseTypeEnum.Material ? null : (
+          {wContext.currentWarehouse?.type === BusWarehouseTypeEnum.Material ? null : (
             <Descriptions.Item label="尺码规格" span={2}>{`${goods.size?.name}${
               goods.size?.specification ? `(${goods.size?.specification})` : ''
             }`}</Descriptions.Item>
