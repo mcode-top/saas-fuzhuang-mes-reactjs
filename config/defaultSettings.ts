@@ -1,5 +1,6 @@
-import { Settings as LayoutSettings } from '@ant-design/pro-layout';
-import { Mode, UseSwitchTabsOptions } from 'use-switch-tabs';
+import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
+import type { UseSwitchTabsOptions } from 'use-switch-tabs';
+import { Mode } from 'use-switch-tabs';
 
 export type SwitchTabsOptions = {
   mode: Mode;
@@ -13,6 +14,7 @@ export type Settings = LayoutSettings & {
   logo?: string;
   switchTabs?: SwitchTabsOptions;
 };
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 const Settings: Settings = {
   navTheme: 'light',
   // 拂晓蓝

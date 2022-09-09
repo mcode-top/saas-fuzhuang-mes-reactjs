@@ -15,7 +15,7 @@ import BusMaterialSelect from '../../techology-manage/Material/components/Materi
 import SelectTreeSizeTemplate from '../../techology-manage/SizeTemplate/components/SelectTreeSizeTemplate';
 import { WarehouseContext } from '../context';
 import { formatWarehouseEnumToMaterialEnum } from '../helper';
-import { MaterialValueEnum } from '@/configs/commValueEnum';
+import { dictValueEnum, MaterialValueEnum } from '@/configs/commValueEnum';
 
 /**@name 货品入库对话框 */
 const GoodsPutInModal: React.FC<{
@@ -72,18 +72,20 @@ const GoodsPutInModal: React.FC<{
         materialType={currentMaterialType}
         help={
           currentMaterialType
-            ? `仅支持${MaterialValueEnum.Type.get(currentMaterialType)?.text}类型`
+            ? `仅支持${dictValueEnum(MaterialValueEnum.Type, currentMaterialType)}类型`
             : undefined
         }
         label="物料编码"
         name="materialCode"
       />
-      <SelectTreeSizeTemplate
-        disabled={disabled}
-        hidden={wContext.currentWarehouse?.type === BusWarehouseTypeEnum.Material}
-        label="选择尺码"
-        name="sizeId"
-      />
+      {wContext.currentWarehouse?.type !== BusWarehouseTypeEnum.Material ? (
+        <SelectTreeSizeTemplate
+          disabled={disabled}
+          label="选择尺码"
+          rules={[{ required: true }]}
+          name="sizeId"
+        />
+      ) : null}
       <ProFormDigit
         rules={[
           { required: true },

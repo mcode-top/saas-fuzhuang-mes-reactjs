@@ -6,6 +6,8 @@ import type {
   BusCustomerCompanyType,
   BusCustomerContacterType,
 } from '@/apis/business/customer/typing';
+import { STORAGE_CUSTOMER_CONTACTER_LIST } from '@/configs/storage.config';
+import storageDataSource from '@/utils/storage';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { Button, Popconfirm, Space, Table } from 'antd';
@@ -67,7 +69,11 @@ const CustomerContacterList: React.FC<{
       headerTitle="客户联系人"
       actionRef={actionRef}
       request={async (params, sorter, filter) => {
-        const { data } = await fetchCurrentCustomerContacterList(props.record.id);
+        const { data } = await storageDataSource.getValue(
+          STORAGE_CUSTOMER_CONTACTER_LIST,
+          true,
+          props.record.id,
+        );
         return {
           data,
         };

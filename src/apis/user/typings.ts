@@ -18,5 +18,17 @@ export type UserInfo = {
   phone: string;
   email: string;
   dept: any;
+  /**@name 状态 0:禁用 1:启用 */
+  status: number;
+  sex: UserSexEnum;
   [key: string]: any;
 };
+/**@name 性别类型 */
+export enum UserSexEnum {
+  /**@name 女 */
+  WoMan = '0',
+  /**@name 男 */
+  Man = '1',
+  /**@name 保密 */
+  Secret = '2',
+}

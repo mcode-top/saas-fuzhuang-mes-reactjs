@@ -8,54 +8,64 @@ import { BusCustomerTypeEnum } from './../apis/business/customer/typing';
 import { MessageLevelEnum, MessageReadStatusEnum, MessageTypeEnum } from '@/apis/message/typing';
 import { BusMaterialTypeEnum } from '@/pages/business/techology-manage/Material/typing';
 import { BusWarehouseLogTypeEnum, BusWarehouseTypeEnum } from '@/apis/business/warehouse/typing';
+import { BusOrderStyleTypeEnum } from '@/apis/business/order-manage/contract/typing';
+import {
+  ActApproveModeEnum,
+  ActApproveStatusEnum,
+  ActApproveTypeEnum,
+  ActProcessStatusEnum,
+  ActTaskModelStatusEnum,
+  ActTaskStatusEnum,
+} from '@/apis/process/typings';
+import { UserSexEnum } from '@/apis/user/typings';
 
 export const UserValueEnum = {
   Sex: new Map([
-    ['0', { text: '女' }],
-    ['1', { text: '男' }],
-    ['2', { text: '保密' }],
+    [UserSexEnum.WoMan, { text: '女' }],
+    [UserSexEnum.Man, { text: '男' }],
+    [UserSexEnum.Secret, { text: '保密' }],
   ]),
   Status: new Map([
-    ['0', { text: '禁用', status: 'Error' }],
-    ['1', { text: '正常', status: 'Success' }],
+    [0, { text: '禁用', status: 'Error' }],
+    [1, { text: '正常', status: 'Success' }],
   ]),
 };
 export const ProcessValueEnum = {
   ActTaskStatusEnum: new Map([
-    ['0', { text: '未执行' }],
-    ['1', { text: '执行中', status: 'Processing' }],
-    ['2', { text: '已完成', status: 'Success' }],
-    ['3', { text: '已同意', status: 'Success' }],
-    ['4', { text: '被驳回', status: 'Error' }],
-    ['5', { text: '已失效', status: 'Warning' }],
+    [ActTaskStatusEnum.Normal, { text: '未执行' }],
+    [ActTaskStatusEnum.Running, { text: '执行中', status: 'Processing' }],
+    [ActTaskStatusEnum.Complete, { text: '已完成', status: 'Success' }],
+    [ActTaskStatusEnum.Agree, { text: '已同意', status: 'Success' }],
+    [ActTaskStatusEnum.Disagree, { text: '被驳回', status: 'Error' }],
+    [ActTaskStatusEnum.Disable, { text: '已失效', status: 'Warning' }],
   ]),
   ActProcessStatusEnum: new Map([
-    ['0', { text: '执行中', status: 'Processing' }],
-    ['1', { text: '已完成', status: 'Success' }],
-    ['2', { text: '已撤销', status: 'Error' }],
-    ['3', { text: '被暂停', status: 'Warning' }],
-    ['4', { text: '被驳回', status: 'Error' }],
+    [ActProcessStatusEnum.Running, { text: '执行中', status: 'Processing' }],
+    [ActProcessStatusEnum.Complete, { text: '已完成', status: 'Success' }],
+    [ActProcessStatusEnum.Stop, { text: '已撤销', status: 'Error' }],
+    [ActProcessStatusEnum.Pause, { text: '被暂停', status: 'Warning' }],
+    [ActProcessStatusEnum.Reject, { text: '被驳回', status: 'Error' }],
   ]),
   ActApproveStatusEnum: new Map([
-    ['0', { text: '未审批' }],
-    ['1', { text: '已同意', status: 'Success' }],
-    ['2', { text: '不同意', status: 'Error' }],
-    ['3', { text: '抄送状态' }],
+    [ActApproveStatusEnum.Normal, { text: '未审批' }],
+    [ActApproveStatusEnum.Agree, { text: '已同意', status: 'Success' }],
+    [ActApproveStatusEnum.Disagree, { text: '不同意', status: 'Error' }],
+    [ActApproveStatusEnum.Recipient, { text: '抄送状态' }],
   ]),
   ActApproveModeEnum: new Map([
-    ['0', { text: '依次审批' }],
-    ['1', { text: '会签' }],
-    ['2', { text: '或签' }],
+    [ActApproveModeEnum.Normal, { text: '依次审批' }],
+    [ActApproveModeEnum.Countersign, { text: '会签' }],
+    [ActApproveModeEnum.Orsgin, { text: '或签' }],
   ]),
   ActApproveTypeEnum: new Map([
-    ['0', { text: '选择人员' }],
-    ['1', { text: '选择部门' }],
-    ['2', { text: '选择角色' }],
-    ['2', { text: '发起者指定' }],
+    [ActApproveTypeEnum.Person, { text: '选择人员' }],
+    [ActApproveTypeEnum.Dept, { text: '选择部门' }],
+    [ActApproveTypeEnum.Role, { text: '选择角色' }],
+    [ActApproveTypeEnum.Starter, { text: '发起者指定' }],
   ]),
   ActTaskModelStatusEnum: new Map([
-    ['0', { text: '已失效', status: 'Success' }],
-    ['1', { text: '使用中', status: 'Error' }],
+    [ActTaskModelStatusEnum.Disable, { text: '已失效', status: 'Error' }],
+    [ActTaskModelStatusEnum.Normal, { text: '使用中', status: 'Success' }],
   ]),
 };
 export const MessageValueEnum = {
@@ -90,7 +100,7 @@ export const CustomerCompanyValueEnum = {
   ]),
 };
 /**@name 仓库类型 */
-export const WarehouseEnumValueEnum = {
+export const WarehouseTypeValueEnum = {
   /**@name 仓库存放货品类型 */
   WarehouseType: new Map([
     [BusWarehouseTypeEnum.Product, { text: '成品' }],
@@ -103,3 +113,17 @@ export const WarehouseEnumValueEnum = {
     [BusWarehouseLogTypeEnum.In, { text: '入库', color: '#c12c1f' }],
   ]),
 };
+
+/**@name 合同订单类型 */
+export const OrderContractTypeValueEnum = {
+  Style: new Map([
+    [BusOrderStyleTypeEnum.SpotGoods, { text: '现货' }],
+    [BusOrderStyleTypeEnum.SpotGoodsCustom, { text: '现货定制' }],
+    [BusOrderStyleTypeEnum.Custom, { text: '全新定制' }],
+  ]),
+};
+
+/**@name 枚举转为字段文字 */
+export function dictValueEnum(type: Map<any, any>, value: any) {
+  return `${type.get(value)?.text || '类型不存在'}`;
+}

@@ -1,29 +1,32 @@
-import { MenuDataItem } from '@umijs/route-utils';
+import type { MenuDataItem } from '@umijs/route-utils';
 type Router = MenuDataItem & {
-  component?: string,
+  component?: string;
   /**
    * 不需要鉴权
    */
-  white?: boolean
-  access?: string
-}
+  white?: boolean;
+  access?: string;
+};
 const originRoutes: Router[] = [
   {
-    path: "/",
+    path: '/home',
     white: true,
-    component: "./custom-form/FormViewer"
+    hideInMenu: true,
+    name: '首页',
+    closable: false,
+    component: './custom-form/FormViewer',
   },
   {
-    path: "/form",
+    path: '/form',
     white: true,
     hideInMenu: true,
     layout: false,
-    component: "./custom-form/FormViewer"
+    component: './custom-form/FormViewer',
   },
   {
-    path: "/login",
+    path: '/login',
     white: true,
-    redirect: "/user/login"
+    redirect: '/user/login',
   },
   {
     path: '/user',
@@ -85,6 +88,25 @@ const originRoutes: Router[] = [
     ],
   },
   {
+    name: '订单管理',
+    path: '/order-manage',
+    routes: [
+      {
+        path: '/order-manage/contract',
+        name: '合同单管理',
+        key: 'contract',
+        component: './business/order-manage/contract',
+      },
+      {
+        path: '/order-manage/info-contract',
+        key: 'contract-info',
+        name: '合同单详情',
+        hideInMenu: true,
+        component: './business/order-manage/contract/Info',
+      },
+    ],
+  },
+  {
     name: '文件管理',
     white: true,
     path: '/file-manage',
@@ -97,21 +119,21 @@ const originRoutes: Router[] = [
       },
       {
         white: true,
-        path: "/file-manage/organization",
-        name: "公司文件目录",
+        path: '/file-manage/organization',
+        name: '公司文件目录',
         component: './file-manage/OrganizationFileList',
       },
     ],
   },
   {
-    name: "仓库管理",
-    path: "/warehouse",
-    component: "./business/warehouse"
+    name: '仓库管理',
+    path: '/warehouse',
+    component: './business/warehouse',
   },
   {
-    name: "客户管理",
-    path: "/customer",
-    component: "./business/customer"
+    name: '客户管理',
+    path: '/customer',
+    component: './business/customer',
   },
   {
     name: '工艺管理',
@@ -145,10 +167,9 @@ const originRoutes: Router[] = [
     ],
   },
   {
-    name: "系统消息管理",
-    path: "/message",
+    name: '系统消息管理',
+    path: '/message',
     component: './message/System',
-
   },
   {
     component: './404',
@@ -158,22 +179,21 @@ const originRoutes: Router[] = [
     white: true,
     hideInMenu: true,
   },
-]
+];
 
 function authentication(routes: Router[] | Router) {
   if (Array.isArray(routes)) {
-    return routes.map(authentication)
+    return routes.map(authentication);
   } else {
     const route = routes as Router;
     if (!route.white) {
-      route.access = "menuAuth"
+      route.access = 'menuAuth';
     }
     if (Array.isArray(route.routes)) {
-      route.routes = authentication(route.routes)
+      route.routes = authentication(route.routes);
     }
-    return route
+    return route;
   }
 }
 
 export default authentication(originRoutes);
-

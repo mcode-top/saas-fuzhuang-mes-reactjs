@@ -5,7 +5,7 @@ import type { TabsProps } from 'antd/lib/tabs';
 import type { MenuProps } from 'antd/lib/menu';
 import type * as H from 'history-with-query';
 import { usePersistFn } from 'ahooks';
-import type { UseSwitchTabsOptions, ActionType } from 'use-switch-tabs';
+import type { UseSwitchTabsOptions, ActionType, SwitchTab } from 'use-switch-tabs';
 import useSwitchTabs from 'use-switch-tabs';
 import classNames from 'classnames';
 import _get from 'lodash/get';
@@ -55,7 +55,6 @@ export default function SwitchTabs(props: SwitchTabsProps): JSX.Element {
   const remove = usePersistFn((key: string) => {
     handleRemove(key);
   });
-
   const handleTabEdit = usePersistFn((targetKey: string, action: 'add' | 'remove') => {
     if (action === 'remove') {
       remove(targetKey);
@@ -89,20 +88,54 @@ export default function SwitchTabs(props: SwitchTabsProps): JSX.Element {
     </Menu>
   ));
 
-  const setTab = usePersistFn((tab: React.ReactNode, key: string, index: number) => (
-    <span onContextMenu={(event) => event.preventDefault()}>
-      <Dropdown overlay={setMenu(key, index)} trigger={['contextMenu']}>
-        <span className={styles.tabTitle}>{tab}</span>
-      </Dropdown>
-    </span>
-  ));
+  const setTab = usePersistFn(
+    (tab: React.ReactNode, key: string, index: number, item: SwitchTab) => {
+      let title = tab;
+      if ((item?.location as any)?.query?._systemTabName) {
+        title = (item?.location as any)?.query?._systemTabName;
+      }
+      return (
+        <span onContextMenu={(event) => event.preventDefault()}>
+          <Dropdown overlay={setMenu(key, index)} trigger={['contextMenu']}>
+            <span className={styles.tabTitle}>{title}</span>
+          </Dropdown>
+        </span>
+      );
+    },
+  );
 
+  useEffect(() => {
+    window.layoutTabsAction = {
+      getLocationToTabKey: (currentLocation: SwitchTab['location']): SwitchTab | undefined => {
+        return tabs.find((i) => {
+          return (
+            decodeURI(i.location.pathname) === decodeURI(currentLocation.pathname) &&
+            decodeURI(i.location.search) === decodeURI(currentLocation.search) &&
+            i.location.hash === currentLocation.hash &&
+            i.location.state === currentLocation.state
+          );
+        });
+      },
+      goAndClose: (path: string, isRefresh?: boolean): void => {
+        if (isRefresh === true) {
+          window.tabsAction.reloadTab(path);
+        }
+        const currentTab = window.layoutTabsAction.getLocationToTabKey(location);
+        window.tabsAction.goBackTab(
+          path,
+          () => {
+            setTimeout(() => {
+              window.tabsAction.closeTab(currentTab?.key);
+            }, 0);
+          },
+          isRefresh,
+        );
+      },
+    };
+  }, [tabs, location]);
   useEffect(() => {
     window.tabsAction = actionRef.current!;
   }, [actionRef.current]);
-  console.log('====================================');
-  console.log(tabs, activeKey);
-  console.log('====================================');
   return (
     <Tabs
       tabPosition="top"
@@ -119,7 +152,7 @@ export default function SwitchTabs(props: SwitchTabsProps): JSX.Element {
     >
       {tabs.map((item, index) => (
         <Tabs.TabPane
-          tab={setTab(item.title, item.key, index)}
+          tab={setTab(item.title, item.key, index, item)}
           key={item.key}
           closable={item.closable}
           forceRender={_get(persistent, 'force', false)}

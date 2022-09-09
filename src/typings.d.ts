@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/consistent-type-imports */
 declare module 'slash2';
 declare module '*.css';
 declare module '*.less';
@@ -23,7 +24,14 @@ declare let ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION: 'site' | undefine
 
 declare const REACT_APP_ENV: 'test' | 'dev' | 'pre' | false;
 interface Window {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
   tabsAction: import('use-switch-tabs').ActionType;
+  layoutTabsAction: {
+    /**@name 获取当前导航的TabKey */
+    getLocationToTabKey: (
+      currentLocation: import('use-switch-tabs').SwitchTab['location'],
+    ) => import('use-switch-tabs').SwitchTab | undefined;
+    /**@name 调整并关闭页面 */
+    goAndClose: (path: string, isRefresh?: boolean) => void;
+  };
   routerBase: string;
 }

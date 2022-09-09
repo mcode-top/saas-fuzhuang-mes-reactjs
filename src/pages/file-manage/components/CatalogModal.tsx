@@ -55,9 +55,6 @@ export default function CatalogModal(props: {
         return new Promise((resolve, reject) => {
           let promiseCatalog;
           if (props.node.type === 'create') {
-            console.log('====================================');
-            console.log(props.mode);
-            console.log('====================================');
             promiseCatalog =
               props.mode !== FileManageModeEnum.Organization
                 ? createMyCatalog(values)

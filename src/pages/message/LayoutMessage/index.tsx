@@ -104,8 +104,6 @@ const NoticeIconView: React.FC = () => {
         list={systemMessage.list}
         title="系统消息"
         onRefrsh={() => {
-          console.log(111);
-
           loadingRefresh(refreshSystemMessage(), setLoading);
         }}
         emptyText="暂无新的系统消息"

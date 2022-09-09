@@ -57,13 +57,13 @@ export default function UserTask() {
       valueEnum: ProcessValueEnum.ActApproveStatusEnum,
       dataIndex: 'approverList.status',
       hideInSearch: true,
-      renderText: (t, record) => record.approverList?.[0].log.status,
+      renderText: (t, record) => record.approverList?.[0]?.status,
     },
     {
       title: '审批意见',
       dataIndex: 'approverList.opinion',
       ellipsis: true,
-      renderText: (t, record) => record.approverList?.[0].log.opinion,
+      renderText: (t, record) => record.approverList?.[0]?.opinion,
     },
     ...COM_PRO_TABLE_TIME.updatedAt,
     ...COM_PRO_TABLE_TIME.createdAt,
@@ -82,7 +82,7 @@ export default function UserTask() {
               accessible={checkStatusIsApprove({
                 processStatus: data?.process?.status,
                 taskType: data?.type,
-                approverStatus: data?.approverList?.[0].log.status,
+                approverStatus: data?.approverList?.[0].status,
               })}
             >
               <ApproveModal
@@ -97,7 +97,7 @@ export default function UserTask() {
               accessible={checkStatusIsStartTask({
                 processStatus: data?.process?.status,
                 taskType: data?.type,
-                approverStatus: data?.approverList?.[0].log.status,
+                approverStatus: data?.approverList?.[0].status,
               })}
             >
               <StartTaskModal key={data.id} task={data} onFinish={() => action?.reload()} />
@@ -255,7 +255,7 @@ export default function UserTask() {
 /**
  * 检查流程与任务状态判断是否显示审批
  */
-function checkStatusIsApprove(options: {
+export function checkStatusIsApprove(options: {
   processStatus?: ActProcessStatusEnum;
   approverStatus?: ActApproveStatusEnum;
   taskType?: ActTaskModelTypeEnum;
@@ -276,9 +276,9 @@ function checkStatusIsApprove(options: {
   return false;
 }
 /**
- * 检查流程与任务状态判断是否显示审批
+ * 检查流程与任务状态判断是否显示开始任务
  */
-function checkStatusIsStartTask(options: {
+export function checkStatusIsStartTask(options: {
   processStatus?: ActProcessStatusEnum;
   approverStatus?: ActApproveStatusEnum;
   taskType?: ActTaskModelTypeEnum;

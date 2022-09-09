@@ -24,6 +24,9 @@ import storageDataSource from './utils/storage';
 import type { ApiTreeType } from './apis/person/typings';
 import { UserWebSocket } from './utils/websocket';
 import { message } from 'antd';
+import { PhotoProvider } from 'react-photo-view';
+import 'react-photo-view/dist/react-photo-view.css';
+import type { SetTabNamePayload } from 'use-switch-tabs/lib/useSwitchTabs';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -144,7 +147,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       }
       return (
         <>
-          {children}
+          <PhotoProvider>{children}</PhotoProvider>
           {/* {!props.location?.pathname?.includes('/login') && (
             <SettingDrawer
               enableDarkTheme

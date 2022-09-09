@@ -79,11 +79,10 @@ export function fetchNameListSizeTemplateItem(selectId) {
     },
   );
 }
+
 /**@name 获取全部尺码模板列表(仅name与id) */
 export function fetchTressSizeTemplate() {
-  return request<
-    RESULT_SUCCESS<(BusSizeTemplateParentType & { children: BusSizeTemplateItemType[] })[]>
-  >('/size-template/tree', {
+  return request<RESULT_SUCCESS<CommTree[]>>('/size-template/tree', {
     method: 'GET',
   });
 }

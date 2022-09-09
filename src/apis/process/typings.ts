@@ -206,6 +206,8 @@ export type ActApprover = {
   user?: UserListItem;
   taskId: number;
   task?: ActTask;
+  status: ActApproveStatusEnum;
+  opinion: string;
   log: ActApproverLog;
 };
 

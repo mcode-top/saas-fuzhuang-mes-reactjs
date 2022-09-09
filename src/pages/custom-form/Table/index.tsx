@@ -28,8 +28,6 @@ const CustomTableViewer: React.FC = () => {
         businessKey: urlParams.businessKey,
       })
       .then((result) => {
-        console.log(CustomTableColumnToAntDColumns(result.tableModel.columns));
-
         setColumns(CustomTableColumnToAntDColumns(result.tableModel.columns));
       });
   }, []);

@@ -93,8 +93,6 @@ export function xhrUploadFile(
     xhr.onreadystatechange = function (event) {
       if (xhr.readyState == 4) {
         if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
-          console.log(xhr.response);
-
           try {
             resolve(JSON.parse(xhr.response));
           } catch (error) {
@@ -129,6 +127,7 @@ export function downloadAction(url: string, filename: string = '') {
     filename: filename,
     autoStart: false,
   });
+  file.params.contentType = false;
   const p = file.start();
   file.request.onprogress = (event) => {
     uid = uploadProgress(uid, tips, { loaded: event.loaded, total: event.total });
@@ -155,15 +154,16 @@ export async function downloadSystemFile(value: number | string) {
     url: string;
     filename: string;
   };
-  if (isEmpty(value)) {
+  if (value === undefined || value === null) {
     message.warn('下载失败,未知参数');
-  }
-  if (typeof value === 'number') {
-    result = (await getOssFileIdToTimeLink(value)).data;
   } else {
-    result = (await getOssPosistionToTimeLink(value)).data;
+    if (typeof value === 'number') {
+      result = (await getOssFileIdToTimeLink(value)).data;
+    } else {
+      result = (await getOssPosistionToTimeLink(value)).data;
+    }
+    await downloadAction(result.url, result.filename);
   }
-  await downloadAction(result.url, result.filename);
 }
 
 /**@name 选择本地文件 */

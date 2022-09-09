@@ -28,8 +28,6 @@ const SizeTemplateItemTableModal: React.FC<{
         if (props.node.type === 'create') {
           await fetchCreateSizeTemplateItem(value);
         } else if (props.node.type === 'update') {
-          console.log(value);
-
           await fetchUpdateSizeTemplateItem({
             ...(props.node?.value || {}),
             ...value,

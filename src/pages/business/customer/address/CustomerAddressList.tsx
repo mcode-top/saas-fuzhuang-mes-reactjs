@@ -4,8 +4,14 @@ import {
   fetchRemoveCustomerAddress,
   fetchRemoveCustomerContacter,
 } from '@/apis/business/customer';
-import { BusCustomerCompanyType, BusCustomerAddressType } from '@/apis/business/customer/typing';
-import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
+import type {
+  BusCustomerCompanyType,
+  BusCustomerAddressType,
+} from '@/apis/business/customer/typing';
+import { STORAGE_CUSTOMER_ADDRESS_LIST } from '@/configs/storage.config';
+import storageDataSource from '@/utils/storage';
+import type { ActionType, ProColumns } from '@ant-design/pro-table';
+import ProTable from '@ant-design/pro-table';
 import { Button, Popconfirm, Space, Table } from 'antd';
 import React, { useEffect } from 'react';
 import BusCustomerAddressModal from './CustomerAddressModal';
@@ -64,7 +70,11 @@ const CustomerAddressList: React.FC<{
       headerTitle="客户收货地址"
       actionRef={actionRef}
       request={async (params, sorter, filter) => {
-        const { data } = await fetchCurrentCustomerAddressList(props.record.id);
+        const { data } = await storageDataSource.getValue(
+          STORAGE_CUSTOMER_ADDRESS_LIST,
+          true,
+          props.record.id,
+        );
         return {
           data,
         };

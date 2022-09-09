@@ -97,10 +97,12 @@ function CustomerCompanyInfo(props: {
   actionRef?: React.MutableRefObject<ProCoreActionType<ProCoreActionType> | undefined>;
   formRef?: FormInstance<any>;
 }) {
+  const editable = props.readonly === true ? false : undefined;
   const columns: ProDescriptionsItemProps<Record<string, any>, 'text'>[] = [
     {
       title: '公司名称',
       dataIndex: 'name',
+      editable,
       formItemProps: {
         rules: [{ required: true }],
       },
@@ -108,6 +110,7 @@ function CustomerCompanyInfo(props: {
     {
       title: '公司电话',
       dataIndex: 'phone',
+      editable,
     },
     {
       title: '公司类型',
@@ -117,16 +120,19 @@ function CustomerCompanyInfo(props: {
         rules: [{ required: true }],
       },
       valueType: 'select',
+      editable,
     },
     {
       title: '公司地址',
       dataIndex: 'address',
       valueType: 'textarea',
+      editable,
     },
     {
       title: '备注描述',
       dataIndex: 'remark',
       valueType: 'textarea',
+      editable,
     },
     {
       title: '创建时间',

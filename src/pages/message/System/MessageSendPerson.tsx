@@ -62,8 +62,6 @@ const MessageSendPerson: React.FC = () => {
       title: '通知人员',
       dataIndex: 'person',
       renderFormItem: (schema, config, form) => {
-        console.log(schema, config, form);
-
         return (
           <SelectSystemPersonButton
             showDept

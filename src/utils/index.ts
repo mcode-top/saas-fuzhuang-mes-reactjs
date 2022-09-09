@@ -14,11 +14,11 @@ export function isUUID(s: string) {
  * @param tree
  * @param next
  */
-export function traverseTree<T = any>(tree: T[], next: (value: T) => any) {
+export function traverseTree<T = any>(tree: T[], next: (value: T, parent?: T) => any, parent?: T) {
   tree.forEach((value: any) => {
-    next(value);
+    next(value, parent);
     if (!isEmpty(value.children)) {
-      traverseTree(value.children, next);
+      traverseTree(value.children, next, value);
     }
   });
 }
@@ -33,10 +33,14 @@ export function traverseTree<T = any>(tree: T[], next: (value: T) => any) {
 export function arrayToObject<T extends Record<any, any>>(
   arr: T[],
   key: keyof T,
-  value: keyof T,
+  value: keyof T | ((next: any) => any),
 ): any {
   return arr.reduce<Record<any, any>>((prev, next) => {
-    prev[next[key]] = next[value];
+    if (typeof value === 'function') {
+      prev[next[key]] = value(next);
+    } else {
+      prev[next[key]] = next[value];
+    }
     return prev;
   }, {});
 }
@@ -51,8 +55,6 @@ export function jsonUniq<T>(objArr: T[], ...uniqKeys: (keyof T)[]) {
   const indexes: any = {};
   return objArr.filter((value) => {
     const uniqKey = uniqKeys.map((i) => value[i]).join('+_+');
-    console.log(uniqKey, indexes);
-
     if (!indexes[uniqKey]) {
       indexes[uniqKey] = true;
       return true;
@@ -86,13 +88,17 @@ export function loadingRefresh(promise: Promise<any>, setLoading: (v: boolean) =
 /**@name 对象数组属性名称更改 */
 export function arrayAttributeChange<T = Record<any, any>>(
   data: T[],
-  changeAttr: [keyof T, string][],
+  changeAttr: [keyof T | ((value) => any), string][],
 ) {
   return data.map((value) => {
     const temp = { ...value };
     changeAttr.forEach((item) => {
-      Reflect.deleteProperty(temp as any, item[0]);
-      temp[item[1]] = value[item[0]];
+      if (typeof item[0] === 'function') {
+        temp[item[1]] = item[0](temp);
+      } else {
+        Reflect.deleteProperty(temp as any, item[0]);
+        temp[item[1]] = value[item[0]];
+      }
     });
     return temp;
   });

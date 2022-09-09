@@ -18,8 +18,13 @@ const SelectTreeSizeTemplate: React.FC<
         treeDefaultExpandAll: true,
       }}
       request={async () => {
-        const { data } = await storageDataSource.getValue(STORAGE_SIZE_TEMPLATE_TREE, false);
-        return data.map((i) => ({ ...i, disabled: true }));
+        const { data, titleParentTree } = await storageDataSource.getValue(
+          STORAGE_SIZE_TEMPLATE_TREE,
+          false,
+        );
+        console.log(titleParentTree);
+
+        return titleParentTree.map((i) => ({ ...i, disabled: true }));
       }}
     />
   );

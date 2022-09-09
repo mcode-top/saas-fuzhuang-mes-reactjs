@@ -211,8 +211,6 @@ export default function SettingFileAuthGroup(props: {
                     key="SelectAuthMode"
                     value={record.mode}
                     onChange={(value) => {
-                      console.log(value);
-
                       setDataSourceItem({ ...record, mode: value }, index);
                     }}
                   />
@@ -308,8 +306,6 @@ function SelectAuthMode(props: { value?: number; onChange?: (value: number) => v
       style={{ width: 120 }}
       optionLabelProp="label"
       onChange={(value) => {
-        console.log(value);
-
         props?.onChange?.(value);
       }}
       dropdownStyle={{ minWidth: 350 }}

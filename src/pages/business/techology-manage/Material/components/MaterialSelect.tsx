@@ -1,5 +1,6 @@
 import { STORAGE_MATERIAL_LIST } from '@/configs/storage.config';
 import storageDataSource from '@/utils/storage';
+import type { CaptFieldRef } from '@ant-design/pro-form';
 import { ProFormSelect } from '@ant-design/pro-form';
 import type { ProFormSelectProps } from '@ant-design/pro-form/lib/components/Select';
 import { throttle } from 'lodash';
@@ -18,8 +19,14 @@ const BusMaterialSelect: React.FC<
         mode: props?.multiple ? 'multiple' : undefined,
         showSearch: true,
       }}
-      request={async (params: { keyWords: string | undefined }) => {
-        if (params.keyWords && params.keyWords.length > 3) {
+      request={async (params: { keyWords: string | undefined }, props1) => {
+        if (props1.fieldProps.value && props1.mode === 'read') {
+          params.keyWords = props1.fieldProps.value;
+        }
+        if (
+          (params.keyWords && params.keyWords.length > 3) ||
+          (props1.fieldProps.value.length >= 4 && props1.mode === 'read')
+        ) {
           const { data } = await getList(params.keyWords, props.materialType);
           return data;
         } else {

@@ -79,8 +79,6 @@ export function relationCustomTableSelectList(
   if (options.labelInner === true) {
     queryKeyType = 'basicParam';
   }
-  console.log(options);
-
   return fetchCustomTableList(options.businessKey, {
     page: 1,
     limit: 30,

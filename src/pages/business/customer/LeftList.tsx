@@ -2,6 +2,8 @@ import { fetchCustomerCompanyList } from '@/apis/business/customer';
 import type { BusCustomerCompanyType } from '@/apis/business/customer/typing';
 import type { SimpleColumnListRef } from '@/components/Comm/SimpleColumnList';
 import SimpleColumnList from '@/components/Comm/SimpleColumnList';
+import { STORAGE_CUSTOMER_COMPANY_LIST } from '@/configs/storage.config';
+import storageDataSource from '@/utils/storage';
 import {
   MinusOutlined,
   PlusOutlined,
@@ -34,8 +36,6 @@ const BusCustomerLeftListDom: React.FC<{
             title="新增客户公司"
             node={{ type: 'create' }}
             onFinish={() => {
-              console.log(props.actionRef);
-
               props.actionRef?.current?.reload?.();
             }}
           >
@@ -71,7 +71,7 @@ const BusCustomerLeftListDom: React.FC<{
           onChange(record);
         }}
         request={async (param) => {
-          const { data } = await fetchCustomerCompanyList();
+          const { data } = await storageDataSource.getValue(STORAGE_CUSTOMER_COMPANY_LIST, true);
           if (data.length > 0) {
             const recordIndex = data.findIndex((i) => i.id === selectRecord?.id);
             if (!selectRecord || recordIndex === -1) {

@@ -1,6 +1,6 @@
 import { fetchRemoveWarehouse, fetchWarehouseList } from '@/apis/business/warehouse';
 import type { BusWarehouseType } from '@/apis/business/warehouse/typing';
-import { WarehouseEnumValueEnum } from '@/configs/commValueEnum';
+import { WarehouseTypeValueEnum } from '@/configs/commValueEnum';
 import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import ProList from '@ant-design/pro-list';
 import type { ActionType } from '@ant-design/pro-table';
@@ -37,7 +37,7 @@ const WarehouseList: React.FC = () => {
         },
         subTitle: {
           dataIndex: 'type',
-          valueEnum: WarehouseEnumValueEnum.WarehouseType,
+          valueEnum: WarehouseTypeValueEnum.WarehouseType,
           render(dom, entity, index, action, schema) {
             return <WarehouseTypeTag type={entity.type} />;
           },

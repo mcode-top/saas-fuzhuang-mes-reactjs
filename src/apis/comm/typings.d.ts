@@ -65,3 +65,9 @@ declare type PersonGroup = {
   /**@name 部门Id组 */
   deptIds?: number[];
 };
+
+declare type CommTree = {
+  label: string;
+  value: number | string;
+  children: CommTree[];
+};

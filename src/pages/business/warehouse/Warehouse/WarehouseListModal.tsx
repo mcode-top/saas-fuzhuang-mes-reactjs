@@ -3,7 +3,7 @@ import { ProFormSelect } from '@ant-design/pro-form';
 import ProForm, { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 
 import React, { useRef } from 'react';
-import { WarehouseEnumValueEnum } from '@/configs/commValueEnum';
+import { WarehouseTypeValueEnum } from '@/configs/commValueEnum';
 
 import type { BusWarehouseType } from '@/apis/business/warehouse/typing';
 import { fetchCreateWarehouse, fetchUpdateWarehouse } from '@/apis/business/warehouse';
@@ -71,7 +71,7 @@ const WarehouseListModal: React.FC<{
       </ProForm.Group>
       <ProForm.Group>
         <ProFormSelect
-          valueEnum={WarehouseEnumValueEnum.WarehouseType}
+          valueEnum={WarehouseTypeValueEnum.WarehouseType}
           label="仓库类型"
           help="如果仓库为成品仓库则进支持存放类型为成品的物料,材料同理,混合表示通用"
           disabled={disabled || props.node.type === 'update'}

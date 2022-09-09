@@ -5,7 +5,7 @@ import { ProFormDigitRange } from '@ant-design/pro-form';
 import type { ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import React from 'react';
-import { WarehouseEnumValueEnum } from '@/configs/commValueEnum';
+import { WarehouseTypeValueEnum } from '@/configs/commValueEnum';
 
 const BusGoodsOutInLogTable: React.FC<{ goodsId: number }> = (props) => {
   const columns: ProColumns<BusWarehouseGoodsType>[] = [
@@ -32,7 +32,7 @@ const BusGoodsOutInLogTable: React.FC<{ goodsId: number }> = (props) => {
       title: '库存变更类型',
       dataIndex: 'type',
       width: 100,
-      valueEnum: WarehouseEnumValueEnum.LogType,
+      valueEnum: WarehouseTypeValueEnum.LogType,
       valueType: 'select',
     },
 

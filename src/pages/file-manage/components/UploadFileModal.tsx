@@ -1,6 +1,6 @@
 import type { FileManageModeEnum } from '@/apis/file-manage/typings';
 import { jsonUniq } from '@/utils';
-import { uploadFileToOss } from '@/utils/upload/upload';
+import { SelectLocalFile, uploadFileToOss } from '@/utils/upload/upload';
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
@@ -35,6 +35,7 @@ export default function UploadReviewListModal(props: {
   mode: FileManageModeEnum;
   /**@name 是否支持上传多文件 默认true */
   multiple?: boolean;
+  accept?: string;
   onFinish?: (fileList: ReturnFileValue[]) => void;
 }) {
   const [fileList, setFileList] = useState<UploadFileListType[]>([]);
@@ -55,15 +56,15 @@ export default function UploadReviewListModal(props: {
    * 选择本地文件
    */
   function handleSelectFile() {
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.multiple = props.multiple === true;
-    fileInput.click();
-    fileInput.onchange = (event) => {
-      if (fileInput.files) {
+    SelectLocalFile({
+      multiple: props.multiple === true,
+      accept: props?.accept || '*',
+    }).then((files) => {
+      if (files) {
+        const cachefileList = Array.isArray(files) ? files : [files];
         const newFileList: UploadFileListType[] = [];
-        for (let index = 0; index < fileInput.files.length; index++) {
-          const file = fileInput.files[index];
+        for (let index = 0; index < cachefileList.length; index++) {
+          const file = cachefileList[index];
           newFileList.push({
             file: file,
             name: file.name,
@@ -76,7 +77,7 @@ export default function UploadReviewListModal(props: {
         }
         return setFileList([...fileList, ...newFileList]);
       }
-    };
+    });
   }
   /**
    * 上传文件到服务器

@@ -62,3 +62,10 @@ export function fetchCheckMaterialCode(codes: string[]) {
     },
   });
 }
+
+/**@name 检查编码是否存在 */
+export function fetchCheckOneCodeUnique(code: string) {
+  return request<RESULT_SUCCESS<boolean>>('/material/check/' + code, {
+    method: 'GET',
+  });
+}

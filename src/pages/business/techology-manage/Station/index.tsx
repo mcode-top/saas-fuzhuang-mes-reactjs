@@ -133,9 +133,6 @@ const BusStation: React.FC = () => {
       ellipsis: true,
       dataIndex: 'userList',
       renderText(text, record, index, action) {
-        console.log('====================================');
-        console.log(text);
-        console.log('====================================');
         return text?.map((u) => u.name).join(',');
       },
     },

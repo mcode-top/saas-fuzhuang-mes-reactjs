@@ -167,10 +167,9 @@ const PutOutInEditTable = forwardRef(
       {
         title: props.type === BusWarehouseLogTypeEnum.In ? '入库数量' : '出库数量',
         dataIndex: 'operationNumber',
-        valueType: 'text',
+        valueType: 'digit',
         fieldProps: {
           min: 0,
-          type: 'number',
         },
         formItemProps: (form, config) => {
           return {
