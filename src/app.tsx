@@ -1,10 +1,8 @@
-import { getMenuData, Settings as LayoutSettings } from '@ant-design/pro-layout';
-import { SettingDrawer } from '@ant-design/pro-layout';
+import { getMenuData } from '@ant-design/pro-layout';
 import { PageLoading } from '@ant-design/pro-layout';
-import type { RequestConfig, Link, RunTimeLayoutConfig } from 'umi';
-import { ErrorShowType, useRouteMatch, history, setCreateHistoryOptions } from 'umi';
+import type { RequestConfig, RunTimeLayoutConfig } from 'umi';
+import { ErrorShowType, history, setCreateHistoryOptions } from 'umi';
 import RightContent from '@/components/RightContent';
-import Footer from '@/components/Footer';
 import { isUUID } from './utils';
 import {
   LOGIN_PATH,
@@ -23,10 +21,8 @@ import { getMatchMenu } from '@umijs/route-utils';
 import storageDataSource from './utils/storage';
 import type { ApiTreeType } from './apis/person/typings';
 import { UserWebSocket } from './utils/websocket';
-import { message } from 'antd';
 import { PhotoProvider } from 'react-photo-view';
 import 'react-photo-view/dist/react-photo-view.css';
-import type { SetTabNamePayload } from 'use-switch-tabs/lib/useSwitchTabs';
 
 const isDev = process.env.NODE_ENV === 'development';
 
