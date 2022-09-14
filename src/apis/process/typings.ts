@@ -219,3 +219,6 @@ export type ActApproverLog = {
   approved?: ActApprover;
 };
 export type ActTaskQuery = PartialObject<ActTask>;
+
+/**@name 审核任务 */
+export type ApproveTaskDto = { opinion?: string; isAgree: boolean };

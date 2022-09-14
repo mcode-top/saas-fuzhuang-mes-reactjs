@@ -4,7 +4,7 @@
  * @Description: 文件描述
  */
 import { request } from 'umi';
-import type { ActApproverLog, ActProcess, ActTask, ActTaskQuery } from './typings';
+import type { ActApproverLog, ActProcess, ActTask, ActTaskQuery, ApproveTaskDto } from './typings';
 
 export function fetchMyTaskList(data: PAGINATION_QUERY.Param<ActTaskQuery>) {
   return request<RESULT_SUCCESS<PAGINATION_QUERY.Result<ActTask>>>('/workflow/task/page', {
@@ -44,9 +44,17 @@ export function processStartTask(taskId: number, data: { opinion?: string; param
 /**
  * 审批任务
  */
-export function processApproveTask(taskId: number, data: { opinion?: string; isAgree: boolean }) {
+export function processApproveTask(taskId: number, data: ApproveTaskDto) {
   return request<RESULT_SUCCESS>('/workflow/approved/' + taskId, {
     method: 'POST',
     data,
+  });
+}
+/**
+ * 撤回流程
+ */
+export function processRecall(processId: number) {
+  return request<RESULT_SUCCESS>('/workflow/process/recall' + processId, {
+    method: 'POST',
   });
 }

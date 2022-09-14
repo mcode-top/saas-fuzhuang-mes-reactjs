@@ -107,7 +107,13 @@ const MaterialTableModal: React.FC<{
           rules={[{ required: true }]}
           name="unit"
         />
-        <ProFormMoney label="单价" disabled={disabled} name="price" min={0} />
+        <ProFormMoney
+          label="单价"
+          fieldProps={{ precision: 4 }}
+          disabled={disabled}
+          name="price"
+          min={0}
+        />
       </ProForm.Group>
 
       <BusMaterialSelect

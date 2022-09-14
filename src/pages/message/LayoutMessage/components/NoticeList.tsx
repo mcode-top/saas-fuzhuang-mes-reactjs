@@ -9,6 +9,7 @@ import { history, useModel } from 'umi';
 import LoadingButton from '@/components/Comm/LoadingButton';
 import MessageDescriptions, { MessageReadConfirm } from '../../components/MessageDescriptions';
 import HeaderDropdown from '@/components/HeaderDropdown';
+import { MessageLevelTag } from '../NoticeList';
 export type NoticeIconTabProps<T = any> = {
   count?: number;
   showClear?: boolean;
@@ -72,6 +73,7 @@ function NoticeList<T extends MessageType | MessageSystemType>({
                     <LoadingButton
                       type="link"
                       key="read"
+                      style={{ width: 100 }}
                       onLoadingClick={(e) => {
                         e.stopPropagation();
 
@@ -124,15 +126,6 @@ function NoticeList<T extends MessageType | MessageSystemType>({
       </div>
     </div>
   );
-}
-export function MessageLevelTag(props: { level: MessageLevelEnum }) {
-  if (props.level === MessageLevelEnum.Exigency) {
-    return <Tag color="red">紧急</Tag>;
-  } else if (props.level === MessageLevelEnum.Importance) {
-    return <Tag color="blue">重要</Tag>;
-  } else {
-    return <Tag>普通</Tag>;
-  }
 }
 
 export default NoticeList;

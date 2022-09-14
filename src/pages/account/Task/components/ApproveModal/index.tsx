@@ -1,17 +1,10 @@
 import { processApproveTask } from '@/apis/process/process';
-import type { ActTask } from '@/apis/process/typings';
+import type { ActTask, ApproveTaskDto } from '@/apis/process/typings';
 import type { ProFormInstance } from '@ant-design/pro-form';
-import ProForm, {
-  ModalForm,
-  ProFormRadio,
-  ProFormSwitch,
-  ProFormTextArea,
-  ProFormUploadDragger,
-} from '@ant-design/pro-form';
-import { Button, Form, Input, Modal } from 'antd';
-import React, { useRef } from 'react';
+import { ModalForm, ProFormRadio, ProFormTextArea } from '@ant-design/pro-form';
+import { Button } from 'antd';
+import { useRef } from 'react';
 
-type ApproveModalParam = { opinion?: string; isAgree: boolean };
 /*
  * @Author: mmmmmmmm
  * @Date: 2022-03-18 10:52:28
@@ -19,11 +12,11 @@ type ApproveModalParam = { opinion?: string; isAgree: boolean };
  */
 export default function ApproveModal(props: {
   task: ActTask;
-  onFinish?: (values: ApproveModalParam) => void;
+  onFinish?: (values: ApproveTaskDto) => void;
 }) {
-  const formRef = useRef<ProFormInstance<ApproveModalParam> | undefined>();
+  const formRef = useRef<ProFormInstance<ApproveTaskDto> | undefined>();
   return (
-    <ModalForm<ApproveModalParam>
+    <ModalForm<ApproveTaskDto>
       width={500}
       title={`审批[${props.task?.process?.name}]`}
       onVisibleChange={(visible) => {

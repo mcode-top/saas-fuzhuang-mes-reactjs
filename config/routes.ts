@@ -104,6 +104,19 @@ const originRoutes: Router[] = [
         hideInMenu: true,
         component: './business/order-manage/contract/Info',
       },
+      {
+        path: '/order-manage/manufacture',
+        name: '生产单管理',
+        key: 'manufacture',
+        component: './business/order-manage/manufacture',
+      },
+      {
+        path: '/order-manage/info-manufacture',
+        key: 'manufacture-info',
+        name: '生产单详情',
+        hideInMenu: true,
+        component: './business/order-manage/manufacture/Info',
+      },
     ],
   },
   {

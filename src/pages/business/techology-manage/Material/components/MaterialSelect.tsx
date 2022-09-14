@@ -9,7 +9,11 @@ import type { BusMaterialTypeEnum } from '../typing';
 
 /**@name 选择物料 */
 const BusMaterialSelect: React.FC<
-  ProFormSelectProps & { multiple?: boolean; materialType?: BusMaterialTypeEnum }
+  ProFormSelectProps & {
+    multiple?: boolean;
+    materialType?: BusMaterialTypeEnum;
+    onChangeName?: (value, name) => void;
+  }
 > = (props) => {
   return (
     <ProFormSelect
@@ -18,6 +22,15 @@ const BusMaterialSelect: React.FC<
         ...props.fieldProps,
         mode: props?.multiple ? 'multiple' : undefined,
         showSearch: true,
+        onChange: (value, option) => {
+          if (!Array.isArray(option) && option) {
+            const name = /(?<=\()\S+(?=\))/g.exec(option.label as string)?.[0];
+            console.log(name);
+
+            props?.onChangeName?.(value, name);
+          }
+          props.fieldProps?.onChange?.(value, option);
+        },
       }}
       request={async (params: { keyWords: string | undefined }, props1) => {
         if (props1.fieldProps.value && props1.mode === 'read') {
@@ -25,7 +38,7 @@ const BusMaterialSelect: React.FC<
         }
         if (
           (params.keyWords && params.keyWords.length > 3) ||
-          (props1.fieldProps.value.length >= 4 && props1.mode === 'read')
+          (props1.fieldProps.value.length > 3 && props1.mode === 'read')
         ) {
           const { data } = await getList(params.keyWords, props.materialType);
           return data;

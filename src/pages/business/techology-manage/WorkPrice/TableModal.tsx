@@ -57,7 +57,7 @@ const WorkPriceTableModal: React.FC<{
   const disabled = props.node.type === 'watch';
   return (
     <ModalForm<BusWorkPriceType>
-      width={700}
+      width={900}
       title={props.title}
       formRef={formRef}
       onVisibleChange={(v) => {
@@ -116,6 +116,7 @@ const WorkPriceEditTable = forwardRef(
       {
         title: '选择工序',
         dataIndex: 'workProcessId',
+        width: 300,
         valueType: 'select',
         formItemProps: () => {
           return {
@@ -156,13 +157,20 @@ const WorkPriceEditTable = forwardRef(
       },
       {
         title: '工价',
+        width: 150,
         dataIndex: 'price',
         valueType: 'money',
         fieldProps: {
           min: 0,
+          precision: 4,
+          style: {
+            width: 130,
+          },
         },
         formItemProps: () => {
           return {
+            numberFormatOptions: new Intl.NumberFormat('zh-CN', { maximumSignificantDigits: 3 }),
+
             rules: [{ required: true, message: '此项为必填项' }],
           };
         },

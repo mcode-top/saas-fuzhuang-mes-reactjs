@@ -17,7 +17,7 @@ import { validatorMaterialCode } from '@/pages/business/techology-manage/Materia
 import SelectUploadFile from '@/components/Comm/FormlyComponents/Upload';
 import SelectTreeSizeTemplate from '@/pages/business/techology-manage/SizeTemplate/components/SelectTreeSizeTemplate';
 import { useLocation, useModel } from 'umi';
-import type { ContractLocationQuery } from '../typing';
+import type { ManufactureLocationQuery } from '../typing';
 import { fetchMaterialToStyleDemandData } from '@/apis/business/order-manage/contract';
 import { Button } from 'antd';
 import { omit } from 'lodash';
@@ -43,7 +43,7 @@ const ContractOrderStyleModal: React.FC<{
 }> = (props) => {
   const formRef = useRef<ProFormInstance>();
   const location = useLocation();
-  const query = (location as any).query as ContractLocationQuery;
+  const query = (location as any).query as ManufactureLocationQuery;
 
   function onFinish(): Promise<boolean> {
     return new Promise(async (resolve, reject) => {

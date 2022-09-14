@@ -169,6 +169,7 @@ export default function UserTask() {
     Modal.info({
       width: 800,
       title: '预览流程状态',
+      maskClosable: true,
       content: <ReviewProcess style={{ height: 600 }} processId={processId} />,
     });
   }

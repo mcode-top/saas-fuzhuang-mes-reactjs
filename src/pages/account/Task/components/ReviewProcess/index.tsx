@@ -222,10 +222,12 @@ export class DAGTaskNode extends React.Component<{ node?: Node }> {
           Modal.info({
             title: `查看节点[${data.name}]的审批人员列表`,
             width: 800,
+            maskClosable: true,
             content: (
               <ProTable
                 search={false}
                 size="small"
+                rowKey="id"
                 columns={columns}
                 request={async () => {
                   return await fetchTaskIdToApprovedLogList(data.id);

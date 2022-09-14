@@ -15,6 +15,7 @@ const SelectTreeSizeTemplate: React.FC<
     <ProFormTreeSelect
       {...props}
       fieldProps={{
+        ...props.fieldProps,
         treeDefaultExpandAll: true,
       }}
       request={async () => {
@@ -22,8 +23,6 @@ const SelectTreeSizeTemplate: React.FC<
           STORAGE_SIZE_TEMPLATE_TREE,
           false,
         );
-        console.log(titleParentTree);
-
         return titleParentTree.map((i) => ({ ...i, disabled: true }));
       }}
     />

@@ -122,11 +122,19 @@ function NoticeList<T extends MessageType | MessageSystemType>({
 }
 export function MessageLevelTag(props: { level: MessageLevelEnum }) {
   if (props.level === MessageLevelEnum.Exigency) {
-    return <Tag color="red">紧急</Tag>;
+    return (
+      <Tag color="red" style={{ height: 25 }}>
+        紧急
+      </Tag>
+    );
   } else if (props.level === MessageLevelEnum.Importance) {
-    return <Tag color="blue">重要</Tag>;
+    return (
+      <Tag color="blue" style={{ height: 25 }}>
+        重要
+      </Tag>
+    );
   } else {
-    return <Tag>普通</Tag>;
+    return <Tag style={{ height: 25 }}>普通</Tag>;
   }
 }
 

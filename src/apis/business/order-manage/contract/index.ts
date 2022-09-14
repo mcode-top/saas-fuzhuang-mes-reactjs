@@ -37,12 +37,6 @@ export function fetchRemoveContract(contractNumber: string) {
     method: 'POST',
   });
 }
-/**@name 撤回合同单 */
-export function fetchRecallContract(contractNumber: string) {
-  return request<RESULT_SUCCESS<any>>('/contract/recall/' + contractNumber, {
-    method: 'POST',
-  });
-}
 /**@name 查看合同单 */
 export function fetchWatchContract(contractNumber: string) {
   return request<RESULT_SUCCESS<BusOrderContract>>('/contract/watch/' + contractNumber, {

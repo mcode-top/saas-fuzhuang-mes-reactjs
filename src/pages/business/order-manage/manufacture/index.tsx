@@ -1,6 +1,8 @@
 import { BusCustomerTypeEnum } from '@/apis/business/customer/typing';
 import { fetchContractList, fetchRemoveContract } from '@/apis/business/order-manage/contract';
 import type { BusOrderContract } from '@/apis/business/order-manage/contract/typing';
+import { fetchManufactureList } from '@/apis/business/order-manage/manufacture';
+import type { BusOrderManufacture } from '@/apis/business/order-manage/manufacture/typing';
 import { processRecall } from '@/apis/process/process';
 import { ActTaskModelTypeEnum } from '@/apis/process/typings';
 import { CustomerCompanyValueEnum, dictValueEnum, ProcessValueEnum } from '@/configs/commValueEnum';
@@ -13,16 +15,19 @@ import ProTable from '@ant-design/pro-table';
 import { Button, Dropdown, Menu, Modal, Tag } from 'antd';
 import React, { useRef } from 'react';
 import { useLocation, useModel } from 'umi';
-import type { ContractLocationQuery } from './typing';
+import BusMaterialSelect from '../../techology-manage/Material/components/MaterialSelect';
+import type { ManufactureLocationQuery } from './typing';
 
-function gotoContractInfo(query: ContractLocationQuery) {
+function gotoManufactureInfo(query: ManufactureLocationQuery) {
   window.tabsAction.goBackTab(
-    `/order-manage/info-contract?type=${query.type}${
-      query.contractNumber ? `&contractNumber=${query.contractNumber}` : ''
-    }${query.infoTitle ? `&_systemTabName=${query.infoTitle}` : ''}`,
+    `/order-manage/info-manufacture?type=${query.type}&id=${query.id}&_systemTabName=${query.infoTitle}`,
     undefined,
     true,
   );
+}
+/**@name 获取表格款式名称 */
+function getTableStyleName(data: BusOrderManufacture) {
+  return `${data.materialCode}${data.styleDemand.style ? `(${data.styleDemand.style})` : ''}`;
 }
 const OrderContract: React.FC = () => {
   const actionRef = useRef<ActionType>();
@@ -39,30 +44,19 @@ const OrderContract: React.FC = () => {
       content: <ReviewProcess style={{ height: 600 }} processId={processId} />,
     });
   }
-  const columns: ProColumns<BusOrderContract>[] = [
+  const columns: ProColumns<BusOrderManufacture>[] = [
     {
-      title: '合同单号',
+      title: '生产单号',
       dataIndex: 'contractNumber',
     },
     {
-      title: '客户类型',
-      hideInSearch: true,
-      dataIndex: 'company-type',
-      width: 80,
-      render(dom, entity, index, action, schema) {
-        return (
-          <Tag color={entity.company?.type === BusCustomerTypeEnum.VIP ? '#ffc53d' : '#1890ff'}>
-            {dictValueEnum(CustomerCompanyValueEnum.Type, entity.company?.type)}
-          </Tag>
-        );
+      title: '款式型号',
+      dataIndex: 'materialCode',
+      renderFormItem(schema, config, form, action?) {
+        return <BusMaterialSelect />;
       },
-    },
-    {
-      title: '客户公司',
-      dataIndex: 'company-name',
-      hideInSearch: true,
       render(dom, entity, index, action, schema) {
-        return entity.company?.name;
+        return getTableStyleName(entity);
       },
     },
     {
@@ -71,6 +65,13 @@ const OrderContract: React.FC = () => {
       valueEnum: ProcessValueEnum.ActProcessStatusEnum,
       width: 100,
       fieldProps: { mode: 'multiple' },
+      render(dom, entity, index, action, schema) {
+        if (entity.processId) {
+          return dom;
+        } else {
+          return '请填写生产单';
+        }
+      },
       renderText: (t, record) => record.process?.status,
     },
     {
@@ -79,12 +80,6 @@ const OrderContract: React.FC = () => {
       width: 100,
       hideInSearch: true,
       renderText: (t, record) => record.process?.runningTask?.name,
-    },
-    {
-      title: '跟进人',
-      hideInSearch: true,
-      dataIndex: 'process.operator.name',
-      renderText: (t, record) => record.process?.operator?.name,
     },
     {
       title: '当前执行人',
@@ -102,6 +97,16 @@ const OrderContract: React.FC = () => {
       sorter: true,
       width: 180,
       hideInSearch: true,
+      render(dom, entity, index, action, schema) {
+        console.log('====================================');
+        console.log(entity.deliverDate);
+        console.log('====================================');
+        if ((entity.deliverDate as any) !== 'Invalid date') {
+          return dom;
+        } else {
+          return '-';
+        }
+      },
     },
     {
       title: '交期时间',
@@ -109,6 +114,7 @@ const OrderContract: React.FC = () => {
       key: 'deliverDate',
       valueType: 'dateRange',
       width: 180,
+
       hideInTable: true,
     },
     ...COM_PRO_TABLE_TIME.updatedAt,
@@ -133,18 +139,34 @@ const OrderContract: React.FC = () => {
                 key="menu"
                 items={[
                   {
+                    key: 'start',
+                    label: (
+                      <div
+                        onClick={() => {
+                          gotoManufactureInfo({
+                            type: 'create',
+                            infoTitle: `编辑生产单-${getTableStyleName(entity)}`,
+                            id: entity.id,
+                          });
+                        }}
+                      >
+                        编辑生产单
+                      </div>
+                    ),
+                  },
+                  {
                     key: 'watch',
                     label: (
                       <div
                         onClick={() => {
-                          gotoContractInfo({
+                          gotoManufactureInfo({
                             type: 'watch',
-                            infoTitle: `查看合同单-${entity.contractNumber}`,
-                            contractNumber: entity.contractNumber,
+                            infoTitle: `查看生产单-${getTableStyleName(entity)}`,
+                            id: entity.id,
                           });
                         }}
                       >
-                        查看合同单
+                        查看生产单
                       </div>
                     ),
                   },
@@ -153,14 +175,14 @@ const OrderContract: React.FC = () => {
                     label: (
                       <div
                         onClick={() => {
-                          gotoContractInfo({
+                          gotoManufactureInfo({
                             type: 'update',
-                            infoTitle: `修改合同单-${entity.contractNumber}`,
-                            contractNumber: entity.contractNumber,
+                            infoTitle: `修改生产单-${getTableStyleName(entity)}`,
+                            id: entity.id,
                           });
                         }}
                       >
-                        修改合同单
+                        修改生产单
                       </div>
                     ),
                   },
@@ -169,20 +191,20 @@ const OrderContract: React.FC = () => {
                     label: (
                       <div
                         onClick={() => {
-                          gotoContractInfo({
+                          gotoManufactureInfo({
                             type: 'approve',
-                            infoTitle: `审批合同单-${entity.contractNumber}`,
-                            contractNumber: entity.contractNumber,
+                            infoTitle: `审批生产单-${getTableStyleName(entity)}`,
+                            id: entity.id,
                           });
                         }}
                       >
-                        审批合同单
+                        审批生产单
                       </div>
                     ),
                   },
                   {
                     key: 'recall',
-                    label: <div>撤回合同单</div>,
+                    label: <div>撤回生产单</div>,
                     onClick: () => {
                       processRecall(entity.processId).then((res) => {
                         action?.reload();
@@ -191,7 +213,7 @@ const OrderContract: React.FC = () => {
                   },
                   {
                     key: 'remove',
-                    label: <div>删除合同单</div>,
+                    label: <div>删除生产单</div>,
                     onClick: () => {
                       fetchRemoveContract(entity.contractNumber).then((res) => {
                         action?.reload();
@@ -225,6 +247,8 @@ const OrderContract: React.FC = () => {
                       (entity as any)?.approveUser?.id === initialState?.currentUser?.id &&
                       entity.process?.runningTask?.type === ActTaskModelTypeEnum.Approve
                     );
+                  } else if (item.key === 'start') {
+                    return entity.processId === null;
                   }
                   return true;
                 })}
@@ -242,27 +266,11 @@ const OrderContract: React.FC = () => {
   return (
     <ProTable
       columns={columns}
-      rowKey="contractNumber"
-      headerTitle="合同单列表"
+      rowKey="id"
+      headerTitle="生产单列表"
       actionRef={actionRef}
-      toolBarRender={(action: ActionType | undefined) => {
-        return [
-          <Button
-            type="primary"
-            key="create"
-            onClick={() => {
-              gotoContractInfo({
-                type: 'create',
-                infoTitle: `创建新合同单`,
-              });
-            }}
-          >
-            创建合同单
-          </Button>,
-        ];
-      }}
       request={async (params, sort, filter) => {
-        return nestPaginationTable(params, sort, filter, fetchContractList);
+        return nestPaginationTable(params, sort, filter, fetchManufactureList);
       }}
     />
   );

@@ -97,7 +97,7 @@ export type BusOrderContract = {
   type?: BusOrderTypeEnum;
   styleDemand: BusOrderStyleDemand[];
   remark?: string;
-  processId?: number;
+  processId: number;
   process?: ActProcess;
 };
 /**@name 审核合同单 */
