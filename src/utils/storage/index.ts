@@ -3,6 +3,7 @@
  * @Date: 2022-03-29 19:39:55
  */
 import { cloneDeep } from 'lodash';
+import TaskQueue from '../taskQueue';
 export type StorageModule<T = any, U = any> = {
   key: string;
   loader: (param: T) => U;
@@ -19,7 +20,9 @@ export class StorageDataSource {
    * 被装载的模块
    */
   modules: Record<string, StorageModule> = {};
+  queue: TaskQueue;
   constructor() {
+    this.queue = new TaskQueue();
     this.loader();
   }
   convertKey(key: string, params: any) {
