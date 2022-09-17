@@ -4,19 +4,11 @@ import {
   fetchMyCatalogTree,
   updateFileOrCatalogBasic,
 } from '@/apis/file-manage/file-manage';
-import {
-  FileManageCatalogItem,
-  FileManageModeEnum,
-  FileManageOpeartionCatalogDto,
-} from '@/apis/file-manage/typings';
+import type { FileManageOpeartionCatalogDto } from '@/apis/file-manage/typings';
+import { FileManageCatalogItem, FileManageModeEnum } from '@/apis/file-manage/typings';
 import { traverseTree } from '@/utils';
-import {
-  ModalForm,
-  ProFormInstance,
-  ProFormText,
-  ProFormTextArea,
-  ProFormTreeSelect,
-} from '@ant-design/pro-form';
+import type { ProFormInstance } from '@ant-design/pro-form';
+import { ModalForm, ProFormText, ProFormTextArea, ProFormTreeSelect } from '@ant-design/pro-form';
 import { Button } from 'antd';
 import { omit } from 'lodash';
 import { useEffect, useRef } from 'react';
