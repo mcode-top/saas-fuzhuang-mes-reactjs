@@ -279,7 +279,6 @@ function SizeNumberPriceList(props: { readonly?: boolean }) {
               tooltipText: '复制此行到末尾',
             }
       }
-      initialValue={[]}
       deleteIconProps={
         props.readonly
           ? false
@@ -287,6 +286,7 @@ function SizeNumberPriceList(props: { readonly?: boolean }) {
               tooltipText: '删除此行',
             }
       }
+      initialValue={[]}
     >
       <ProFormGroup key="group">
         <SelectTreeSizeTemplate name="sizeId" width={350} label="尺码规格" />

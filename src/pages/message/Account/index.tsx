@@ -17,7 +17,7 @@ import { Button, Space } from 'antd';
 import { useEffect, useState } from 'react';
 import { useParams, useLocation, Access } from 'umi';
 import { MessageReadConfirm } from '../components/MessageDescriptions';
-import { MessageLevelTag } from '../LayoutMessage/components/NoticeList';
+import { MessageLevelTag } from '../LayoutMessage/NoticeList';
 
 const MessageAccount: React.FC = () => {
   const [tab, setTab] = useState<MessageTypeEnum>(MessageTypeEnum.Person);

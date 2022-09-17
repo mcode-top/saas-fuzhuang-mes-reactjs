@@ -25,6 +25,15 @@ export const STORAGE_STATION_LIST = 'STORAGE_STATION_LIST';
  * 工序列表
  */
 export const STORAGE_WORK_PROCESS_LIST = 'STORAGE_WORK_PROCESS_LIST';
+
+/**
+ * 工价列表
+ */
+export const STORAGE_WORK_PRICE_LIST = 'STORAGE_WORK_PRICE_LIST';
+/**
+ * 工价内容
+ */
+export const STORAGE_WORK_PRICE_CONTENT = 'STORAGE_WORK_PRICE_CONTENT';
 /**
  * 尺码模板
  */

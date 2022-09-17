@@ -1,7 +1,10 @@
 import { BusCustomerTypeEnum } from '@/apis/business/customer/typing';
 import { fetchContractList, fetchRemoveContract } from '@/apis/business/order-manage/contract';
 import type { BusOrderContract } from '@/apis/business/order-manage/contract/typing';
-import { fetchManufactureList } from '@/apis/business/order-manage/manufacture';
+import {
+  fetchManufactureList,
+  fetchRemoveManufacture,
+} from '@/apis/business/order-manage/manufacture';
 import type { BusOrderManufacture } from '@/apis/business/order-manage/manufacture/typing';
 import { processRecall } from '@/apis/process/process';
 import { ActTaskModelTypeEnum } from '@/apis/process/typings';
@@ -17,7 +20,8 @@ import React, { useRef } from 'react';
 import { useLocation, useModel } from 'umi';
 import BusMaterialSelect from '../../techology-manage/Material/components/MaterialSelect';
 import type { ManufactureLocationQuery } from './typing';
-
+/**@name 不需要审核的流程KEY */
+const MANUFACTURE_NOT_APPROVE_KEY = 'manufacture-1';
 function gotoManufactureInfo(query: ManufactureLocationQuery) {
   window.tabsAction.goBackTab(
     `/order-manage/info-manufacture?type=${query.type}&id=${query.id}&_systemTabName=${query.infoTitle}`,
@@ -215,8 +219,16 @@ const OrderContract: React.FC = () => {
                     key: 'remove',
                     label: <div>删除生产单</div>,
                     onClick: () => {
-                      fetchRemoveContract(entity.contractNumber).then((res) => {
-                        action?.reload();
+                      Modal.confirm({
+                        title: '删除生产单',
+                        content: `您确定要删除[${entity.contractNumber}-${getTableStyleName(
+                          entity,
+                        )}]生产单吗?`,
+                        onOk: () => {
+                          return fetchRemoveManufacture(entity.id).then((res) => {
+                            action?.reload();
+                          });
+                        },
                       });
                     },
                   },
@@ -232,7 +244,8 @@ const OrderContract: React.FC = () => {
                   if (item.key === 'recall') {
                     return (
                       isOperator &&
-                      entity.process?.runningTask?.type === ActTaskModelTypeEnum.Approve
+                      (entity.process?.runningTask?.type === ActTaskModelTypeEnum.Approve ||
+                        entity.process?.businessKey === MANUFACTURE_NOT_APPROVE_KEY)
                     );
                   } else if (item.key === 'modify') {
                     return (
@@ -249,6 +262,8 @@ const OrderContract: React.FC = () => {
                     );
                   } else if (item.key === 'start') {
                     return entity.processId === null;
+                  } else if (item.key === 'review') {
+                    return entity.process !== null;
                   }
                   return true;
                 })}

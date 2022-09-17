@@ -22,8 +22,11 @@ export class StorageDataSource {
   modules: Record<string, StorageModule> = {};
   queue: TaskQueue;
   constructor() {
-    this.queue = new TaskQueue();
+    this.queue = new TaskQueue(50);
     this.loader();
+  }
+  async runLoader(key, params) {
+    return await this.modules[key].loader(params);
   }
   convertKey(key: string, params: any) {
     return key + '+_+' + JSON.stringify(params);
@@ -35,12 +38,15 @@ export class StorageDataSource {
    * @param {*} params 需要传入的参数
    * @returns
    */
-  getValue<T = any>(key: string, sync = false, params = {}): Promise<T> {
+  async getValue<T = any>(key: string, sync = false, params = {}): Promise<T> {
+    return await this.queue.pushQueue(this, this.loaderValue, undefined, key, sync, params);
+  }
+  loaderValue<T = any>(key: string, sync = false, params = {}): Promise<T> {
     const onlyKey = this.convertKey(key, params);
     return new Promise(async (resolve, reject) => {
       try {
         if (this.holder[onlyKey] === undefined || this.holder[onlyKey] === null || sync) {
-          this.holder[onlyKey] = await this.modules[key].loader(params);
+          this.holder[onlyKey] = await this.runLoader(key, params);
         }
         resolve(cloneDeep(this.holder[onlyKey]));
       } catch (error) {
@@ -62,7 +68,7 @@ export class StorageDataSource {
           const onlyKey = this.convertKey(key, params);
 
           if (loaded) {
-            this.holder[onlyKey] = await this.modules[key].loader(params);
+            this.holder[onlyKey] = await this.runLoader(key, params);
             resolve(cloneDeep(this.holder[onlyKey]));
           } else {
             this.holder[onlyKey] = null;
@@ -74,9 +80,7 @@ export class StorageDataSource {
             Object.keys(this.holder).map(async (cachekey) => {
               const loaderKey = cachekey.split('+_+')[0];
               if (loaded) {
-                this.holder[cachekey] = await this.modules[loaderKey].loader(
-                  params && params[cachekey],
-                );
+                this.holder[cachekey] = await this.runLoader(loaderKey, params && params[cachekey]);
               } else {
                 this.holder[cachekey] = null;
               }

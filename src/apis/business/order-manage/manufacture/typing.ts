@@ -1,15 +1,20 @@
 import type { ActProcess } from '@/apis/process/typings';
 import type { BusOrderContract, BusOrderStyleDemand } from '../contract/typing';
-/**@name 工序工价 */
-export type BusManufactureWorkProcessAndWorkPrice = {
-  /**@name 关联工序Id */
-  workProcessId?: number;
-  /**@name 工序名称 */
-  name: string;
-  /**@name 工价 */
-  price: number;
+/**@name 生产工价表 */
+export type BusManufactureWorkPriceTable = {
   /**@name 工价id */
   workPriceId: number;
+  workProcessWrokPrice: BusWorkProcessPrice[];
+};
+
+/**@name 工序工价 */
+export type BusWorkProcessPrice = {
+  /**@name 工序 */
+  workProcessId: number;
+  /**@name 原工价单价格 */
+  price: number;
+  /**@name 变更价格 */
+  changePrice: number;
 };
 
 /**@name 生产单 */
@@ -19,7 +24,7 @@ export type BusOrderManufacture = {
   materialCode: string;
   contract?: BusOrderContract;
   styleDemand: BusOrderStyleDemand;
-  workProcessWrokPrice: BusManufactureWorkProcessAndWorkPrice;
+  workPriceTable: BusManufactureWorkPriceTable[];
   remark?: string;
   processId: number;
   process?: ActProcess;
@@ -35,7 +40,7 @@ export type ApproveContractDto = {
 };
 /**@name 修改生产单 */
 export type UpdateManufactureDto = {
-  workProcessWrokPrice: BusManufactureWorkProcessAndWorkPrice[];
+  workPriceTable: BusManufactureWorkPriceTable[];
   deliverDate?: Date;
   remark?: string;
   /**@name 是否修改过工价单 */

@@ -25,8 +25,6 @@ const BusMaterialSelect: React.FC<
         onChange: (value, option) => {
           if (!Array.isArray(option) && option) {
             const name = /(?<=\()\S+(?=\))/g.exec(option.label as string)?.[0];
-            console.log(name);
-
             props?.onChangeName?.(value, name);
           }
           props.fieldProps?.onChange?.(value, option);

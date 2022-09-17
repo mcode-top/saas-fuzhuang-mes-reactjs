@@ -10,6 +10,7 @@ import type {
   BusOrderStyleDemand,
 } from '@/apis/business/order-manage/contract/typing';
 import { DraftsModal, saveDrafts } from '@/components/Comm/Drafts';
+import { disabledLastDate } from '@/components/Comm/helper';
 import LoadingButton from '@/components/Comm/LoadingButton';
 import { OrderContractTypeValueEnum } from '@/configs/commValueEnum';
 import { ReloadOutlined } from '@ant-design/icons';
@@ -208,6 +209,7 @@ const OrderContractInfo: React.FC = (props) => {
             readonly={readonly}
             rules={[{ required: true }]}
             label="交期时间"
+            fieldProps={{ disabledDate: disabledLastDate }}
             width="sm"
             name="deliverDate"
           />

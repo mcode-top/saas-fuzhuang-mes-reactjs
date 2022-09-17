@@ -193,8 +193,14 @@ const OrderContract: React.FC = () => {
                     key: 'remove',
                     label: <div>删除合同单</div>,
                     onClick: () => {
-                      fetchRemoveContract(entity.contractNumber).then((res) => {
-                        action?.reload();
+                      Modal.confirm({
+                        title: '删除合同单',
+                        content: `您确定要删除[${entity.contractNumber}]合同单吗?`,
+                        onOk: () => {
+                          return fetchRemoveContract(entity.contractNumber).then((res) => {
+                            action?.reload();
+                          });
+                        },
                       });
                     },
                   },

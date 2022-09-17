@@ -17,6 +17,13 @@ export function fetchUpdateWorkPrice(data: BusWorkPriceType & { id: number }) {
   });
 }
 
+/**@name 查看工价 */
+export function fetchWatchWorkPrice(id: number) {
+  return request<RESULT_SUCCESS<any>>('/work-price/' + id, {
+    method: 'GET',
+  });
+}
+
 /**@name 工价分页 */
 export function fetchWorkPriceList(data: PAGINATION_QUERY.Param<WorkPricePageParamQuery>) {
   return request<RESULT_SUCCESS<PAGINATION_QUERY.Result<BusWorkPriceType>>>('/work-price/page', {

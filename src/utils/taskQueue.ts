@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash';
 import { waitTime } from '.';
 
 type QueuesType = {
@@ -36,7 +37,7 @@ export default class TaskQueue extends EventTarget {
   /**
    * 加入任务队列
    */
-  pushQueue(self: any, func: Function, options: QueuesType['options'], ...args) {
+  pushQueue(self: any, func: Function, options: QueuesType['options'], ...args): Promise<any> {
     return new Promise((resolve, reject) => {
       this.queues.push({
         self,
@@ -79,7 +80,7 @@ export default class TaskQueue extends EventTarget {
         queuesReject?.(new Error('任务运行超时'));
         clearTimeout(timer);
         resolve(false);
-      }, options!.taskTimeout || this.taskTimeout);
+      }, options?.taskTimeout || this.taskTimeout);
       try {
         result = await func.call(self, ...args);
         this.emit('done');

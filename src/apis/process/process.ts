@@ -54,7 +54,7 @@ export function processApproveTask(taskId: number, data: ApproveTaskDto) {
  * 撤回流程
  */
 export function processRecall(processId: number) {
-  return request<RESULT_SUCCESS>('/workflow/process/recall' + processId, {
+  return request<RESULT_SUCCESS>('/workflow/process/recall/' + processId, {
     method: 'POST',
   });
 }

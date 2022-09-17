@@ -45,9 +45,12 @@ export function fetchWatchContract(contractNumber: string) {
 }
 /**@name 查找与物料编码相关的款式信息 */
 export function fetchMaterialToStyleDemandData(materialCode: string) {
-  return request<RESULT_SUCCESS<{ styleDemandData: any }>>('/contract/find/style/' + materialCode, {
-    method: 'GET',
-  });
+  return request<RESULT_SUCCESS<{ styleDemandData?: any; manufactureData?: any }>>(
+    '/contract/find/style/' + materialCode,
+    {
+      method: 'GET',
+    },
+  );
 }
 /**@name 获取合同流水号 */
 export function fetchContractSerialNumber() {

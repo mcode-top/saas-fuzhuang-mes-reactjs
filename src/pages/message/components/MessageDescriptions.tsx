@@ -12,7 +12,7 @@ import { TodoMessageAPI } from '@/models/useTodoMessageModel';
 import { Descriptions, Modal } from 'antd';
 import React from 'react';
 import { Access, useAccess, useModel } from 'umi';
-import { MessageLevelTag } from '../LayoutMessage/components/NoticeList';
+import { MessageLevelTag } from '../LayoutMessage/NoticeList';
 
 export type MessagMessageDescriptionsProps = {
   info: MessageType | MessageSystemType;

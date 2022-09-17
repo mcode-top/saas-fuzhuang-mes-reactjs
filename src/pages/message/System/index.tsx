@@ -17,7 +17,7 @@ import { Button, Descriptions, Popconfirm, Space } from 'antd';
 import { pick } from 'lodash';
 import React, { useRef } from 'react';
 import MessageDescriptions from '../components/MessageDescriptions';
-import { MessageLevelTag } from '../LayoutMessage/components/NoticeList';
+import { MessageLevelTag } from '../LayoutMessage/NoticeList';
 import MessageSendPerson from './MessageSendPerson';
 const MessageSystem: React.FC = () => {
   const tableRef = useRef<ActionType>();
