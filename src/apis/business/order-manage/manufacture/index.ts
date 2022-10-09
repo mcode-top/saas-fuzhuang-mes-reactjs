@@ -1,6 +1,6 @@
 import type { ApproveTaskDto } from '@/apis/process/typings';
 import { request } from 'umi';
-import type { BusOrderManufacture, UpdateManufactureDto } from './typing';
+import type { BusOrderManufacture, BusWorkProcessPrice, UpdateManufactureDto } from './typing';
 
 /**@name 开始生产单 */
 export function fetchStartManufacture(id: number, data: UpdateManufactureDto) {
@@ -19,8 +19,8 @@ export function fetchUpdateManufacture(id: number, data: UpdateManufactureDto) {
 
 /**@name 审核生产单 */
 export function fetchApproveManufacture(id: number, data: ApproveTaskDto) {
-  return request<RESULT_SUCCESS<any>>('/manufacture/approve' + id, {
-    method: 'PATCH',
+  return request<RESULT_SUCCESS<any>>('/manufacture/approve/' + id, {
+    method: 'POST',
     data,
   });
 }
@@ -37,6 +37,12 @@ export function fetchManufactureList(data: PAGINATION_QUERY.Param) {
 }
 export function fetchReadManufacture(id: number) {
   return request<RESULT_SUCCESS<BusOrderManufacture>>('/manufacture/' + id, {
+    method: 'GET',
+  });
+}
+/**@name 获取生产单中的工序工价列表 */
+export function fetchWorkProcessWorkPiriceList(id: number) {
+  return request<RESULT_SUCCESS<BusWorkProcessPrice[]>>('/manufacture/work-process-price/' + id, {
     method: 'GET',
   });
 }

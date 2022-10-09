@@ -117,6 +117,12 @@ const originRoutes: Router[] = [
         hideInMenu: true,
         component: './business/order-manage/manufacture/Info',
       },
+      {
+        path: '/order-manage/record-piece',
+        name: '计件单管理',
+        key: 'record-piece',
+        component: './business/order-manage/record-piece',
+      },
     ],
   },
   {

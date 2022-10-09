@@ -3,7 +3,12 @@ import { fetchContractList, fetchRemoveContract } from '@/apis/business/order-ma
 import type { BusOrderContract } from '@/apis/business/order-manage/contract/typing';
 import { processRecall } from '@/apis/process/process';
 import { ActTaskModelTypeEnum } from '@/apis/process/typings';
-import { CustomerCompanyValueEnum, dictValueEnum, ProcessValueEnum } from '@/configs/commValueEnum';
+import {
+  CustomerCompanyValueEnum,
+  dictValueEnum,
+  OrderContractTypeValueEnum,
+  ProcessValueEnum,
+} from '@/configs/commValueEnum';
 import { COM_PRO_TABLE_TIME } from '@/configs/index.config';
 import ReviewProcess from '@/pages/account/Task/components/ReviewProcess';
 import { nestPaginationTable } from '@/utils/proTablePageQuery';
@@ -43,6 +48,12 @@ const OrderContract: React.FC = () => {
     {
       title: '合同单号',
       dataIndex: 'contractNumber',
+    },
+    {
+      title: '订单类型',
+      width: 80,
+      dataIndex: 'type',
+      valueEnum: OrderContractTypeValueEnum.OrderType,
     },
     {
       title: '客户类型',
@@ -100,7 +111,7 @@ const OrderContract: React.FC = () => {
       key: 'deliverDate-table',
       valueType: 'dateTime',
       sorter: true,
-      width: 180,
+      width: 150,
       hideInSearch: true,
     },
     {
@@ -108,7 +119,7 @@ const OrderContract: React.FC = () => {
       dataIndex: 'deliverDate',
       key: 'deliverDate',
       valueType: 'dateRange',
-      width: 180,
+      width: 150,
       hideInTable: true,
     },
     ...COM_PRO_TABLE_TIME.updatedAt,

@@ -19,6 +19,8 @@ export enum BusOrderTypeEnum {
   Sample = '0',
   /**@name 普通单 */
   Normal = '1',
+  /**@name 加急单 */
+  Urgent = '2',
 }
 /**@name 订单款式编号 */
 export type BusOrderStyleDemand = {

@@ -8,7 +8,10 @@ import { BusCustomerTypeEnum } from './../apis/business/customer/typing';
 import { MessageLevelEnum, MessageReadStatusEnum, MessageTypeEnum } from '@/apis/message/typing';
 import { BusMaterialTypeEnum } from '@/pages/business/techology-manage/Material/typing';
 import { BusWarehouseLogTypeEnum, BusWarehouseTypeEnum } from '@/apis/business/warehouse/typing';
-import { BusOrderStyleTypeEnum } from '@/apis/business/order-manage/contract/typing';
+import {
+  BusOrderStyleTypeEnum,
+  BusOrderTypeEnum,
+} from '@/apis/business/order-manage/contract/typing';
 import {
   ActApproveModeEnum,
   ActApproveStatusEnum,
@@ -120,6 +123,11 @@ export const OrderContractTypeValueEnum = {
     [BusOrderStyleTypeEnum.SpotGoods, { text: '现货' }],
     [BusOrderStyleTypeEnum.SpotGoodsCustom, { text: '现货定制' }],
     [BusOrderStyleTypeEnum.Custom, { text: '全新定制' }],
+  ]),
+  OrderType: new Map([
+    [BusOrderTypeEnum.Sample, { text: '样品单', color: '#1890ff' }],
+    [BusOrderTypeEnum.Normal, { text: '普通单', color: '#52c41a' }],
+    [BusOrderTypeEnum.Urgent, { text: '加急单', color: '#f5222d' }],
   ]),
 };
 

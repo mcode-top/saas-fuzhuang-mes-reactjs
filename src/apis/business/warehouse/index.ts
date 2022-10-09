@@ -8,6 +8,7 @@ import type {
   BusWarehouseGoodsOutInLogPageParamQuery,
   ExcelManyPutInGoodsDto,
   ManyPutOutInDto,
+  BusWarehouseGoodQuantityType,
 } from './typing';
 import { request } from 'umi';
 
@@ -130,6 +131,20 @@ export function fetchGoodsIdToOutInLogList(
     {
       method: 'POST',
       data,
+    },
+  );
+}
+
+/**@name 通过物料编码检查货品库存 */
+export function checkMaterialCodeToGoodsQuantity(materialCode: string, sizeId?: number) {
+  return request<RESULT_SUCCESS<BusWarehouseGoodQuantityType | null>>(
+    '/warehouse/goods/check-quantity',
+    {
+      method: 'POST',
+      data: {
+        materialCode,
+        sizeId,
+      },
     },
   );
 }

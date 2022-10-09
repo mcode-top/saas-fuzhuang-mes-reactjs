@@ -25,21 +25,21 @@ export function traverseTree<T = any>(tree: T[], next: (value: T, parent?: T) =>
 
 /**
  * 数组转对象
- * @param arr
- * @param key
- * @param value
- * @returns
  */
 export function arrayToObject<T extends Record<any, any>>(
   arr: T[],
-  key: keyof T,
+  key: keyof T | ((next: any) => any),
   value: keyof T | ((next: any) => any),
 ): any {
   return arr.reduce<Record<any, any>>((prev, next) => {
+    let partKey = key;
+    if (typeof key === 'function') {
+      partKey = key(next);
+    }
     if (typeof value === 'function') {
-      prev[next[key]] = value(next);
+      prev[next[partKey]] = value(next);
     } else {
-      prev[next[key]] = next[value];
+      prev[next[partKey as any]] = next[value];
     }
     return prev;
   }, {});

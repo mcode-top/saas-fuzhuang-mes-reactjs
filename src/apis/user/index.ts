@@ -7,10 +7,17 @@
 import { request } from 'umi';
 import type { LoginDTO, UserInfo } from './typings';
 
+/**@name 登入 */
 export function login(data: LoginDTO) {
   return request('/user/login', {
     method: 'POST',
     data,
+  });
+}
+/**@name 登出 */
+export function logout() {
+  return request('/user/logout', {
+    method: 'GET',
   });
 }
 

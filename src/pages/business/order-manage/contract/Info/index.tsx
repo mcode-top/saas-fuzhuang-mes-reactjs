@@ -9,12 +9,14 @@ import type {
   BusOrderContract,
   BusOrderStyleDemand,
 } from '@/apis/business/order-manage/contract/typing';
+import { BusOrderTypeEnum } from '@/apis/business/order-manage/contract/typing';
 import { DraftsModal, saveDrafts } from '@/components/Comm/Drafts';
 import { disabledLastDate } from '@/components/Comm/helper';
 import LoadingButton from '@/components/Comm/LoadingButton';
 import { OrderContractTypeValueEnum } from '@/configs/commValueEnum';
 import { ReloadOutlined } from '@ant-design/icons';
 import type { ProFormInstance } from '@ant-design/pro-form';
+import { ProFormSelect } from '@ant-design/pro-form';
 import ProForm, {
   ProFormDatePicker,
   ProFormDependency,
@@ -268,6 +270,14 @@ const OrderContractInfo: React.FC = (props) => {
           />
         </ProForm.Group>
         <ProForm.Group>
+          <ProFormSelect
+            readonly={readonly}
+            label="订单类型"
+            name="type"
+            rules={[{ required: true }]}
+            initialValue={BusOrderTypeEnum.Normal}
+            valueEnum={OrderContractTypeValueEnum.OrderType}
+          />
           <ProFormText
             readonly={readonly}
             name="payment"

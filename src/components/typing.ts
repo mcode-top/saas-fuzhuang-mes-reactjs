@@ -8,3 +8,8 @@ export type RightMenuInstance = {
     params?: Pick<ContextMenuParams, 'id' | 'props' | 'position'> | undefined,
   ) => void;
 };
+/**@name labelValue类型 */
+export type LabelValue = {
+  label: string;
+  value: any;
+};

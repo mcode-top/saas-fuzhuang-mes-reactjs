@@ -8,7 +8,12 @@ import {
 import type { BusOrderManufacture } from '@/apis/business/order-manage/manufacture/typing';
 import { processRecall } from '@/apis/process/process';
 import { ActTaskModelTypeEnum } from '@/apis/process/typings';
-import { CustomerCompanyValueEnum, dictValueEnum, ProcessValueEnum } from '@/configs/commValueEnum';
+import {
+  CustomerCompanyValueEnum,
+  dictValueEnum,
+  OrderContractTypeValueEnum,
+  ProcessValueEnum,
+} from '@/configs/commValueEnum';
 import { COM_PRO_TABLE_TIME } from '@/configs/index.config';
 import ReviewProcess from '@/pages/account/Task/components/ReviewProcess';
 import { nestPaginationTable } from '@/utils/proTablePageQuery';
@@ -16,9 +21,11 @@ import { SettingOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { Button, Dropdown, Menu, Modal, Tag } from 'antd';
-import React, { useRef } from 'react';
+import { isEmpty } from 'lodash';
+import React, { useMemo, useRef } from 'react';
 import { useLocation, useModel } from 'umi';
 import BusMaterialSelect from '../../techology-manage/Material/components/MaterialSelect';
+import { getTableStyleName } from './helper';
 import type { ManufactureLocationQuery } from './typing';
 /**@name 不需要审核的流程KEY */
 const MANUFACTURE_NOT_APPROVE_KEY = 'manufacture-1';
@@ -29,10 +36,7 @@ function gotoManufactureInfo(query: ManufactureLocationQuery) {
     true,
   );
 }
-/**@name 获取表格款式名称 */
-function getTableStyleName(data: BusOrderManufacture) {
-  return `${data.materialCode}${data.styleDemand.style ? `(${data.styleDemand.style})` : ''}`;
-}
+
 const OrderContract: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const location = useLocation();
@@ -50,8 +54,15 @@ const OrderContract: React.FC = () => {
   }
   const columns: ProColumns<BusOrderManufacture>[] = [
     {
-      title: '生产单号',
+      title: '合同单号',
       dataIndex: 'contractNumber',
+    },
+    {
+      title: '订单类型',
+      width: 80,
+      dataIndex: 'type',
+      renderText: (t, record) => record.contract?.type,
+      valueEnum: OrderContractTypeValueEnum.OrderType,
     },
     {
       title: '款式型号',
@@ -252,8 +263,12 @@ const OrderContract: React.FC = () => {
                       entity.process?.runningTask?.type === ActTaskModelTypeEnum.Start && isOperator
                     );
                   } else if (item.key === 'remove') {
+                    console.log(entity);
+
                     return (
-                      entity.process?.runningTask?.type === ActTaskModelTypeEnum.Start && isOperator
+                      isEmpty(entity.process) ||
+                      (entity.process?.runningTask?.type === ActTaskModelTypeEnum.Start &&
+                        isOperator)
                     );
                   } else if (item.key === 'approve') {
                     return (

@@ -136,3 +136,13 @@ export type ManyPutOutInDto = {
   /**@name 绑定的合同单 */
   contractNumber?: string;
 };
+
+/**@name 当前物料编码总库存数量类型 */
+export type BusWarehouseGoodQuantityType = {
+  materialCode: string;
+  material: BusMaterialType;
+  sizeId?: number;
+  size?: BusSizeTemplateItemType;
+  total?: number;
+  goods?: BusWarehouseGoodsType[];
+};

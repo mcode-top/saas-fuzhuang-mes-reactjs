@@ -1,3 +1,4 @@
+import type { UserListItem } from '@/apis/person/typings';
 import type { BusWorkProcessType } from '@/pages/business/techology-manage/WorkProcess/typing';
 import { request } from 'umi';
 import type { WorkProcessPageParamQuery } from './typing';
@@ -37,6 +38,12 @@ export function fetchManyRemoveWorkProcess(ids: number[]) {
 /**@name 获取全部工序列表(仅name与id) */
 export function fetchNameListWorkProcess() {
   return request<RESULT_SUCCESS<{ name: string; id: number }[]>>('/work-process/all/name-to-id', {
+    method: 'GET',
+  });
+}
+/**@name 获取工序下的员工 */
+export function fetchWorkStaffList(id: number) {
+  return request<RESULT_SUCCESS<UserListItem[]>>('/work-process/staff/' + id, {
     method: 'GET',
   });
 }
