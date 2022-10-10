@@ -21,6 +21,7 @@ import {
   ActTaskStatusEnum,
 } from '@/apis/process/typings';
 import { UserSexEnum } from '@/apis/user/typings';
+import { ContractProcessEnum } from '@/apis/business/order-manage/order-process/typing';
 
 export const UserValueEnum = {
   Sex: new Map([
@@ -128,6 +129,11 @@ export const OrderContractTypeValueEnum = {
     [BusOrderTypeEnum.Sample, { text: '样品单', color: '#1890ff' }],
     [BusOrderTypeEnum.Normal, { text: '普通单', color: '#52c41a' }],
     [BusOrderTypeEnum.Urgent, { text: '加急单', color: '#f5222d' }],
+  ]),
+  Process: new Map([
+    [ContractProcessEnum.Running, { text: '运行中', type: 'Processing' }],
+    [ContractProcessEnum.Stop, { text: '已停止', type: 'Error' }],
+    [ContractProcessEnum.Done, { text: '已完成', type: 'Success' }],
   ]),
 };
 

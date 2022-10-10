@@ -52,3 +52,9 @@ export function fetchRemoveManufacture(id: number) {
     method: 'POST',
   });
 }
+/**@name 检查生产流程是否可撤回 */
+export function fetchCheckManufactureIsRecall(id: number) {
+  return request<RESULT_SUCCESS<any>>('/manufacture/check-recall/' + id, {
+    method: 'POST',
+  });
+}

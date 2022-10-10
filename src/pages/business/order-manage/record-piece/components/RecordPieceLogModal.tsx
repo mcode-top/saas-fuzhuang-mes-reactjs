@@ -22,7 +22,7 @@ const RecordPieceLogModal: React.FC<{
   const [list, setList] = useState<BusOrderRecordPieceLog[]>([]);
   return (
     <ModalForm
-      width={700}
+      width={800}
       title={'查看工价单记录'}
       formRef={formRef}
       onVisibleChange={(v) => {
@@ -49,6 +49,7 @@ const RecordPieceLogModal: React.FC<{
         dataSource={list}
         size="small"
         loading={loading}
+        rowKey="id"
         pagination={{ size: 'small' }}
         columns={[
           {
@@ -56,6 +57,13 @@ const RecordPieceLogModal: React.FC<{
             dataIndex: 'a',
             render(value, record, index) {
               return record.workProcess.name;
+            },
+          },
+          {
+            title: '员工',
+            dataIndex: 'workerUser',
+            render(value, record, index) {
+              return record.workerUser.name;
             },
           },
           {
@@ -70,12 +78,17 @@ const RecordPieceLogModal: React.FC<{
             title: '领料数',
             dataIndex: 'materialNumber',
           },
+
           {
-            title: '计件员工',
+            title: '操作人',
             dataIndex: 'workerUser',
             render(value, record, index) {
               return record.workerUser.name;
             },
+          },
+          {
+            title: '记录时间',
+            dataIndex: 'createdAt',
           },
         ]}
       />

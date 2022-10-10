@@ -1,4 +1,4 @@
-import type { BusWorkProcessType } from './../../../../pages/business/techology-manage/WorkProcess/typing';
+import type { BusWorkProcessType } from '../../../../pages/business/techology-manage/WorkProcess/typing';
 import type { UserListItem } from '@/apis/person/typings';
 import type { BusOrderManufacture } from '../manufacture/typing';
 

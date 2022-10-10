@@ -123,6 +123,12 @@ const originRoutes: Router[] = [
         key: 'record-piece',
         component: './business/order-manage/record-piece',
       },
+      {
+        path: '/order-manage/order-process',
+        name: '合同流程管理',
+        key: 'order-process',
+        component: './business/order-manage/order-process',
+      },
     ],
   },
   {

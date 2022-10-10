@@ -1,5 +1,6 @@
 import type { ActProcess } from '@/apis/process/typings';
 import type { BusOrderContract, BusOrderStyleDemand } from '../contract/typing';
+import type { BusOrderRecordPiece } from '../record-piece/typing';
 /**@name 生产工价表 */
 export type BusManufactureWorkPriceTable = {
   /**@name 工价id */
@@ -29,6 +30,7 @@ export type BusOrderManufacture = {
   processId: number;
   process?: ActProcess;
   deliverDate?: Date;
+  recordPiece?: BusOrderRecordPiece;
 };
 /**@name 审核合同单 */
 export type ApproveContractDto = {

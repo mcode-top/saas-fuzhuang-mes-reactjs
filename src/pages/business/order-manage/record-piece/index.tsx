@@ -1,44 +1,22 @@
-import { BusCustomerTypeEnum } from '@/apis/business/customer/typing';
-import { fetchRemoveContract, fetchContractList } from '@/apis/business/order-manage/contract';
-import type { BusOrderContract } from '@/apis/business/order-manage/contract/typing';
 import type { BusOrderManufacture } from '@/apis/business/order-manage/manufacture/typing';
 import { fetchManufactureUseModfiyRecordPieceList } from '@/apis/business/order-manage/record-piece';
-import { processRecall } from '@/apis/process/process';
-import { ActTaskModelTypeEnum } from '@/apis/process/typings';
-import {
-  OrderContractTypeValueEnum,
-  dictValueEnum,
-  CustomerCompanyValueEnum,
-  ProcessValueEnum,
-} from '@/configs/commValueEnum';
 import { COM_PRO_TABLE_TIME } from '@/configs/index.config';
-import ReviewProcess from '@/pages/account/Task/components/ReviewProcess';
 import { nestPaginationTable } from '@/utils/proTablePageQuery';
 import { SettingOutlined } from '@ant-design/icons';
 import type { ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { Modal, Tag, Dropdown, Menu, Button } from 'antd';
+import { Dropdown, Menu, Button } from 'antd';
 import { useRef } from 'react';
-import { useLocation, useModel } from 'umi';
+import { useLocation } from 'umi';
 import type { ActionType } from 'use-switch-tabs';
 import BusMaterialSelect from '../../techology-manage/Material/components/MaterialSelect';
 import { getTableStyleName } from '../manufacture/helper';
 import RecordPieceAddModal from './components/RecordPieceAddModal';
+import RecordPieceLogModal from './components/RecordPieceLogModal';
 
-const OrderContract: React.FC = () => {
+const OrderRecordPiece: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const location = useLocation();
-  /**
-   * 预览流程状态
-   */
-  function handleReviewProcess(processId: number) {
-    Modal.info({
-      width: 800,
-      title: '预览流程状态',
-      maskClosable: true,
-      content: <ReviewProcess style={{ height: 600 }} processId={processId} />,
-    });
-  }
   const columns: ProColumns<BusOrderManufacture>[] = [
     {
       title: '合同单号',
@@ -52,6 +30,19 @@ const OrderContract: React.FC = () => {
       },
       render(dom, entity, index, action, schema) {
         return getTableStyleName(entity);
+      },
+    },
+    {
+      title: '计件单状态',
+      dataIndex: 'recordPiece',
+      hideInSearch: true,
+      hideInForm: true,
+      renderText(text, record, index, action) {
+        if (text) {
+          return '已填写';
+        } else {
+          return '未填写';
+        }
       },
     },
     {
@@ -104,6 +95,19 @@ const OrderContract: React.FC = () => {
                       </RecordPieceAddModal>
                     ),
                   },
+                  entity.recordPiece?.id
+                    ? {
+                        key: 'watch-log',
+                        label: (
+                          <RecordPieceLogModal
+                            type="findOne"
+                            data={{ recordPieceId: entity.recordPiece?.id }}
+                          >
+                            <div onClick={() => {}}>查看计件单记录</div>
+                          </RecordPieceLogModal>
+                        ),
+                      }
+                    : null,
                   {
                     key: 'modfiy',
                     label: (
@@ -141,4 +145,4 @@ const OrderContract: React.FC = () => {
     />
   );
 };
-export default OrderContract;
+export default OrderRecordPiece;

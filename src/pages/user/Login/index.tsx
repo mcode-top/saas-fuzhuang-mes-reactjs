@@ -11,7 +11,6 @@ import React, { useState } from 'react';
 import { ProFormCaptcha, ProFormCheckbox, ProFormText, LoginForm } from '@ant-design/pro-form';
 import { history, useModel } from 'umi';
 import Footer from '@/components/Footer';
-import { getFakeCaptcha } from '@/services/ant-design-pro/login';
 import styles from './index.less';
 import { login } from '@/apis/user';
 import { TENANT_HEADER_TOKEN } from '@/configs/index.config';
@@ -53,7 +52,7 @@ const Login: React.FC = () => {
     const { redirect } = query as {
       redirect: string;
     };
-    history.push(redirect || '/');
+    history.push(redirect || '/account/message?type=System');
     setInitialState({ ...initialState, loading: true });
     const newState = await getInitialState();
     setInitialState({ ...newState, loading: false });

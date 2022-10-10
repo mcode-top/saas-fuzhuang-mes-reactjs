@@ -154,9 +154,27 @@ const RecordPieceAddModal: React.FC<{
           actionRef={formListRef}
           name="staffAndWorkProcessList"
           label="员工与工序计件数量"
+          rules={[
+            {
+              validator: (rule, value: BusRecordPieceStaffAndWorkProcessForm[], callback) => {
+                console.log(value);
+                if (Array.isArray(value)) {
+                  const error = value.find((i) => {
+                    if (!i.userId || !i.workProcessId) {
+                      return true;
+                    }
+                    return false;
+                  });
+                  if (error) {
+                    return callback('有表单未填充');
+                  }
+                }
+                return callback();
+              },
+            },
+          ]}
           actionRender={(f, action, defaultDom) => {
             const data = formListRef.current?.get(f.name);
-
             if (!data) {
               return [];
             }

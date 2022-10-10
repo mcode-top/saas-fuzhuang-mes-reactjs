@@ -2,6 +2,7 @@ import { BusCustomerTypeEnum } from '@/apis/business/customer/typing';
 import { fetchContractList, fetchRemoveContract } from '@/apis/business/order-manage/contract';
 import type { BusOrderContract } from '@/apis/business/order-manage/contract/typing';
 import {
+  fetchCheckManufactureIsRecall,
   fetchManufactureList,
   fetchRemoveManufacture,
 } from '@/apis/business/order-manage/manufacture';
@@ -20,7 +21,7 @@ import { nestPaginationTable } from '@/utils/proTablePageQuery';
 import { SettingOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { Button, Dropdown, Menu, Modal, Tag } from 'antd';
+import { Button, Dropdown, Menu, message, Modal, Tag } from 'antd';
 import { isEmpty } from 'lodash';
 import React, { useMemo, useRef } from 'react';
 import { useLocation, useModel } from 'umi';
@@ -221,8 +222,14 @@ const OrderContract: React.FC = () => {
                     key: 'recall',
                     label: <div>撤回生产单</div>,
                     onClick: () => {
-                      processRecall(entity.processId).then((res) => {
-                        action?.reload();
+                      fetchCheckManufactureIsRecall(entity.id).then((is) => {
+                        if (is) {
+                          processRecall(entity.processId).then((res) => {
+                            action?.reload();
+                          });
+                        } else {
+                          message.warning('当前生产单已经开始计件无法撤回');
+                        }
                       });
                     },
                   },
