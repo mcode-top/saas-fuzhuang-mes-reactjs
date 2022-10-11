@@ -16,6 +16,7 @@ import SelectTreeSizeTemplate from '../../techology-manage/SizeTemplate/componen
 import { WarehouseContext } from '../context';
 import { formatWarehouseEnumToMaterialEnum } from '../helper';
 import { dictValueEnum, MaterialValueEnum } from '@/configs/commValueEnum';
+import SelectUndoneContractSelect from '../../order-manage/components/SelectUndoneContractSelect';
 
 /**@name 货品入库对话框 */
 const GoodsPutInModal: React.FC<{
@@ -106,6 +107,7 @@ const GoodsPutInModal: React.FC<{
       />
       <ProFormTextArea label="备注信息" disabled={disabled} name="remark" />
       {/**TODO:待完善绑定合同单 */}
+      <SelectUndoneContractSelect label="绑定合同单" name="contractNumber" />
     </ModalForm>
   );
 };

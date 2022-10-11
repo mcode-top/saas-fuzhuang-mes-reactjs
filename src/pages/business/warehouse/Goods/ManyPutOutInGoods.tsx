@@ -9,6 +9,7 @@ import { BusWarehouseTypeEnum, BusWarehouseLogTypeEnum } from '@/apis/business/w
 import type { EditableFormInstance, ProColumns } from '@ant-design/pro-table';
 import { EditableProTable } from '@ant-design/pro-table';
 import { fetchWarehouseManyPutOutInGoods } from '@/apis/business/warehouse';
+import SelectUndoneContractSelect from '../../order-manage/components/SelectUndoneContractSelect';
 
 /**@name 货品出入库记录对话框 */
 const ManyPutOutInGoods: React.FC<{
@@ -66,7 +67,7 @@ const ManyPutOutInGoods: React.FC<{
         warehouseType={props.warehouseType}
       />
       <ProFormTextArea label="出入库原因" name="remark" />
-      <ProFormTextArea label="合同单号" name="contractNumber" />
+      <SelectUndoneContractSelect label="绑定合同单" name="contractNumber" />
     </ModalForm>
   );
 };

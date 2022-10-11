@@ -17,10 +17,10 @@ const OrderProcessLogTableModal: React.FC<{
   return (
     <ModalForm width={700} title={'查看流程记录'} formRef={formRef} trigger={props.children}>
       <Table
-        rowKey={'createdAt'}
+        rowKey={'id'}
         dataSource={props.processLog}
         size="small"
-        pagination={{ size: 'small' }}
+        pagination={{ size: 'small', pageSize: 10 }}
         columns={[
           {
             title: '记录内容',
@@ -38,7 +38,6 @@ const OrderProcessLogTableModal: React.FC<{
             dataIndex: 'createdAt',
             defaultSortOrder: 'descend',
             sorter: (a, b) => {
-              console.log(new Date(a.createdAt).getTime());
               return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
             },
           },

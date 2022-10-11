@@ -16,6 +16,7 @@ import {
 } from '@/apis/business/warehouse';
 import { WarehouseContext } from '../context';
 import { Descriptions } from 'antd';
+import SelectUndoneContractSelect from '../../order-manage/components/SelectUndoneContractSelect';
 
 /**@name 货品出库对话框 */
 const GoodsPutOutModal: React.FC<{
@@ -100,6 +101,7 @@ const GoodsPutOutModal: React.FC<{
         name="remark"
       />
       {/**TODO:待完善绑定合同单 */}
+      <SelectUndoneContractSelect label="绑定合同单" name="contractNumber" />
     </ModalForm>
   );
 };

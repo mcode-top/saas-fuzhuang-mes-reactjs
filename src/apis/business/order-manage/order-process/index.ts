@@ -19,3 +19,10 @@ export function fetchOrderContractProcessAdd(data: ContractProcessAddDto) {
     data,
   });
 }
+/**@name 获取未完成的合同流程(前20个) */
+export function fetchUndoneContractList(partContractNumber: string) {
+  return request<RESULT_SUCCESS>('/order-process/undone-contract-list', {
+    method: 'GET',
+    params: { partContractNumber },
+  });
+}

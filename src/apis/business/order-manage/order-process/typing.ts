@@ -11,6 +11,7 @@ export type ContractProcessLog = {
   status: ContractProcessEnum;
   message: string;
   createdAt: string;
+  id: number;
 };
 /**@name 流程状态 */
 export enum ContractProcessEnum {
