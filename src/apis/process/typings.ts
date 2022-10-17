@@ -222,3 +222,16 @@ export type ActTaskQuery = PartialObject<ActTask>;
 
 /**@name 审核任务 */
 export type ApproveTaskDto = { opinion?: string; isAgree: boolean };
+/**@name 修改模型审批人*/
+export type UpdateModelApproveDto = {
+  businessKey: string;
+  person: PersonGroup;
+  taskModelId: string;
+};
+/**@name 获取系统指定的审批流 */
+export type ActUpdateModelApprove = {
+  name: string;
+  businessKey: string;
+  person: PersonGroup;
+  taskModelId: string;
+};

@@ -4,7 +4,15 @@
  * @Description: 文件描述
  */
 import { request } from 'umi';
-import type { ActApproverLog, ActProcess, ActTask, ActTaskQuery, ApproveTaskDto } from './typings';
+import type {
+  ActApproverLog,
+  ActProcess,
+  ActTask,
+  ActTaskQuery,
+  ActUpdateModelApprove,
+  ApproveTaskDto,
+  UpdateModelApproveDto,
+} from './typings';
 
 export function fetchMyTaskList(data: PAGINATION_QUERY.Param<ActTaskQuery>) {
   return request<RESULT_SUCCESS<PAGINATION_QUERY.Result<ActTask>>>('/workflow/task/page', {
@@ -56,5 +64,22 @@ export function processApproveTask(taskId: number, data: ApproveTaskDto) {
 export function processRecall(processId: number) {
   return request<RESULT_SUCCESS>('/workflow/process/recall/' + processId, {
     method: 'POST',
+  });
+}
+/**
+ * 修改审批流中的审批人员
+ */
+export function updateModelApprove(data: UpdateModelApproveDto) {
+  return request<RESULT_SUCCESS>('/workflow/model/update-approve', {
+    method: 'POST',
+    data,
+  });
+}
+/**
+ * 获取系统指定的审批流
+ */
+export function findSystemWorkflow() {
+  return request<RESULT_SUCCESS<ActUpdateModelApprove[]>>('/workflow/model/system-current-model', {
+    method: 'GET',
   });
 }

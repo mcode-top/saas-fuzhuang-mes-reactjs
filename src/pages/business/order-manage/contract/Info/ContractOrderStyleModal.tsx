@@ -25,10 +25,8 @@ function computedTotalPrice(entity: BusOrderStyleDemand) {
   let totalPrice = 0;
   entity.sizePriceNumber?.forEach((i) => {
     totalPrice +=
-      i.number * i.price +
-      (entity['版费'] || 0) * i.number +
-      (entity['印刷单价'] || 0) * i.number +
-      (entity['绣花单价'] || 0) * i.number;
+      i.number * i.price + (entity['版费'] || 0) * i.number + (entity['印刷单价'] || 0) * i.number;
+    // (entity['绣花单价'] || 0) * i.number;
   });
   return totalPrice;
 }
@@ -203,13 +201,13 @@ const ContractOrderStyleModal: React.FC<{
           let pn = 0;
           const bf = data['版费'] || 0;
           const yh = data['印刷单价'] || 0;
-          const xh = data['绣花单价'] || 0;
+          // const xh = data['绣花单价'] || 0;
           data.sizePriceNumber?.forEach((i) => {
             pn += i.number || 0;
             totalPrice += (i.number || 0) * (i.price || 0);
           });
-          return `总金额:产品价格[${totalPrice}] + (版费[${bf}]+版费[${yh}]+绣花单价[${xh}])*数量[${pn}]=${
-            totalPrice + (bf + yh + xh) * pn
+          return `总金额:产品价格[${totalPrice}] + (版费[${bf}]+版费[${yh}])*数量[${pn}]=${
+            totalPrice + (bf + yh) * pn
           }`;
         }}
       </ProFormDependency>

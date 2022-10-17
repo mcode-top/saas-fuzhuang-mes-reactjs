@@ -6,6 +6,7 @@
 import { fetchRoleAuthList } from '@/apis/person/roles';
 import type { OperationDeptDTO, OperationUserDTO } from '@/apis/person/typings';
 import { createUser, fetchDeptAuthList, updateUser } from '@/apis/person/users';
+import { UserSexEnum } from '@/apis/user/typings';
 import { UserValueEnum } from '@/configs/commValueEnum';
 import type { ProFormColumnsType, ProFormInstance } from '@ant-design/pro-form';
 import { BetaSchemaForm } from '@ant-design/pro-form';
@@ -139,7 +140,7 @@ function UserModal(props: {
     {
       title: '性别',
       dataIndex: 'sex',
-      initialValue: 2,
+      initialValue: UserSexEnum.Secret,
       valueEnum: UserValueEnum.Sex,
     },
     {
@@ -164,6 +165,9 @@ function UserModal(props: {
         props.onVisibleChange(v);
       }}
       layoutType="DrawerForm"
+      drawerProps={{
+        maskClosable: false,
+      }}
       title={`${props.type === 'create' ? '新增' : '修改'}用户`}
       onFinish={async (values) => {
         if (props.type === 'create') {

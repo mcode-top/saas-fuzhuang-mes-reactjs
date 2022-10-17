@@ -52,6 +52,8 @@ export default function SwitchTabs(props: SwitchTabsProps): JSX.Element {
       history,
       actionRef,
     });
+  console.log(tabs, activeKey, 'tabs, activeKey');
+
   const remove = usePersistFn((key: string) => {
     handleRemove(key);
   });
@@ -104,6 +106,7 @@ export default function SwitchTabs(props: SwitchTabsProps): JSX.Element {
     },
   );
 
+  /**@name 将TAB操作暴露到全局 */
   useEffect(() => {
     window.layoutTabsAction = {
       getLocationToTabKey: (currentLocation: SwitchTab['location']): SwitchTab | undefined => {

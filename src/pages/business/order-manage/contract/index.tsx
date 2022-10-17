@@ -111,7 +111,6 @@ const OrderContract: React.FC = () => {
       key: 'deliverDate-table',
       valueType: 'dateTime',
       sorter: true,
-      width: 150,
       hideInSearch: true,
     },
     {
@@ -119,7 +118,6 @@ const OrderContract: React.FC = () => {
       dataIndex: 'deliverDate',
       key: 'deliverDate',
       valueType: 'dateRange',
-      width: 150,
       hideInTable: true,
     },
     ...COM_PRO_TABLE_TIME.updatedAt,

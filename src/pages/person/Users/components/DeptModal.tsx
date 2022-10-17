@@ -84,6 +84,9 @@ function DeptModal(props: {
         props.onVisibleChange(v);
       }}
       layoutType="ModalForm"
+      modalProps={{
+        maskClosable: false,
+      }}
       title={`${props.type === 'create' ? '新增' : '修改'}部门`}
       onFinish={async (values) => {
         if (props.type === 'create') {

@@ -253,6 +253,7 @@ const OrderContractInfo: React.FC = (props) => {
             rules={[{ required: true }]}
             fieldProps={{
               addonAfter: '%',
+              precision: 2,
             }}
             min={0}
             readonly={readonly}
@@ -292,6 +293,7 @@ const OrderContractInfo: React.FC = (props) => {
             label="销售提成(%)"
             fieldProps={{
               addonAfter: '%',
+              precision: 2,
             }}
             min={0}
             rules={[{ required: query.type === 'approve' }]}

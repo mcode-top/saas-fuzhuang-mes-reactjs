@@ -85,6 +85,9 @@ const MessageSendPerson: React.FC = () => {
       layoutType="ModalForm"
       columns={columns}
       formRef={formRef}
+      modalProps={{
+        maskClosable: false,
+      }}
       onFinish={(values) => {
         return messageSendSystemMessage({ ...values, ...values.person }).then((res) => {
           formRef.current?.resetFields();

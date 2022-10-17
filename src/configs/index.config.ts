@@ -3,7 +3,14 @@
  * @Date: 2022-02-28 18:41:20
  * @Description: 文件描述
  */
-export const WEB_SOCKET_URL = 'ws://localhost:4000';
+// export const WEB_SOCKET_URL = 'ws://localhost:4000';
+console.log('====================================');
+console.log(window.location.host.search('localhost') !== -1);
+console.log('====================================');
+export const WEB_SOCKET_URL =
+  window.location.host.search('localhost') !== -1
+    ? 'ws://localhost:4000'
+    : 'ws://121.40.228.54/fz-saas';
 /**
  * 租户IDsession存储位置
  */
@@ -32,7 +39,6 @@ export const COM_PRO_TABLE_TIME = {
       dataIndex: 'updatedAt',
       valueType: 'dateTime',
       sorter: true,
-      width: 150,
       hideInSearch: true,
     },
     {
@@ -40,7 +46,6 @@ export const COM_PRO_TABLE_TIME = {
       dataIndex: 'updatedAt',
       key: 'updatedAt.form',
       valueType: 'dateRange',
-      width: 150,
       hideInTable: true,
     },
   ] as any,
@@ -49,7 +54,6 @@ export const COM_PRO_TABLE_TIME = {
       title: '创建时间',
       dataIndex: 'createdAt',
       valueType: 'dateTime',
-      width: 150,
       sorter: true,
       hideInSearch: true,
     },
@@ -59,7 +63,6 @@ export const COM_PRO_TABLE_TIME = {
       key: 'createdAt.form',
       valueType: 'dateRange',
       hideInTable: true,
-      width: 150,
     },
   ] as any,
 };

@@ -1,15 +1,10 @@
-import { getMenuData, MenuDataItem } from '@ant-design/pro-layout';
 import React from 'react';
-import type * as H from 'history-with-query';
-import { useLocation, useRouteMatch } from 'umi';
 import type { Route } from '@ant-design/pro-layout/lib/typings';
-import { PageLoading } from '@ant-design/pro-layout';
 import * as _ from 'lodash';
 import type { Mode, RouteConfig } from 'use-switch-tabs';
-import { isSwitchTab } from 'use-switch-tabs';
 import type { SwitchTabsProps } from './SwitchTabs';
 import SwitchTabs from './SwitchTabs';
-import { traverseTree } from '@/utils';
+import IPageLoading from '../PageLoading';
 
 export interface MakeUpRoute extends Route, Pick<RouteConfig, 'follow'> {}
 
@@ -25,17 +20,12 @@ export default function SwitchTabsLayout(props: RouteTabsLayoutProps): JSX.Eleme
   const { mode, loading, routes, children, ...rest } = props;
   if (mode) {
     if (loading) {
-      return <PageLoading />;
+      return <IPageLoading />;
     }
 
     if (routes) {
       return (
-        <SwitchTabs
-          mode={mode}
-          {...rest}
-          originalRoutes={routes}
-          // animated={false}
-        >
+        <SwitchTabs mode={mode} {...rest} originalRoutes={routes} animated={false}>
           {children}
         </SwitchTabs>
       );

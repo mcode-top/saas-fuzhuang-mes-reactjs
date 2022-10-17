@@ -92,6 +92,9 @@ function RoleModal(props: {
         }
         props.onVisibleChange(v);
       }}
+      modalProps={{
+        maskClosable: false,
+      }}
       layoutType="ModalForm"
       title={`${props.type === 'create' ? '新增' : '修改'}角色`}
       onFinish={async (values) => {

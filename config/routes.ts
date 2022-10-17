@@ -15,6 +15,7 @@ const originRoutes: Router[] = [
     name: '首页',
     closable: false,
     component: './custom-form/FormViewer',
+    icon: 'home',
   },
   {
     path: '/form',
@@ -74,6 +75,7 @@ const originRoutes: Router[] = [
     name: '人员管理',
     path: '/person',
     access: 'canAdmin',
+    icon: 'UserOutlined',
     routes: [
       {
         path: '/person/users',
@@ -90,6 +92,7 @@ const originRoutes: Router[] = [
   {
     name: '订单管理',
     path: '/order-manage',
+    icon: 'ReconciliationOutlined',
     routes: [
       {
         path: '/order-manage/contract',
@@ -129,12 +132,20 @@ const originRoutes: Router[] = [
         key: 'order-process',
         component: './business/order-manage/order-process',
       },
+      {
+        path: '/order-manage/workflow',
+        name: '审批人员管理',
+        key: 'order-workflow',
+        component: './business/order-manage/workflow',
+      },
     ],
   },
   {
     name: '文件管理',
     white: true,
     path: '/file-manage',
+    icon: 'FileOutlined',
+
     routes: [
       {
         path: '/file-manage/my',
@@ -154,15 +165,19 @@ const originRoutes: Router[] = [
     name: '仓库管理',
     path: '/warehouse',
     component: './business/warehouse',
+    icon: 'ShopOutlined',
   },
   {
     name: '客户管理',
     path: '/customer',
     component: './business/customer',
+    icon: 'UserSwitchOutlined',
   },
   {
     name: '工艺管理',
     path: '/technology',
+    icon: 'ApartmentOutlined',
+
     routes: [
       {
         path: '/technology/work-process',
@@ -193,6 +208,8 @@ const originRoutes: Router[] = [
   },
   {
     name: '系统消息管理',
+    icon: 'AlertOutlined',
+
     path: '/message',
     component: './message/System',
   },

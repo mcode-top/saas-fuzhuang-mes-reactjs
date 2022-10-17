@@ -111,12 +111,8 @@ const OrderContract: React.FC = () => {
       key: 'deliverDate-table',
       valueType: 'dateTime',
       sorter: true,
-      width: 180,
       hideInSearch: true,
       render(dom, entity, index, action, schema) {
-        console.log('====================================');
-        console.log(entity.deliverDate);
-        console.log('====================================');
         if ((entity.deliverDate as any) !== 'Invalid date') {
           return dom;
         } else {
@@ -129,8 +125,6 @@ const OrderContract: React.FC = () => {
       dataIndex: 'deliverDate',
       key: 'deliverDate',
       valueType: 'dateRange',
-      width: 180,
-
       hideInTable: true,
     },
     ...COM_PRO_TABLE_TIME.updatedAt,
@@ -270,8 +264,6 @@ const OrderContract: React.FC = () => {
                       entity.process?.runningTask?.type === ActTaskModelTypeEnum.Start && isOperator
                     );
                   } else if (item.key === 'remove') {
-                    console.log(entity);
-
                     return (
                       isEmpty(entity.process) ||
                       (entity.process?.runningTask?.type === ActTaskModelTypeEnum.Start &&

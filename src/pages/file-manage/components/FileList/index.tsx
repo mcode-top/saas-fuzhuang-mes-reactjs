@@ -33,6 +33,7 @@ import CatalogModal from '../CatalogModal';
 import SelectFileModal from '../SelectFileModal';
 import { Access, useAccess } from 'umi';
 import { downloadAction, downloadSystemFile } from '@/utils/upload/upload';
+import { omit } from 'lodash';
 export type FileManageSelectFileMode = 'all' | 'file' | 'catalog';
 export type FileManageListRef = ActionType & { setSelectKeys: (keys: number[]) => void };
 export default function FileManageList<
@@ -204,16 +205,16 @@ export default function FileManageList<
                   trigger={['click']}
                   overlay={
                     <Menu key="menu">
-                      <Access
+                      {/* <Access
                         accessible={access.checkFileManage(
                           record?.authGroup,
                           FileManageAuthModeEnum.Review,
                           props.mode,
                         )}
                       >
-                        {/**TODO:预览文件 */}
                         <Menu.Item eventKey="review">预览文件(未开发)</Menu.Item>
                       </Access>
+                       */}
                       <Access
                         accessible={
                           record.type === FileManageTypeEnum.File &&
@@ -352,7 +353,9 @@ export default function FileManageList<
             : undefined
         }
         beforeSearchSubmit={(values) => {
-          if (Object.keys(values).length > 0) {
+          console.log(Object.keys(values).length, values, 'Object.keys(values).length');
+
+          if (Object.keys(omit(values, ['current', 'pageSize', '_timestamp'])).length > 0) {
             enterCatalog(-1, false);
             return { ...values, parentId: -1 };
           }

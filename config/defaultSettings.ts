@@ -24,15 +24,15 @@ const Settings: Settings = {
   fixedHeader: false,
   fixSiderbar: true,
   colorWeak: false,
-  title: 'LIMS-SAAS',
+  title: 'SAAS',
   pwa: false,
-  logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
+  logo: 'https://zh-home.oss-cn-hangzhou.aliyuncs.com/home/images/logo1.png',
   iconfontUrl: '',
   switchTabs: {
     mode: Mode.Dynamic,
     fixed: true,
-    reloadable: false,
-    persistent: false,
+    reloadable: true,
+    persistent: true,
   },
 };
 
