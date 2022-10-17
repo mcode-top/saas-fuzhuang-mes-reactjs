@@ -52,6 +52,13 @@ export function fetchMaterialToStyleDemandData(materialCode: string) {
     },
   );
 }
+/**@name 添加成衣款式内容 */
+export function fetchAddProductMaterialStyleDemand(materialCode: string, data: any) {
+  return request<RESULT_SUCCESS>('/contract/add/product/' + materialCode, {
+    method: 'POST',
+    data,
+  });
+}
 /**@name 获取合同流水号 */
 export function fetchContractSerialNumber() {
   return request<RESULT_SUCCESS<string>>('/contract/serial-number', {

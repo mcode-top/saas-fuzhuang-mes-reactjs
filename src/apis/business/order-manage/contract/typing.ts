@@ -32,8 +32,8 @@ export type BusOrderStyleDemand = {
   styleType: BusOrderStyleTypeEnum;
   /**@name 产品名称(款式) */
   style?: string;
-  /**@name 颜色 */
-  color?: string;
+  /**@name 颜色组 */
+  colorGroup?: string[];
   /**@name 尺码价格数量 */
   sizePriceNumber: BusOrderSizePriceNumber[];
   /**@name 面料 */
@@ -78,6 +78,7 @@ export type BusOrderStyleDemand = {
 /**@name 尺码价格数量 */
 export type BusOrderSizePriceNumber = {
   sizeId: number;
+  color: string;
   number: number;
   price: number;
 };

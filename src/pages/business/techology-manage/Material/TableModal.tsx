@@ -3,6 +3,7 @@ import { STORAGE_MATERIAL_LIST, STORAGE_WORK_PROCESS_LIST } from '@/configs/stor
 import { arrayAttributeChange, arrayToObject } from '@/utils';
 import storageDataSource from '@/utils/storage';
 import type { ProFormInstance } from '@ant-design/pro-form';
+import { ProFormDependency } from '@ant-design/pro-form';
 import { ProFormMoney } from '@ant-design/pro-form';
 import { ProFormSelect } from '@ant-design/pro-form';
 import ProForm, { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
@@ -18,6 +19,10 @@ import {
 } from '@/apis/business/techology-manage/material';
 import { debounce, throttle } from 'lodash';
 import BusMaterialSelect from './components/MaterialSelect';
+import { Button, Space } from 'antd';
+import type { ProductMaterialType } from './components/ProductMaterialModal';
+import ProductMaterialModal from './components/ProductMaterialModal';
+import { fetchMaterialToStyleDemandData } from '@/apis/business/order-manage/contract';
 
 const MaterialTableModal: React.FC<{
   node: {
@@ -29,7 +34,27 @@ const MaterialTableModal: React.FC<{
   children: JSX.Element;
 }> = (props) => {
   const formRef = useRef<ProFormInstance>();
+  /**@name 成衣内容 */
+  const [product, setProduct] = useState<ProductMaterialType | null>(null);
+  /**@name 如果是修改模式则需要检查成衣内容是否存在 */
+  function getProductData() {
+    console.log(
+      props.node.type === 'update' && props.node.value,
+      props.node.value,
+      "props.node.type === 'update' && props.node.value",
+    );
 
+    if (props.node.type !== 'create' && props.node.value) {
+      fetchMaterialToStyleDemandData(props.node.value.code)
+        .then((res) => {
+          setProduct(res.data?.styleDemandData || null);
+        })
+        .catch((err) => {
+          console.error(err);
+          setProduct(null);
+        });
+    }
+  }
   function onFinish(): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
       try {
@@ -56,13 +81,16 @@ const MaterialTableModal: React.FC<{
       width={800}
       title={props.title}
       formRef={formRef}
+      modalProps={{ maskClosable: false }}
       onVisibleChange={(v) => {
         formRef.current?.resetFields();
-
-        formRef.current?.setFieldsValue({
-          ...props.node.value,
-          codes: props.node.value?.codes ? props.node.value?.codes : [],
-        });
+        if (v) {
+          getProductData();
+          formRef.current?.setFieldsValue({
+            ...props.node.value,
+            codes: props.node.value?.codes ? props.node.value?.codes : [],
+          });
+        }
       }}
       trigger={props.children}
       onFinish={onFinish}
@@ -115,15 +143,32 @@ const MaterialTableModal: React.FC<{
           min={0}
         />
       </ProForm.Group>
-
-      <BusMaterialSelect
-        multiple={true}
-        label="物料编码组合列表"
-        help="仅支持添加物料类型为材料的物料编码"
-        disabled={disabled}
-        materialType={BusMaterialTypeEnum.Material}
-        name="codes"
-      />
+      <ProFormDependency name={['type', 'code']}>
+        {({ type, code }) => {
+          if (type === BusMaterialTypeEnum.Product && code?.length > 2) {
+            return (
+              <Space>
+                {disabled ? null : (
+                  <ProductMaterialModal
+                    node={{ type: 'add', materialCode: code, value: product || undefined }}
+                    title={`编辑成衣${code}内容`}
+                  >
+                    <Button>编辑成衣内容</Button>
+                  </ProductMaterialModal>
+                )}
+                <ProductMaterialModal
+                  node={{ type: 'watch', materialCode: code, value: product || undefined }}
+                  title={`查看成衣${code}内容`}
+                >
+                  <Button>查看成衣内容</Button>
+                </ProductMaterialModal>
+              </Space>
+            );
+          } else {
+            return null;
+          }
+        }}
+      </ProFormDependency>
       <ProFormTextArea label="备注信息" disabled={disabled} name="remark" />
     </ModalForm>
   );

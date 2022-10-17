@@ -12,9 +12,11 @@ const BusMaterialSelect: React.FC<
   ProFormSelectProps & {
     multiple?: boolean;
     materialType?: BusMaterialTypeEnum;
+    serachLength?: number;
     onChangeName?: (value, name) => void;
   }
 > = (props) => {
+  const serachLength = props?.serachLength || 3;
   return (
     <ProFormSelect
       {...props}
@@ -35,8 +37,8 @@ const BusMaterialSelect: React.FC<
           params.keyWords = props1.fieldProps.value;
         }
         if (
-          (params.keyWords && params.keyWords.length > 3) ||
-          (props1.fieldProps.value.length > 3 && props1.mode === 'read')
+          (params.keyWords && params.keyWords.length > serachLength) ||
+          (props1.fieldProps.value.length > serachLength && props1.mode === 'read')
         ) {
           const { data } = await getList(params.keyWords, props.materialType);
           return data;
