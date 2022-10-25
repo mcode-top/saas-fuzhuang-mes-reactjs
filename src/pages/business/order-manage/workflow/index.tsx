@@ -2,7 +2,9 @@ import { findSystemWorkflow, updateModelApprove } from '@/apis/process/process';
 import type { ActUpdateModelApprove } from '@/apis/process/typings';
 import IdToPerson from '@/components/Comm/IdToPerson';
 import SelectSystemPerson from '@/components/SelectSystemPerson';
-import { Button, Card, Descriptions, Spin } from 'antd';
+import { LoadingOutlined, ReloadOutlined } from '@ant-design/icons';
+import ProTable from '@ant-design/pro-table';
+import { Button, Card, Descriptions, Spin, Table } from 'antd';
 import { useEffect, useState } from 'react';
 
 const BusWorkflowManage: React.FC = () => {
@@ -22,19 +24,36 @@ const BusWorkflowManage: React.FC = () => {
     getList();
   }, []);
   return (
-    <Card loading={loading} title="审批人员管理" extra={<Button onClick={getList}>刷新</Button>}>
-      <Descriptions column={1} bordered={true}>
-        {list.map((i) => {
-          return (
-            <Descriptions.Item label={i.name} key={i.businessKey}>
-              <IdToPerson showTypeTitle={true} person={i.person} />
+    <ProTable
+      loading={loading}
+      columns={[
+        {
+          title: '工作流名称',
+          dataIndex: 'name',
+        },
+        {
+          title: '审批节点名称',
+          dataIndex: 'taskModelName',
+        },
+        {
+          title: '审批人员',
+          dataIndex: 'person',
+          render(dom, entity, index, action, schema) {
+            return <IdToPerson showTypeTitle={true} person={entity.person} />;
+          },
+        },
+        {
+          title: '操作',
+          dataIndex: 'operator',
+          render(dom, entity, index, action, schema) {
+            return (
               <SelectSystemPerson
                 onFinish={(v) => {
                   if (v) {
                     setLoading(true);
                     return updateModelApprove({
-                      taskModelId: i.taskModelId,
-                      businessKey: i.businessKey,
+                      taskModelId: entity.taskModelId,
+                      businessKey: entity.businessKey,
                       person: v,
                     })
                       .then((res) => {
@@ -53,15 +72,22 @@ const BusWorkflowManage: React.FC = () => {
                 showRole
                 showUser
                 multiple
-                value={i.person}
+                value={entity.person}
               >
                 <Button>选择修改审批人员</Button>
               </SelectSystemPerson>
-            </Descriptions.Item>
-          );
-        })}
-      </Descriptions>
-    </Card>
+            );
+          },
+        },
+      ]}
+      headerTitle="审批人员管理"
+      search={false}
+      toolbar={{
+        settings: [{ icon: <ReloadOutlined />, tooltip: '刷新', onClick: getList }],
+      }}
+      rowKey={(record) => record.businessKey + record.taskModelId}
+      dataSource={list}
+    />
   );
 };
 

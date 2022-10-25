@@ -136,7 +136,11 @@ export function fetchGoodsIdToOutInLogList(
 }
 
 /**@name 通过物料编码检查货品库存 */
-export function checkMaterialCodeToGoodsQuantity(materialCode: string, sizeId?: number) {
+export function checkMaterialCodeToGoodsQuantity(
+  materialCode: string,
+  sizeId?: number,
+  color?: string,
+) {
   return request<RESULT_SUCCESS<BusWarehouseGoodQuantityType | null>>(
     '/warehouse/goods/check-quantity',
     {
@@ -144,6 +148,7 @@ export function checkMaterialCodeToGoodsQuantity(materialCode: string, sizeId?: 
       data: {
         materialCode,
         sizeId,
+        color,
       },
     },
   );

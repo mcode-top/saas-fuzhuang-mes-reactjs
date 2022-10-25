@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import type { NameAndIdType } from '@/apis/comm';
+import type { DeptTreeType, RoleTreeType, UserListItem } from '@/apis/person/typings';
 import { STORAGE_DEPT_LIST, STORAGE_ROLE_LIST, STORAGE_USER_LIST } from '@/configs/storage.config';
 import storageDataSource from '@/utils/storage';
 import { ReloadOutlined } from '@ant-design/icons';
 import { CheckCard } from '@ant-design/pro-card';
-import { Button, Modal, Tabs } from 'antd';
-import { isEmpty } from 'lodash';
+import { Button, Modal, Space, Spin, Tabs, Tag } from 'antd';
+import { isEmpty, values } from 'lodash';
 import { useEffect, useImperativeHandle, useRef, useState, forwardRef } from 'react';
 import styles from './index.less';
 
@@ -56,6 +57,14 @@ export default function SelectSystemPerson(props: SelectSystemPersonType) {
       setTabKey('dept');
     }
   }, []);
+  function showModal() {
+    if (props.value) {
+      props?.value?.userIds && setUserIds(props.value.userIds);
+      props?.value?.roleIds && setRoleIds(props.value.roleIds);
+      props?.value?.deptIds && setDeptIds(props.value.deptIds);
+    }
+    setVisible(true);
+  }
   function handleRefresh() {
     if (tabKey === 'user') {
       userRef.current?.refersh();
@@ -95,6 +104,7 @@ export default function SelectSystemPerson(props: SelectSystemPersonType) {
         keyboard={false}
         onCancel={closeModal}
       >
+        {/* <SelectPersonSort value={props.value} /> */}
         <Tabs
           activeKey={tabKey}
           onChange={(key) => setTabKey(key as TabKeys)}
@@ -147,7 +157,7 @@ export default function SelectSystemPerson(props: SelectSystemPersonType) {
       </Modal>
       <div
         onClick={() => {
-          setVisible(true);
+          showModal();
         }}
       >
         {props.children}
@@ -230,3 +240,93 @@ const SelectList = forwardRef(function (
     </>
   );
 });
+
+/**@name 设置人员排序 --废弃后续规划 */
+const SelectPersonSort = (props: {
+  value: SelectSystemPersonGroup;
+  onChange?: (value: SelectSystemPersonGroup | undefined) => void;
+}) => {
+  const [sortList, setSortList] = useState<SelectSystemPersonGroup['sort']>();
+  const [searchUserRecord, setSearchUserRecord] = useState<any>({});
+  const [searchDeptRecord, setSearchDeptRecord] = useState<any>({});
+  const [searchRoleRecord, setSearchRoleRecord] = useState<any>({});
+  const [loading, setLoading] = useState<boolean>(false);
+  useEffect(() => {
+    formatPersonToSort(props.value).then((res) => {
+      setSortList(res);
+    });
+  }, [props.value]);
+  /**@name 获取远程实例列表 */
+  async function fetchRemoteInstanceList(key: string, setFunc: any) {
+    setLoading(true);
+    try {
+      setFunc((await storageDataSource.getValue(key, false)).serachRecord);
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
+  }
+  /**@name 将Person类型合成排序类型 */
+  async function formatPersonToSort(
+    value: SelectSystemPersonGroup,
+  ): Promise<SelectSystemPersonGroup['sort']> {
+    const initSort = value.sort || [];
+    // 对比id是否由缺失,无则补充
+    await Promise.all(
+      [
+        ['userIds', 'user', STORAGE_USER_LIST, setSearchUserRecord],
+        ['roleIds', 'role', STORAGE_ROLE_LIST, setSearchRoleRecord],
+        ['deptIds', 'dept', STORAGE_DEPT_LIST, setSearchDeptRecord],
+      ].map(async (item) => {
+        const ids = props.value[item[0] as string];
+        if (isEmpty(ids)) {
+          await fetchRemoteInstanceList(item[2] as string, item[3]);
+        }
+        ids.forEach((id) => {
+          const find = initSort.find((sort) => sort.id === id && item[1] === sort.type);
+          if (!find) {
+            // 如果不存在则补充
+            initSort.push({
+              id,
+              type: item[1] as any,
+            });
+          }
+        });
+      }),
+    );
+    return initSort;
+  }
+  return (
+    <Spin spinning={loading}>
+      <Space
+        size={8}
+        style={{ width: '100%', minHeight: 200, backgroundColor: '#f5f3f2', padding: 12 }}
+      >
+        {loading
+          ? null
+          : sortList?.map((item) => {
+              let name = '';
+              let belongName = '';
+              if (item.type === 'user') {
+                belongName = '用户';
+                console.log('====================================');
+                console.log(searchUserRecord);
+                console.log('====================================');
+                name = searchUserRecord[item.id];
+              } else if (item.type === 'dept') {
+                belongName = '部门';
+                name = searchDeptRecord[item.id];
+              } else if (item.type === 'role') {
+                belongName = '角色';
+                name = searchRoleRecord[item.id];
+              }
+              return (
+                <Tag style={{ minWidth: 100 }}>
+                  [{belongName}]{name}
+                </Tag>
+              );
+            })}
+      </Space>
+    </Spin>
+  );
+};

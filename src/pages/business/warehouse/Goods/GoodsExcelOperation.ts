@@ -20,7 +20,7 @@ export function GoodsImportExcelPutIn() {
       const data: any = utils.sheet_to_json(worksheet);
       return arrayAttributeChange<any>(
         data.map((i) => {
-          const v = pick(i, '物料编码', '尺码模板', '尺码', '货品入库数', '入库原因');
+          const v = pick(i, '物料编码', '尺码模板', '尺码', '颜色', '货品入库数', '入库原因');
           return {
             ...v,
           };
@@ -29,6 +29,7 @@ export function GoodsImportExcelPutIn() {
           ['物料编码', 'materialCode'],
           ['尺码模板', 'sizeTemplateName'],
           ['尺码', 'sizeName'],
+          ['颜色', 'color'],
           ['货品入库数', 'deliveryCount'],
           ['入库原因', 'remark'],
         ],
@@ -43,6 +44,7 @@ export type ExcelImportData = {
   deliveryCount: number;
   sizeTemplateName?: string;
   sizeName?: string;
+  color?: string;
   remark?: string;
 };
 /**@name 检查Excel导入数据=>转换为接口数据 */
@@ -91,6 +93,7 @@ export async function checkGoodsExcelDataToFetchData(data: ExcelImportData[]) {
         successData.push({
           sizeId: size.id,
           sizeName: size.name,
+          color: item.color,
           materialCode: item.materialCode,
           deliveryCount: item.deliveryCount,
           remark: item.remark,
@@ -113,9 +116,10 @@ export function GoodsExcelPutInTemplate() {
       名称: '填写名称',
       物料编码: '必填,填写物料编码(需要与系统对应)',
       货品入库数: '必填,填写货品入库数,必须大于0',
-      入库原因: '填写入库原因',
       尺码模板: '如果是成品则需要填写尺码模板(需要与系统对应)',
       尺码: '如果是成品则需要填写尺码(需要与系统对应)',
+      颜色: '如果是成品需要填写颜色',
+      入库原因: '填写入库原因,可不填',
     },
   ]);
   const wb = utils.book_new();

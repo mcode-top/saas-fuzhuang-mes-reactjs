@@ -25,6 +25,7 @@ import { Button } from 'antd';
 import { isEmpty, omit } from 'lodash';
 import styles from './index.less';
 import './replace.css';
+import LogoCraftsmanship from './LogoCraftsmanship';
 function computedTotalPrice(entity: BusOrderStyleDemand) {
   let totalPrice = 0;
   entity.sizePriceNumber?.forEach((i) => {
@@ -74,7 +75,7 @@ const ContractOrderStyleModal: React.FC<{
   const disabled = props.node.type === 'watch';
   return (
     <ModalForm<BusOrderStyleDemand>
-      width={800}
+      width={1000}
       title={props.title}
       submitter={disabled ? false : undefined}
       formRef={formRef}
@@ -118,7 +119,6 @@ const ContractOrderStyleModal: React.FC<{
                           validator: query.type === 'create' ? validatorMaterialCode : undefined,
                         },
                       ]}
-                      width="md"
                       colProps={{ span: 12 }}
                       label="新的物料编码(型号)"
                       placeholder="填写新的物料编码(型号)"
@@ -126,7 +126,6 @@ const ContractOrderStyleModal: React.FC<{
                     <ProFormText
                       rules={[{ required: true }]}
                       name="style"
-                      width="md"
                       colProps={{ span: 12 }}
                       placeholder="填写新的产品名称(款式)"
                       label="新的产品名称(款式)"
@@ -144,13 +143,11 @@ const ContractOrderStyleModal: React.FC<{
                         validator: query.type === 'create' ? validatorMaterialCode : undefined,
                       },
                     ]}
-                    width="md"
                     colProps={{ span: 12 }}
                     label="物料编码(型号)"
                   />
                   <ProFormText
                     name="style"
-                    width="md"
                     colProps={{ span: 12 }}
                     rules={[{ required: true }]}
                     label="产品名称(款式)"
@@ -232,7 +229,6 @@ const ContractOrderStyleModal: React.FC<{
           label="版费"
         />
       </ProFormGroup>
-      <SizeNumberPriceList colorGroup={colorGroup} readonly={disabled} />
       <ProFormDependency name={['sizePriceNumber', '印刷单价', '绣花单价', '版费']}>
         {(data) => {
           let totalPrice = 0;
@@ -249,7 +245,7 @@ const ContractOrderStyleModal: React.FC<{
           }`;
         }}
       </ProFormDependency>
-      <ProFormGroup>
+      {/* <ProFormGroup>
         <ProFormText colProps={{ span: 12 }} name="logo生产流程" label="logo生产流程" />
         <ProFormText colProps={{ span: 12 }} name="logo工艺位置" label="logo工艺位置" />
       </ProFormGroup>
@@ -265,7 +261,11 @@ const ContractOrderStyleModal: React.FC<{
             imageSize: disabled ? 128 : 192,
           }}
         />
-      </ProForm.Item>
+      </ProForm.Item> */}
+      <div style={{ width: '100%' }}>
+        <LogoCraftsmanship value={props.node?.value?.logo} readonly={disabled} />
+      </div>
+      <SizeNumberPriceList colorGroup={colorGroup} readonly={disabled} />
     </ModalForm>
   );
 };
@@ -359,6 +359,7 @@ function SizeNumberPriceList(props: { readonly?: boolean; colorGroup: string[] }
   );
 }
 
+/**@name 通过物料编码填充款式表单内容 */
 function MaterialFillStyleDemand(props: {
   name: string;
   action: ProFormInstance<any> | undefined;

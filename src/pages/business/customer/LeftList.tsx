@@ -31,7 +31,7 @@ const BusCustomerLeftListDom: React.FC<{
       style={{ height: '100%', flexDirection: 'column', display: 'flex' }}
       bodyStyle={{ padding: 0, flexGrow: 1, overflow: 'auto' }}
       extra={
-        <Space>
+        <Space size="small">
           <BusCustomerCompanyModal
             title="新增客户公司"
             node={{ type: 'create' }}

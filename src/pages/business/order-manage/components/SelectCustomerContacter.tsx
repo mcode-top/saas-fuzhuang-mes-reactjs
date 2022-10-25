@@ -9,15 +9,19 @@ import type { ProFormSelectProps } from '@ant-design/pro-form/lib/components/Sel
 const BusSelectCustomerContacter: React.FC<ProFormSelectProps & { companyId?: number }> = (
   props,
 ) => {
+  let hlepText = '';
+  if (!props.readonly) {
+    if (!props.companyId) {
+      hlepText = '需要先选择公司,如果公司联系人不存在则需要先去客户管理创建';
+    }
+  }
   return (
     <ProFormSelect
       {...props}
       fieldProps={{
         ...props.fieldProps,
       }}
-      help={
-        props.companyId ? undefined : '需要先选择公司,如果公司联系人不存在则需要先去客户管理创建'
-      }
+      help={hlepText}
       params={{ companyId: props.companyId }}
       request={async (params) => {
         if (params.companyId === undefined) {

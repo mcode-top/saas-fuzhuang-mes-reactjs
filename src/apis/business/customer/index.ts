@@ -90,3 +90,31 @@ export function fetchCurrentCustomerAddressList(id: number) {
     method: 'GET',
   });
 }
+
+/**@name 批量导入客户信息 */
+export function fetchManyExportExcelCustomer(data: Omit<BusCustomerCompanyType, 'id'>[]) {
+  return request<RESULT_SUCCESS<any>>('/customer/many/customer', {
+    method: 'POST',
+    data,
+  });
+}
+/**@name 批量导入客户联系人 */
+export function fetchManyExportExcelContacter(
+  companyId: number,
+  data: Omit<BusCustomerContacterType, 'id'>[],
+) {
+  return request<RESULT_SUCCESS<any>>('/customer/many/contacter/' + companyId, {
+    method: 'POST',
+    data,
+  });
+}
+/**@name 批量导入客户地址 */
+export function fetchManyExportExcelAddress(
+  companyId: number,
+  data: Omit<BusCustomerAddressType, 'id'>[],
+) {
+  return request<RESULT_SUCCESS<any>>('/customer/many/address' + companyId, {
+    method: 'POST',
+    data,
+  });
+}

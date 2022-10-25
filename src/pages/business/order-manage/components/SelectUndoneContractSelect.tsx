@@ -33,9 +33,6 @@ const SelectUndoneContractSelect: React.FC<
 
 const getList = throttle(
   async function (keyWords) {
-    console.log('====================================');
-    console.log(keyWords);
-    console.log('====================================');
     return arrayAttributeChange(
       (
         await storageDataSource.getValue(STORAGE_UNDONE_CONTRACT_NUMBER_LIST, true, {

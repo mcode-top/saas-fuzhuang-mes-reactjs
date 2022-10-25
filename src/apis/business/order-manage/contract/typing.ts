@@ -66,12 +66,14 @@ export type BusOrderStyleDemand = {
   绣花单价?: number;
   /**@name 版费 */
   版费?: number;
-  /**@name logo生产流程 */
-  logo生产流程?: string;
-  /**@name logo工艺位置 */
-  logo工艺位置?: string;
-  /**@name logo效果图 */
-  logo效果图?: { name: string; position?: string }[];
+  logo: {
+    /**@name logo生产流程 */
+    logo生产流程?: string;
+    /**@name logo工艺位置 */
+    logo工艺位置?: string;
+    /**@name logo效果图 */
+    logo效果图?: { name: string; position?: string }[];
+  }[];
   /**@name 总价 */
   totalPrice: number;
 };
@@ -90,7 +92,7 @@ export type BusOrderContract = {
   company?: BusCustomerCompanyType;
   addressId?: number;
   contactId?: number;
-  deliverDate?: Date;
+  deliverDate?: string;
   packageDemand?: string;
   prepayPercent: number;
   invoiceType: string;

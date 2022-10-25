@@ -1,6 +1,7 @@
 import {
   fetchCurrentCustomerAddressList,
   fetchCurrentCustomerContacterList,
+  fetchManyExportExcelAddress,
   fetchRemoveCustomerAddress,
   fetchRemoveCustomerContacter,
 } from '@/apis/business/customer';
@@ -12,8 +13,9 @@ import { STORAGE_CUSTOMER_ADDRESS_LIST } from '@/configs/storage.config';
 import storageDataSource from '@/utils/storage';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { Button, Popconfirm, Space, Table } from 'antd';
+import { Button, message, Popconfirm, Space, Table } from 'antd';
 import React, { useEffect } from 'react';
+import { busCustomerAddressExportExcelTemplate, busCustomerAddressImportExcel } from '../excel';
 import BusCustomerAddressModal from './CustomerAddressModal';
 
 const CustomerAddressList: React.FC<{
@@ -93,6 +95,36 @@ const CustomerAddressList: React.FC<{
               新增收货地址
             </Button>
           </BusCustomerAddressModal>,
+          <Button
+            key="批量导入客户联系人"
+            onClick={() => {
+              busCustomerAddressImportExcel().then((res) => {
+                if (res) {
+                  const result = res.filter((i) => {
+                    return i.name !== '' && i.phone !== '';
+                  });
+                  const loadingCustomer = message.loading('正在批量导入客户地址', 0);
+                  fetchManyExportExcelAddress(props.record.id, result)
+                    .then(() => {
+                      actionRef.current?.reload();
+                      message.success('导入成功');
+                    })
+                    .finally(() => {
+                      loadingCustomer();
+                    });
+                }
+                props.record.id;
+              });
+            }}
+          >
+            批量导入客户地址
+          </Button>,
+          <Button
+            key="下载客户联系人模板"
+            onClick={() => busCustomerAddressExportExcelTemplate(props.record.name)}
+          >
+            下载客户地址模板
+          </Button>,
         ],
       }}
       rowKey="id"

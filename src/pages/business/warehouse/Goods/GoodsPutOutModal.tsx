@@ -73,6 +73,9 @@ const GoodsPutOutModal: React.FC<{
             props.value.size?.specification ? `(${props.value.size?.specification})` : ''
           }`}</Descriptions.Item>
         )}
+        {wContext.currentWarehouse?.type === BusWarehouseTypeEnum.Material ? null : (
+          <Descriptions.Item label="颜色">{props.value.color}</Descriptions.Item>
+        )}
         <Descriptions.Item label="当前库存数量">{`${props.value.quantity}`}</Descriptions.Item>
       </Descriptions>
       {props.type === 'update-remark' ? null : (

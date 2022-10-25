@@ -29,7 +29,7 @@ export type BusOrderManufacture = {
   remark?: string;
   processId: number;
   process?: ActProcess;
-  deliverDate?: Date;
+  deliverDate?: Date | string;
   recordPiece?: BusOrderRecordPiece;
 };
 /**@name 审核合同单 */

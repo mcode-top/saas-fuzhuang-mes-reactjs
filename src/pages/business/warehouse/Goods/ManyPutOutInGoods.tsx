@@ -159,6 +159,13 @@ const PutOutInEditTable = forwardRef(
         hideInTable: props.warehouseType === BusWarehouseTypeEnum.Material,
       },
       {
+        title: '颜色',
+        dataIndex: 'color',
+        width: 80,
+        readonly: true,
+        hideInTable: props.warehouseType === BusWarehouseTypeEnum.Material,
+      },
+      {
         title: '库存数量',
         dataIndex: 'quantity',
         width: 100,

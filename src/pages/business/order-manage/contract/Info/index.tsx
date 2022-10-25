@@ -50,7 +50,7 @@ const OrderContractInfo: React.FC = (props) => {
   const query = (location as any).query as ContractLocationQuery;
   useEffect(() => {
     if (query.type === 'create') {
-      refrshContractNumber();
+      // refrshContractNumber();
     } else if (query.type === 'watch' || query.type === 'approve') {
       if (query.contractNumber) {
         setReadonly(true);
@@ -108,6 +108,7 @@ const OrderContractInfo: React.FC = (props) => {
     window.layoutTabsAction.goAndClose('/order-manage/contract', true);
     message.success('操作成功');
   }
+  /**@name 刷新合同号 */
   function refrshContractNumber() {
     setContractLoading(true);
     fetchContractSerialNumber()
@@ -117,9 +118,9 @@ const OrderContractInfo: React.FC = (props) => {
       .finally(() => setContractLoading(false));
   }
   return (
-    <Card style={{ width: 800, margin: 'auto' }}>
+    <Card style={{ width: 1000, margin: 'auto' }}>
       <ProForm
-        layout={readonly ? 'horizontal' : 'vertical'}
+        grid={true}
         formRef={formRef}
         submitter={{
           render: (_, dom) => (
@@ -185,8 +186,15 @@ const OrderContractInfo: React.FC = (props) => {
           await createContract(values as any);
         }}
       >
-        <ProForm.Group>
-          <ProFormText
+        <ProFormText
+          label="合同号"
+          disabled={true}
+          colProps={{ span: 8 }}
+          readonly={readonly}
+          name="contractNumber"
+          placeholder="创建完订单后自动生成"
+        />
+        {/* <ProFormText
             name="contractNumber"
             label="合同号"
             width="sm"
@@ -198,113 +206,119 @@ const OrderContractInfo: React.FC = (props) => {
             }}
             readonly={readonly}
             help={readonly ? '' : '点击按钮可重置合同流水号'}
-          />
-          <BusSelectUser
-            label="跟进人"
-            initialValue={initialState?.currentUser?.id}
-            placeholder="请输入名称"
-            name="operatorId"
-            width="sm"
-            readonly={true}
-          />
-          <ProFormDatePicker
-            readonly={readonly}
-            rules={[{ required: true }]}
-            label="交期时间"
-            fieldProps={{ disabledDate: disabledLastDate }}
-            width="sm"
-            name="deliverDate"
-          />
-        </ProForm.Group>
+          /> */}
+        <BusSelectUser
+          label="跟进人"
+          colProps={{ span: 8 }}
+          initialValue={initialState?.currentUser?.id}
+          placeholder="请输入名称"
+          name="operatorId"
+          width="sm"
+          readonly={true}
+        />
+        <ProFormDatePicker
+          readonly={readonly}
+          colProps={{ span: 8 }}
+          rules={[{ required: true }]}
+          label="交期时间"
+          fieldProps={{ disabledDate: disabledLastDate }}
+          width="sm"
+          name="deliverDate"
+        />
         <BusSelectCustomerCompany
           label="客户公司"
           width="lg"
+          colProps={{ span: 12 }}
           readonly={readonly}
           rules={[{ required: true }]}
           name="companyId"
         />
-        <ProForm.Group>
-          <ProFormDependency name={['companyId']}>
-            {({ companyId }) => {
-              return (
-                <>
-                  <BusSelectCustomerContacter
-                    label="客户联系人"
-                    readonly={readonly}
-                    width="lg"
-                    companyId={companyId}
-                    name="contactId"
-                  />
-                  <BusSelectCustomerAddress
-                    label="客户地址"
-                    readonly={readonly}
-                    width="lg"
-                    companyId={companyId}
-                    name="addressId"
-                  />
-                </>
-              );
-            }}
-          </ProFormDependency>
-        </ProForm.Group>
-        <ProForm.Group>
-          <ProFormDigit
-            label="预付比例(%)"
-            rules={[{ required: true }]}
-            fieldProps={{
-              addonAfter: '%',
-              precision: 2,
-            }}
-            min={0}
-            readonly={readonly}
-            max={100}
-            name="prepayPercent"
-          />
+        <ProFormDependency name={['companyId']}>
+          {({ companyId }) => {
+            return (
+              <>
+                <BusSelectCustomerContacter
+                  label="客户联系人"
+                  readonly={readonly}
+                  colProps={{ span: 12 }}
+                  width="lg"
+                  companyId={companyId}
+                  name="contactId"
+                />
+                <BusSelectCustomerAddress
+                  label="客户收货地址"
+                  style={{ width: '100%' }}
+                  readonly={readonly}
+                  colProps={{ span: 24 }}
+                  width="lg"
+                  companyId={companyId}
+                  name="addressId"
+                />
+              </>
+            );
+          }}
+        </ProFormDependency>
+        <ProFormDigit
+          label="预付比例(%)"
+          colProps={{ span: 8 }}
+          rules={[{ required: true }]}
+          fieldProps={{
+            addonAfter: '%',
+            precision: 2,
+          }}
+          min={0}
+          readonly={readonly}
+          max={100}
+          name="prepayPercent"
+        />
 
-          <ProFormRadio.Group
-            label="发票类型"
-            name="invoiceType"
-            readonly={readonly}
-            initialValue="发票"
-            rules={[{ required: true }]}
-            options={['发票', '普票', '无票']}
-          />
-        </ProForm.Group>
-        <ProForm.Group>
-          <ProFormSelect
-            readonly={readonly}
-            label="订单类型"
-            name="type"
-            rules={[{ required: true }]}
-            initialValue={BusOrderTypeEnum.Normal}
-            valueEnum={OrderContractTypeValueEnum.OrderType}
-          />
-          <ProFormText
-            readonly={readonly}
-            name="payment"
-            label="付款方式"
-            rules={[{ required: true }]}
-            placeholder="请输入名称"
-          />
-          {/**@name 需要审批人员设置销售提成 */}
-          <ProFormDigit
-            name="salesCommissions"
-            readonly={query.type !== 'approve'}
-            label="销售提成(%)"
-            fieldProps={{
-              addonAfter: '%',
-              precision: 2,
-            }}
-            min={0}
-            rules={[{ required: query.type === 'approve' }]}
-            max={100}
-          />
-        </ProForm.Group>
+        <ProFormRadio.Group
+          label="发票类型"
+          name="invoiceType"
+          colProps={{ span: 8 }}
+          readonly={readonly}
+          initialValue="发票"
+          rules={[{ required: true }]}
+          options={['发票', '普票', '无票']}
+        />
+        <ProFormSelect
+          readonly={readonly}
+          label="订单类型"
+          name="type"
+          colProps={{ span: 8 }}
+          rules={[{ required: true }]}
+          initialValue={BusOrderTypeEnum.Normal}
+          valueEnum={OrderContractTypeValueEnum.OrderType}
+        />
+        <ProFormText
+          readonly={readonly}
+          name="payment"
+          label="付款方式"
+          colProps={{ span: 8 }}
+          rules={[{ required: true }]}
+          placeholder="请输入名称"
+        />
+        {/**@name 需要审批人员设置销售提成 */}
+        <ProFormDigit
+          name="salesCommissions"
+          readonly={query.type !== 'approve'}
+          label="销售提成(%)"
+          colProps={{ span: 8 }}
+          fieldProps={{
+            addonAfter: '%',
+            precision: 2,
+          }}
+          min={0}
+          rules={[{ required: query.type === 'approve' }]}
+          max={100}
+        />
         <ProFormText
           readonly={readonly}
           name="logisticsMode"
           label="物流方式"
+          colProps={{ span: 8 }}
           placeholder="请输入物流方式"
+          rules={[{ required: true }]}
         />
         <ProForm.Item
           name="styleDemand"
@@ -322,8 +336,18 @@ const OrderContractInfo: React.FC = (props) => {
         >
           <OrderStyleDemandTable readonly={readonly} />
         </ProForm.Item>
-        <ProFormTextArea readonly={readonly} label="包装要求" name="packageDemand" />
-        <ProFormTextArea readonly={readonly} label="备注说明" name="remark" />
+        <ProFormTextArea
+          colProps={{ span: 24 }}
+          readonly={readonly}
+          label="包装要求"
+          name="packageDemand"
+        />
+        <ProFormTextArea
+          colProps={{ span: 24 }}
+          readonly={readonly}
+          label="备注说明"
+          name="remark"
+        />
       </ProForm>
     </Card>
   );
@@ -338,13 +362,12 @@ function OrderStyleDemandTable(props: {
 }) {
   const [dataSource, setDataSource] = useState<BusOrderStyleDemand[]>([]);
   const columns: ProColumns[] = [
-    { title: '物料编码(型号)', dataIndex: 'materialCode', width: 150 },
+    { title: '物料编码(型号)', dataIndex: 'materialCode' },
     { title: '产品名称', dataIndex: 'style' },
     { title: '合同订单类型', dataIndex: 'styleType', valueEnum: OrderContractTypeValueEnum.Style },
     {
       title: '总数量',
       key: 'number',
-      width: 80,
       render(dom, entity, index, action, schema) {
         let total = 0;
         entity.sizePriceNumber?.forEach((i) => {
@@ -356,12 +379,10 @@ function OrderStyleDemandTable(props: {
     {
       title: '总金额',
       dataIndex: 'totalPrice',
-      width: 100,
     },
     {
       title: '操作',
       fixed: 'right',
-      width: 80,
       key: 'operation',
       render(dom, entity, index, action, schema) {
         return (
@@ -416,6 +437,7 @@ function OrderStyleDemandTable(props: {
       search={false}
       columns={columns}
       dataSource={dataSource}
+      style={{ width: 900 }}
       size={'small'}
       toolBarRender={(action: ActionType | undefined) => {
         return props.readonly

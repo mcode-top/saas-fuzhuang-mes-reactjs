@@ -17,7 +17,7 @@ import React from 'react';
 import { WarehouseContext } from '../context';
 import GoodsPutInModal from './GoodsPutInModal';
 import { formatWarehouseEnumToMaterialEnum } from '../helper';
-import GoodsPutOutModal from './GoddsPutOutModal';
+import GoodsPutOutModal from './GoodsPutOutModal';
 import GoodsOutInLogModal from '../Log/GoodsOutInLogModal';
 import { GoodsExcelPutInTemplate, GoodsImportExcelPutIn } from './GoodsExcelOperation';
 import ExcelHintGoodsPutInModal from './CheckExcelGoodsPutInModal';
@@ -228,6 +228,12 @@ const BusWarehouseGoodsTable: React.FC = () => {
           record.size?.specification ? `(${record.size?.specification})` : ''
         }`;
       },
+      hideInTable: wContext.currentWarehouse?.type === BusWarehouseTypeEnum.Material,
+    },
+    {
+      title: '颜色',
+      dataIndex: 'color',
+      hideInSearch: true,
       hideInTable: wContext.currentWarehouse?.type === BusWarehouseTypeEnum.Material,
     },
     {

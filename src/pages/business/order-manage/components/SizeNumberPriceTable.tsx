@@ -21,7 +21,9 @@ const SizeNumberPriceTable: React.FC<{ materialCode: string; data?: BusOrderSize
     );
     const data = props?.data?.map((i) => {
       let total = 0;
-      const mateGoods = result?.data?.goods?.filter((goods) => goods.sizeId === i.sizeId);
+      const mateGoods = result?.data?.goods?.filter(
+        (goods) => goods.sizeId === i.sizeId && goods.color === i.color,
+      );
       if (!isEmpty(mateGoods)) {
         total =
           mateGoods?.reduce((prev, next) => {
@@ -58,6 +60,7 @@ const SizeNumberPriceTable: React.FC<{ materialCode: string; data?: BusOrderSize
             );
           },
         },
+        { dataIndex: 'color', title: '颜色' },
         { dataIndex: 'number', title: '数量' },
         {
           dataIndex: 'total',

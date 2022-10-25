@@ -87,6 +87,9 @@ const GoodsPutInModal: React.FC<{
           name="sizeId"
         />
       ) : null}
+      {wContext.currentWarehouse?.type !== BusWarehouseTypeEnum.Material ? (
+        <ProFormText disabled={disabled} label="颜色" rules={[{ required: true }]} name="color" />
+      ) : null}
       <ProFormDigit
         rules={[
           { required: true },

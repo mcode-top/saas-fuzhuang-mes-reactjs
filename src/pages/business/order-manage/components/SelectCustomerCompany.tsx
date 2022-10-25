@@ -14,7 +14,7 @@ const BusSelectCustomerCompany: React.FC<ProFormSelectProps> = (props) => {
       fieldProps={{
         ...props.fieldProps,
       }}
-      help={'如果公司不存在则需要先去客户管理创建'}
+      help={props.readonly ? '' : '如果公司不存在则需要先去客户管理创建'}
       request={async () => {
         return arrayAttributeChange(
           (await storageDataSource.getValue(STORAGE_CUSTOMER_COMPANY_LIST)).data,

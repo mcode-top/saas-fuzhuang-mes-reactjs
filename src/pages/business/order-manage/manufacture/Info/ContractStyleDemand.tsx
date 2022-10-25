@@ -1,13 +1,16 @@
 import type { BusOrderStyleDemand } from '@/apis/business/order-manage/contract/typing';
 import SelectUploadFile from '@/components/Comm/FormlyComponents/Upload';
 import { dictValueEnum, OrderContractTypeValueEnum } from '@/configs/commValueEnum';
+import ProForm from '@ant-design/pro-form';
 import { Descriptions } from 'antd';
 import SizeNumberPriceTable from '../../components/SizeNumberPriceTable';
+import LogoCraftsmanship from '../../contract/Info/LogoCraftsmanship';
 
 /**@name 查看合同单中的款式信息 */
 const ContractStyleDemand: React.FC<{
   styleDemand: BusOrderStyleDemand;
   contractNumber: string;
+  deliverDate?: string;
 }> = (props) => {
   return (
     <div>
@@ -19,8 +22,8 @@ const ContractStyleDemand: React.FC<{
         <Descriptions.Item label="物料编码(型号)">
           {props?.styleDemand.materialCode}
         </Descriptions.Item>
+        <Descriptions.Item label="合同交期时间">{props.deliverDate}</Descriptions.Item>
         <Descriptions.Item label="产品名称(款式)">{props?.styleDemand.style}</Descriptions.Item>
-        <Descriptions.Item label="颜色">{props?.styleDemand.color}</Descriptions.Item>
         <Descriptions.Item label="面料">{props?.styleDemand.shellFabric}</Descriptions.Item>
         <Descriptions.Item label="商标">{props?.styleDemand.商标}</Descriptions.Item>
         <Descriptions.Item label="口袋">{props?.styleDemand.口袋}</Descriptions.Item>
@@ -34,31 +37,13 @@ const ContractStyleDemand: React.FC<{
         <Descriptions.Item label="袖口工艺">{props?.styleDemand.袖口工艺}</Descriptions.Item>
         <Descriptions.Item label="下摆工艺">{props?.styleDemand.下摆工艺}</Descriptions.Item>
         <Descriptions.Item label="纽扣工艺">{props?.styleDemand.纽扣工艺}</Descriptions.Item>
-        <Descriptions.Item label="logo生产流程">
-          {props?.styleDemand.logo生产流程}
-        </Descriptions.Item>
-        <Descriptions.Item label="logo工艺位置" span={2}>
-          {props?.styleDemand.logo工艺位置}
-        </Descriptions.Item>
       </Descriptions>
+      <LogoCraftsmanship readonly={true} value={props.styleDemand.logo} />
+
       <SizeNumberPriceTable
         materialCode={props?.styleDemand.materialCode}
         data={props?.styleDemand.sizePriceNumber}
       />
-      <div style={{ width: '100%' }}>
-        <SelectUploadFile
-          multiple
-          accpet="image/*"
-          readonly={true}
-          description="logo效果图"
-          value={props?.styleDemand.logo效果图}
-          imageProps={{
-            showImage: true,
-            imageColumn: 3,
-            imageSize: 192,
-          }}
-        />
-      </div>
     </div>
   );
 };

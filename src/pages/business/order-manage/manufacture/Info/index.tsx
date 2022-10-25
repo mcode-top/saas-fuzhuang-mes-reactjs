@@ -99,20 +99,22 @@ const OrderManufactureInfo: React.FC = () => {
   }
   /**@name 修改生产单 */
   async function updateManufacture(data: BusOrderManufacture) {
-    await fetchUpdateManufacture(query.id, data);
+    await fetchUpdateManufacture(query.id, data as any);
     resultSuccess();
   }
   function resultSuccess() {
     window.layoutTabsAction.goAndClose('/order-manage/manufacture', true);
     message.success('操作成功');
   }
+  console.log(contractResult);
 
   return (
     <Card style={{ width: 1000, margin: 'auto' }}>
       {contractResult ? (
         <ContractStyleDemand
-          contractNumber={contractResult.contractNumber}
-          styleDemand={contractResult.styleDemand}
+          deliverDate={contractResult?.contract?.deliverDate}
+          contractNumber={contractResult?.contractNumber}
+          styleDemand={contractResult?.styleDemand}
         />
       ) : null}
       <ProForm

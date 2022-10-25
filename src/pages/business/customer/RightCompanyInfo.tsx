@@ -1,5 +1,10 @@
-import { fetchRemoveCustomerCompany, fetchUpdateCustomerCompany } from '@/apis/business/customer';
+import {
+  fetchManyExportExcelCustomer,
+  fetchRemoveCustomerCompany,
+  fetchUpdateCustomerCompany,
+} from '@/apis/business/customer';
 import type { BusCustomerCompanyType } from '@/apis/business/customer/typing';
+import { BusCustomerTypeEnum } from '@/apis/business/customer/typing';
 import LoadingButton from '@/components/Comm/LoadingButton';
 import { CustomerCompanyValueEnum } from '@/configs/commValueEnum';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
@@ -7,10 +12,12 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProCoreActionType } from '@ant-design/pro-utils';
 import type { FormInstance } from 'antd';
+import { message } from 'antd';
 import { Button, Form, Popconfirm, Tabs } from 'antd';
 import { useState } from 'react';
 import CustomerAddressList from './address/CustomerAddressList';
 import CustomerContacterList from './contacter/CustomerContacterList';
+import { busCustomerExportExcelTemplate, busCustomerImportExcel } from './excel';
 
 const RightCompanyInfo: React.FC<{
   record: BusCustomerCompanyType;
@@ -36,6 +43,41 @@ const RightCompanyInfo: React.FC<{
       ]}
       extra={[
         <Button
+          key="批量导入客户信息"
+          onClick={() => {
+            busCustomerImportExcel().then((res) => {
+              if (res) {
+                const result = res
+                  .filter((i) => {
+                    return i.name !== '' && i.address !== '';
+                  })
+                  .map((i) => {
+                    let type = BusCustomerTypeEnum.Normal;
+                    if (i.type === 'VIP客户') {
+                      type = BusCustomerTypeEnum.VIP;
+                    }
+                    return { ...i, type };
+                  });
+                const loadingCustomer = message.loading('正在批量导入客户信息', 0);
+                fetchManyExportExcelCustomer(result)
+                  .then(() => {
+                    props.onChange?.('company');
+                    message.success('导入成功');
+                  })
+                  .finally(() => {
+                    loadingCustomer();
+                  });
+              }
+            });
+          }}
+        >
+          批量导入客户信息
+        </Button>,
+        <Button key="下载客户信息模板" onClick={busCustomerExportExcelTemplate}>
+          下载客户信息模板
+        </Button>,
+
+        <Button
           key="1"
           hidden={!readonly}
           onClick={() => {
@@ -44,6 +86,7 @@ const RightCompanyInfo: React.FC<{
         >
           修改客户
         </Button>,
+
         <LoadingButton
           hidden={readonly}
           key="2"

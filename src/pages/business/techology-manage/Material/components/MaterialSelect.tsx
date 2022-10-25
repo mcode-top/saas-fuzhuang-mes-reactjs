@@ -16,7 +16,7 @@ const BusMaterialSelect: React.FC<
     onChangeName?: (value, name) => void;
   }
 > = (props) => {
-  const serachLength = props?.serachLength || 3;
+  const serachLength = props?.serachLength || 1;
   return (
     <ProFormSelect
       {...props}

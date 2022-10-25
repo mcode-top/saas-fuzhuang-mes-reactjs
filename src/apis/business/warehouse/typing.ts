@@ -58,6 +58,8 @@ export type BusWarehouseGoodsType = {
   remark?: string;
   operator?: UserListItem;
   operatorId: number;
+  /**@name 颜色 */
+  color?: string;
 };
 
 /**@name 出入库记录实体 */
@@ -96,6 +98,7 @@ export type BusWarehousePutInGoodsDto = {
   /**@name 出入库数量必须大于0 */
   quantity: number;
   sizeId?: number;
+  color?: string;
   remark?: string;
   /**@name 绑定合同单号 */
   contractNumber?: string;
@@ -122,6 +125,7 @@ export type ExcelManyPutInGoodsDataDto = {
   sizeId?: number;
   deliveryCount: number;
   remark?: string;
+  color?: string;
   sizeName?: string;
 };
 
@@ -143,6 +147,7 @@ export type BusWarehouseGoodQuantityType = {
   material: BusMaterialType;
   sizeId?: number;
   size?: BusSizeTemplateItemType;
+  color?: string;
   total?: number;
   goods?: BusWarehouseGoodsType[];
 };

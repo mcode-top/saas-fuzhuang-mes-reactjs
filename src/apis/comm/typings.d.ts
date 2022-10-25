@@ -64,6 +64,8 @@ declare type PersonGroup = {
   roleIds?: number[];
   /**@name 部门Id组 */
   deptIds?: number[];
+  /**@name 排序组 */
+  sort?: { type: 'role' | 'dept' | 'user'; id: number }[];
 };
 
 declare type CommTree = {

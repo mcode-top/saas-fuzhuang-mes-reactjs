@@ -104,6 +104,10 @@ const ExcelHintGoodsPutInModal: React.FC<{
                   dataIndex: 'sizeName',
                 },
                 {
+                  title: '颜色',
+                  dataIndex: 'color',
+                },
+                {
                   title: '货品入库数',
                   dataIndex: 'deliveryCount',
                 },
@@ -137,6 +141,10 @@ const ExcelHintGoodsPutInModal: React.FC<{
               {
                 title: '尺码',
                 dataIndex: 'sizeName',
+              },
+              {
+                title: '颜色',
+                dataIndex: 'color',
               },
               {
                 title: '入库原因',

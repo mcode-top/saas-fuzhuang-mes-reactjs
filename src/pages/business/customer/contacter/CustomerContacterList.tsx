@@ -1,5 +1,6 @@
 import {
   fetchCurrentCustomerContacterList,
+  fetchManyExportExcelContacter,
   fetchRemoveCustomerContacter,
 } from '@/apis/business/customer';
 import type {
@@ -10,8 +11,9 @@ import { STORAGE_CUSTOMER_CONTACTER_LIST } from '@/configs/storage.config';
 import storageDataSource from '@/utils/storage';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { Button, Popconfirm, Space, Table } from 'antd';
+import { Button, message, Popconfirm, Space, Table } from 'antd';
 import React, { useEffect } from 'react';
+import { busCustomerContacterExportExcelTemplate, busCustomerContacterImportExcel } from '../excel';
 import BusCustomerContacterModal from './CustomerContacterModal';
 
 const CustomerContacterList: React.FC<{
@@ -88,10 +90,40 @@ const CustomerContacterList: React.FC<{
               actionRef.current?.reload?.();
             }}
           >
-            <Button key="primary" type="primary">
+            <Button key="新增联系人" type="primary">
               新增联系人
             </Button>
           </BusCustomerContacterModal>,
+          <Button
+            key="批量导入客户联系人"
+            onClick={() => {
+              busCustomerContacterImportExcel().then((res) => {
+                if (res) {
+                  const result = res.filter((i) => {
+                    return i.name !== '' && i.phone !== '';
+                  });
+                  const loadingCustomer = message.loading('正在批量导入客户联系人', 0);
+                  fetchManyExportExcelContacter(props.record.id, result)
+                    .then(() => {
+                      actionRef.current?.reload();
+                      message.success('导入成功');
+                    })
+                    .finally(() => {
+                      loadingCustomer();
+                    });
+                }
+                props.record.id;
+              });
+            }}
+          >
+            批量导入客户联系人
+          </Button>,
+          <Button
+            key="下载客户联系人模板"
+            onClick={() => busCustomerContacterExportExcelTemplate(props.record.name)}
+          >
+            下载客户联系人模板
+          </Button>,
         ],
       }}
       rowKey="id"
