@@ -59,6 +59,12 @@ export function fetchAddProductMaterialStyleDemand(materialCode: string, data: a
     data,
   });
 }
+/**@name 出纳确认 */
+export function fetchConfirmCollectionContract(contractNumber: string) {
+  return request<RESULT_SUCCESS>('/contract/apprvoe/collection/' + contractNumber, {
+    method: 'POST',
+  });
+}
 /**@name 获取合同流水号 */
 export function fetchContractSerialNumber() {
   return request<RESULT_SUCCESS<string>>('/contract/serial-number', {

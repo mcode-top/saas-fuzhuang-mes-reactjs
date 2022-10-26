@@ -26,7 +26,8 @@ import { isEmpty, omit } from 'lodash';
 import styles from './index.less';
 import './replace.css';
 import LogoCraftsmanship from './LogoCraftsmanship';
-function computedTotalPrice(entity: BusOrderStyleDemand) {
+/**@name 计算单个款式的总价 */
+export function computedTotalAmount(entity: BusOrderStyleDemand) {
   let totalPrice = 0;
   entity.sizePriceNumber?.forEach((i) => {
     totalPrice +=
@@ -55,7 +56,7 @@ const ContractOrderStyleModal: React.FC<{
         props?.onFinish?.({
           ...(props.node.value || {}),
           ...value,
-          totalPrice: computedTotalPrice(value),
+          totalPrice: computedTotalAmount(value),
         });
         resolve(true);
       } catch (error) {

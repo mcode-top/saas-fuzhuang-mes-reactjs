@@ -39,10 +39,16 @@ import BusSelectCustomerContacter from '../../components/SelectCustomerContacter
 import BusSelectUser from '../../components/SelectUser';
 import type { ContractLocationQuery } from '../typing';
 import ContractOrderStyleModal from './ContractOrderStyleModal';
+import { OrderCollectionSlipLogTable } from '../../collection-slip/components/OrderCollectionSlipAddLog';
+import { fetchCollectionSlipInfo } from '@/apis/business/order-manage/collection-slip';
+import type { BusOrderContractCollectionSlip } from '@/apis/business/order-manage/collection-slip/typing';
 
 /**@name 合同单详情 */
 const OrderContractInfo: React.FC = (props) => {
   const [contractLoading, setContractLoading] = useState(false);
+  /**@name 收款记录 */
+  const [collectionInfo, setCollectionInfo] = useState<BusOrderContractCollectionSlip>();
+
   const [readonly, setReadonly] = useState(false);
   const { initialState, setInitialState } = useModel('@@initialState');
   const formRef = React.useRef<ProFormInstance>();
@@ -55,6 +61,7 @@ const OrderContractInfo: React.FC = (props) => {
       if (query.contractNumber) {
         setReadonly(true);
         setContractValues(query.contractNumber);
+        getCollectionInfo(query.contractNumber);
       }
     } else if (query.type === 'update') {
       if (query.contractNumber) {
@@ -72,6 +79,14 @@ const OrderContractInfo: React.FC = (props) => {
   async function createContract(data: BusOrderContract) {
     await fetchCreateContract(data);
     resultSuccess();
+  }
+  /**@name 获取收款单数据 */
+  function getCollectionInfo(contractNumber: string) {
+    fetchCollectionSlipInfo(contractNumber).then(async (res) => {
+      if (res.data) {
+        setCollectionInfo(res.data);
+      }
+    });
   }
   /**@name 审核合同单 */
   function approveContract(isAgree: boolean) {
@@ -122,6 +137,7 @@ const OrderContractInfo: React.FC = (props) => {
       <ProForm
         grid={true}
         formRef={formRef}
+        layout={'horizontal'}
         submitter={{
           render: (_, dom) => (
             <FooterToolbar>
@@ -336,6 +352,9 @@ const OrderContractInfo: React.FC = (props) => {
         >
           <OrderStyleDemandTable readonly={readonly} />
         </ProForm.Item>
+        {collectionInfo?.collectionLog ? (
+          <OrderCollectionSlipLogTable list={collectionInfo?.collectionLog} />
+        ) : null}
         <ProFormTextArea
           colProps={{ span: 24 }}
           readonly={readonly}

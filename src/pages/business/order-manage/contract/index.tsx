@@ -1,5 +1,10 @@
 import { BusCustomerTypeEnum } from '@/apis/business/customer/typing';
-import { fetchContractList, fetchRemoveContract } from '@/apis/business/order-manage/contract';
+import {
+  fetchApproveContract,
+  fetchConfirmCollectionContract,
+  fetchContractList,
+  fetchRemoveContract,
+} from '@/apis/business/order-manage/contract';
 import type { BusOrderContract } from '@/apis/business/order-manage/contract/typing';
 import { processRecall } from '@/apis/process/process';
 import { ActTaskModelTypeEnum } from '@/apis/process/typings';
@@ -18,6 +23,7 @@ import ProTable from '@ant-design/pro-table';
 import { Button, Dropdown, Menu, Modal, Tag } from 'antd';
 import React, { useRef } from 'react';
 import { useLocation, useModel } from 'umi';
+import OrderCollectionSlipAddLog from '../collection-slip/components/OrderCollectionSlipAddLog';
 import type { ContractLocationQuery } from './typing';
 
 function gotoContractInfo(query: ContractLocationQuery) {
@@ -174,6 +180,22 @@ const OrderContract: React.FC = () => {
                     ),
                   },
                   {
+                    key: 'cashier',
+                    label: (
+                      <OrderCollectionSlipAddLog
+                        title="添加收款记录"
+                        type="update"
+                        onFinish={async () => {
+                          await fetchConfirmCollectionContract(entity.contractNumber);
+                          actionRef.current?.reload();
+                        }}
+                        contractNumber={entity.contractNumber}
+                      >
+                        <div>确认收款记录</div>
+                      </OrderCollectionSlipAddLog>
+                    ),
+                  },
+                  {
                     key: 'approve',
                     label: (
                       <div
@@ -238,7 +260,15 @@ const OrderContract: React.FC = () => {
                   } else if (item.key === 'approve') {
                     return (
                       (entity as any)?.approveUser?.id === initialState?.currentUser?.id &&
-                      entity.process?.runningTask?.type === ActTaskModelTypeEnum.Approve
+                      entity.process?.runningTask?.type === ActTaskModelTypeEnum.Approve &&
+                      // 出纳确认与正常审核流程不相同,所以要单独分开
+                      entity.process?.runningTask?.taskModelId !== '2'
+                    );
+                  } else if (item.key === 'cashier') {
+                    // 出纳确认与正常审核流程不相同,暂定出纳的taskModelId为 2
+                    return (
+                      (entity as any)?.approveUser?.id === initialState?.currentUser?.id &&
+                      entity.process?.runningTask?.taskModelId === '2'
                     );
                   }
                   return true;

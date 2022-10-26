@@ -113,7 +113,7 @@ export function fetchManyExportExcelAddress(
   companyId: number,
   data: Omit<BusCustomerAddressType, 'id'>[],
 ) {
-  return request<RESULT_SUCCESS<any>>('/customer/many/address' + companyId, {
+  return request<RESULT_SUCCESS<any>>('/customer/many/address/' + companyId, {
     method: 'POST',
     data,
   });

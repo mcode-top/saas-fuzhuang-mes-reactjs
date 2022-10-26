@@ -108,6 +108,12 @@ const originRoutes: Router[] = [
         component: './business/order-manage/contract/Info',
       },
       {
+        path: '/order-manage/collection-slip',
+        key: 'collection-slip',
+        name: '收款单管理',
+        component: './business/order-manage/collection-slip',
+      },
+      {
         path: '/order-manage/manufacture',
         name: '生产单管理',
         key: 'manufacture',
