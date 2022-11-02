@@ -156,8 +156,8 @@ const ExcelHintGoodsPutInModal: React.FC<{
           />
         </Tabs.TabPane>
       </Tabs>
-      <ProFormTextArea label="绑定合同单" name="remark" />
-      {/**TODO:待完善绑定合同单 */}
+      {/* <ProFormTextArea label="绑定合同单" name="remark" />
+       *TODO:待完善绑定合同单 */}
     </ModalForm>
   );
 };

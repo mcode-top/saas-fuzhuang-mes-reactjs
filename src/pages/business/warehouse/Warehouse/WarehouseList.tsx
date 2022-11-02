@@ -1,6 +1,8 @@
 import { fetchRemoveWarehouse, fetchWarehouseList } from '@/apis/business/warehouse';
 import type { BusWarehouseType } from '@/apis/business/warehouse/typing';
 import { WarehouseTypeValueEnum } from '@/configs/commValueEnum';
+import { STORAGE_WAREHOUSE_LIST } from '@/configs/storage.config';
+import storageDataSource from '@/utils/storage';
 import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import ProList from '@ant-design/pro-list';
 import type { ActionType } from '@ant-design/pro-table';
@@ -72,7 +74,7 @@ const WarehouseList: React.FC = () => {
       toolBarRender={toolBarRender}
       request={async () => {
         return {
-          data: await fetchWarehouseList().then((res) => {
+          data: await storageDataSource.getValue(STORAGE_WAREHOUSE_LIST, true).then((res) => {
             // // TODO:测试使用
             // wContext.setCurrentWarehouse?.(res.data[0]);
             return res.data;

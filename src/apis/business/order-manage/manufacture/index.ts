@@ -1,6 +1,11 @@
 import type { ApproveTaskDto } from '@/apis/process/typings';
 import { request } from 'umi';
-import type { BusOrderManufacture, BusWorkProcessPrice, UpdateManufactureDto } from './typing';
+import type {
+  BusOrderManufacture,
+  BusWorkProcessPrice,
+  ManufactureGoodsPutInStockDto,
+  UpdateManufactureDto,
+} from './typing';
 
 /**@name 开始生产单 */
 export function fetchStartManufacture(id: number, data: UpdateManufactureDto) {
@@ -56,5 +61,12 @@ export function fetchRemoveManufacture(id: number) {
 export function fetchCheckManufactureIsRecall(id: number) {
   return request<RESULT_SUCCESS<any>>('/manufacture/check-recall/' + id, {
     method: 'POST',
+  });
+}
+/**@name 生产单货品入库 */
+export function fetchManufactureGoodsPutInStock(data: ManufactureGoodsPutInStockDto) {
+  return request<RESULT_SUCCESS<any>>('/manufacture/put-in-stock', {
+    method: 'POST',
+    data,
   });
 }

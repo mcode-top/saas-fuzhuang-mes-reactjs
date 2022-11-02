@@ -3,7 +3,8 @@ import SelectUploadFile from '@/components/Comm/FormlyComponents/Upload';
 import { dictValueEnum, OrderContractTypeValueEnum } from '@/configs/commValueEnum';
 import ProForm from '@ant-design/pro-form';
 import { Descriptions } from 'antd';
-import SizeNumberPriceTable from '../../components/SizeNumberPriceTable';
+import { isEmpty } from 'lodash';
+import MaterialToWarehouseGoodsTable from '../../components/SizeNumberPriceTable';
 import LogoCraftsmanship from '../../contract/Info/LogoCraftsmanship';
 
 /**@name 查看合同单中的款式信息 */
@@ -12,6 +13,9 @@ const ContractStyleDemand: React.FC<{
   contractNumber: string;
   deliverDate?: string;
 }> = (props) => {
+  console.log('====================================');
+  console.log(props.styleDemand.logo);
+  console.log('====================================');
   return (
     <div>
       <Descriptions>
@@ -38,9 +42,11 @@ const ContractStyleDemand: React.FC<{
         <Descriptions.Item label="下摆工艺">{props?.styleDemand.下摆工艺}</Descriptions.Item>
         <Descriptions.Item label="纽扣工艺">{props?.styleDemand.纽扣工艺}</Descriptions.Item>
       </Descriptions>
-      <LogoCraftsmanship readonly={true} value={props.styleDemand.logo} />
+      {!isEmpty(props.styleDemand.logo) ? (
+        <LogoCraftsmanship readonly={true} value={props.styleDemand.logo} />
+      ) : null}
 
-      <SizeNumberPriceTable
+      <MaterialToWarehouseGoodsTable
         materialCode={props?.styleDemand.materialCode}
         data={props?.styleDemand.sizePriceNumber}
       />

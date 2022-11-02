@@ -136,7 +136,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
           return (
             <SwitchTabsLayout
               mode={switchTabs?.mode}
-              persistent={switchTabs?.persistent}
+              persistent={false}
               fixed={switchTabs?.fixed}
               routes={route!.routes}
             >

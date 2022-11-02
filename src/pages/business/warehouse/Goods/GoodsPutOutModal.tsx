@@ -103,8 +103,8 @@ const GoodsPutOutModal: React.FC<{
         rules={[{ required: props.type === 'update-remark' }]}
         name="remark"
       />
-      {/**TODO:待完善绑定合同单 */}
-      <SelectUndoneContractSelect label="绑定合同单" name="contractNumber" />
+      {/* *TODO:待完善绑定合同单
+      <SelectUndoneContractSelect label="绑定合同单" name="contractNumber" /> */}
     </ModalForm>
   );
 };

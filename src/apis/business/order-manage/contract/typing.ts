@@ -1,3 +1,6 @@
+import type { BusSizeTemplateItemType } from './../../../../pages/business/techology-manage/SizeTemplate/typing';
+import type { BusMaterialType } from './../../../../pages/business/techology-manage/Material/typing';
+import type { BusCustomerAddressType, BusCustomerContacterType } from './../../customer/typing';
 import type { ActProcess } from '@/apis/process/typings';
 import type { BusCustomerCompanyType } from '../../customer/typing';
 
@@ -90,7 +93,9 @@ export type BusOrderContract = {
   contractNumber: string;
   companyId: number;
   company?: BusCustomerCompanyType;
+  address?: BusCustomerAddressType;
   addressId?: number;
+  contact?: BusCustomerContacterType;
   contactId?: number;
   deliverDate?: string;
   packageDemand?: string;
@@ -120,4 +125,18 @@ export type ContractToProcessPageQuery = {
   companyId?: number;
   invoiceType?: string;
   type?: BusOrderTypeEnum;
+};
+/**@name 合同货品库表 */
+export type BusOrderContractGoodsEntity = {
+  id: number;
+  contractNumber: string;
+  contract?: BusOrderContract;
+  materialCode: string;
+  material?: BusMaterialType;
+  sizeId: number;
+  size?: BusSizeTemplateItemType;
+  needQuantity: number;
+  beenInQuantity: number;
+  beenOutQuantity: number;
+  color: string;
 };

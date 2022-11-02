@@ -133,6 +133,19 @@ const originRoutes: Router[] = [
         component: './business/order-manage/record-piece',
       },
       {
+        path: '/order-manage/delivery',
+        name: '发货单管理',
+        key: 'delivery',
+        component: './business/order-manage/delivery',
+      },
+      {
+        path: '/order-manage/info-delivery',
+        name: '发货单详情',
+        key: 'delivery',
+        hideInMenu: true,
+        component: './business/order-manage/delivery/components/OrderDeliveryInfo.tsx',
+      },
+      {
         path: '/order-manage/order-process',
         name: '合同流程管理',
         key: 'order-process',

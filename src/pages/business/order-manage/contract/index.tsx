@@ -38,7 +38,7 @@ function gotoContractInfo(query: ContractLocationQuery) {
 const OrderContract: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const location = useLocation();
-  const { initialState, setInitialState } = useModel('@@initialState');
+  const { initialState } = useModel('@@initialState');
   /**
    * 预览流程状态
    */
@@ -243,7 +243,9 @@ const OrderContract: React.FC = () => {
                     },
                   },
                 ].filter((item) => {
-                  const isOperator = initialState?.currentUser?.id === entity.process?.operatorId;
+                  const isOperator =
+                    initialState?.currentUser?.id === entity.process?.operatorId ||
+                    initialState?.currentUser?.isAdmin;
                   if (item.key === 'recall') {
                     return (
                       isOperator &&
@@ -270,6 +272,8 @@ const OrderContract: React.FC = () => {
                       (entity as any)?.approveUser?.id === initialState?.currentUser?.id &&
                       entity.process?.runningTask?.taskModelId === '2'
                     );
+                  } else if (item.key === 'watch') {
+                    return isOperator || entity.process?.runningTask?.taskModelId !== '2';
                   }
                   return true;
                 })}

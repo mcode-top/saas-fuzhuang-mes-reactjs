@@ -12,7 +12,7 @@ const BusSelectCustomerContacter: React.FC<ProFormSelectProps & { companyId?: nu
   let hlepText = '';
   if (!props.readonly) {
     if (!props.companyId) {
-      hlepText = '需要先选择公司,如果公司联系人不存在则需要先去客户管理创建';
+      hlepText = '需要先选择公司';
     }
   }
   return (

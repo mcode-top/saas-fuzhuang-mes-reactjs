@@ -1,6 +1,3 @@
-import { BusCustomerTypeEnum } from '@/apis/business/customer/typing';
-import { fetchContractList, fetchRemoveContract } from '@/apis/business/order-manage/contract';
-import type { BusOrderContract } from '@/apis/business/order-manage/contract/typing';
 import {
   fetchCheckManufactureIsRecall,
   fetchManufactureList,
@@ -8,25 +5,21 @@ import {
 } from '@/apis/business/order-manage/manufacture';
 import type { BusOrderManufacture } from '@/apis/business/order-manage/manufacture/typing';
 import { processRecall } from '@/apis/process/process';
-import { ActTaskModelTypeEnum } from '@/apis/process/typings';
-import {
-  CustomerCompanyValueEnum,
-  dictValueEnum,
-  OrderContractTypeValueEnum,
-  ProcessValueEnum,
-} from '@/configs/commValueEnum';
+import { ActProcessStatusEnum, ActTaskModelTypeEnum } from '@/apis/process/typings';
+import { OrderContractTypeValueEnum, ProcessValueEnum } from '@/configs/commValueEnum';
 import { COM_PRO_TABLE_TIME } from '@/configs/index.config';
 import ReviewProcess from '@/pages/account/Task/components/ReviewProcess';
 import { nestPaginationTable } from '@/utils/proTablePageQuery';
 import { SettingOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { Button, Dropdown, Menu, message, Modal, Tag } from 'antd';
+import { Button, Dropdown, Menu, message, Modal } from 'antd';
 import { isEmpty } from 'lodash';
-import React, { useMemo, useRef } from 'react';
+import React, { useRef } from 'react';
 import { useLocation, useModel } from 'umi';
 import BusMaterialSelect from '../../techology-manage/Material/components/MaterialSelect';
 import { getTableStyleName } from './helper';
+import ManufacturePutInStockModal from './Info/ManufacturePutInStockModal';
 import type { ManufactureLocationQuery } from './typing';
 /**@name 不需要审核的流程KEY */
 const MANUFACTURE_NOT_APPROVE_KEY = 'manufacture-1';
@@ -41,6 +34,7 @@ function gotoManufactureInfo(query: ManufactureLocationQuery) {
 const OrderContract: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const location = useLocation();
+  const putInStockModalRef = useRef<{ show: (contractNumber: string) => any }>();
   const { initialState, setInitialState } = useModel('@@initialState');
   /**
    * 预览流程状态
@@ -251,8 +245,17 @@ const OrderContract: React.FC = () => {
                       handleReviewProcess(entity.processId as number);
                     },
                   },
+                  {
+                    key: 'put-in-stock',
+                    label: <div>货品入库</div>,
+                    onClick: () => {
+                      putInStockModalRef.current?.show(entity.contractNumber);
+                    },
+                  },
                 ].filter((item) => {
-                  const isOperator = initialState?.currentUser?.id === entity.process?.operatorId;
+                  const isOperator =
+                    initialState?.currentUser?.id === entity.process?.operatorId ||
+                    initialState?.currentUser?.isAdmin;
                   if (item.key === 'recall') {
                     return (
                       isOperator &&
@@ -278,6 +281,8 @@ const OrderContract: React.FC = () => {
                     return entity.processId === null;
                   } else if (item.key === 'review') {
                     return entity.process !== null;
+                  } else if (item.key === 'put-in-stock') {
+                    return entity.process?.status === ActProcessStatusEnum.Complete;
                   }
                   return true;
                 })}
@@ -293,15 +298,18 @@ const OrderContract: React.FC = () => {
     },
   ];
   return (
-    <ProTable
-      columns={columns}
-      rowKey="id"
-      headerTitle="生产单列表"
-      actionRef={actionRef}
-      request={async (params, sort, filter) => {
-        return nestPaginationTable(params, sort, filter, fetchManufactureList);
-      }}
-    />
+    <>
+      <ProTable
+        columns={columns}
+        rowKey="id"
+        headerTitle="生产单列表"
+        actionRef={actionRef}
+        request={async (params, sort, filter) => {
+          return nestPaginationTable(params, sort, filter, fetchManufactureList);
+        }}
+      />
+      <ManufacturePutInStockModal ref={putInStockModalRef} />
+    </>
   );
 };
 export default OrderContract;

@@ -109,8 +109,8 @@ const GoodsPutInModal: React.FC<{
         name="quantity"
       />
       <ProFormTextArea label="备注信息" disabled={disabled} name="remark" />
-      {/**TODO:待完善绑定合同单 */}
-      <SelectUndoneContractSelect label="绑定合同单" name="contractNumber" />
+      {/* *TODO:待完善绑定合同单
+      <SelectUndoneContractSelect label="绑定合同单" name="contractNumber" /> */}
     </ModalForm>
   );
 };

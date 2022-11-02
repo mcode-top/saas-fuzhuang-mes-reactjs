@@ -1,5 +1,11 @@
+import type { ActProcess } from '@/apis/process/typings';
 import { request } from 'umi';
-import type { ApproveContractDto, BusOrderContract, ContractToProcessPageQuery } from './typing';
+import type {
+  ApproveContractDto,
+  BusOrderContract,
+  BusOrderContractGoodsEntity,
+  ContractToProcessPageQuery,
+} from './typing';
 
 /**@name 创建合同单 */
 export function fetchCreateContract(data: BusOrderContract) {
@@ -70,4 +76,22 @@ export function fetchContractSerialNumber() {
   return request<RESULT_SUCCESS<string>>('/contract/serial-number', {
     method: 'GET',
   });
+}
+/**@name 通过部分合同号获取已完成合同列表 */
+export function fetchContractNumberToDoneList(contractNumber: string) {
+  return request<RESULT_SUCCESS<{ contractNumber: string; process: ActProcess }[]>>(
+    '/contract/part/' + contractNumber,
+    {
+      method: 'GET',
+    },
+  );
+}
+/**@name 通过合同号查找货品入库表 */
+export function fetchFindContractNumberToGoodsList(contractNumber: string) {
+  return request<RESULT_SUCCESS<BusOrderContractGoodsEntity[]>>(
+    '/contract/contract-goods/' + contractNumber,
+    {
+      method: 'GET',
+    },
+  );
 }

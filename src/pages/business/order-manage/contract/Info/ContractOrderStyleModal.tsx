@@ -7,23 +7,19 @@ import { BusMaterialTypeEnum } from '@/pages/business/techology-manage/Material/
 import type { ProFormInstance } from '@ant-design/pro-form';
 import { ProFormSelect } from '@ant-design/pro-form';
 import { ProFormList } from '@ant-design/pro-form';
-import ProForm from '@ant-design/pro-form';
 import { ProFormMoney } from '@ant-design/pro-form';
 import { ProFormDigit } from '@ant-design/pro-form';
 import { ProFormDependency } from '@ant-design/pro-form';
 import { ProFormRadio } from '@ant-design/pro-form';
 import { ModalForm, ProFormGroup, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { validatorMaterialCode } from '@/pages/business/techology-manage/Material/helper';
-import SelectUploadFile from '@/components/Comm/FormlyComponents/Upload';
 import SelectTreeSizeTemplate from '@/pages/business/techology-manage/SizeTemplate/components/SelectTreeSizeTemplate';
-import { useLocation, useModel } from 'umi';
+import { useLocation } from 'umi';
 import type { ContractLocationQuery } from '../typing';
 import { fetchMaterialToStyleDemandData } from '@/apis/business/order-manage/contract';
 import type { ColProps } from 'antd';
-import { Button } from 'antd';
 import { isEmpty, omit } from 'lodash';
-import styles from './index.less';
 import './replace.css';
 import LogoCraftsmanship from './LogoCraftsmanship';
 /**@name 计算单个款式的总价 */
@@ -286,9 +282,10 @@ function SizeNumberPriceList(props: { readonly?: boolean; colorGroup: string[] }
               const uniqeSize = {};
               let errorText = '';
               value.findIndex((i) => {
+                const id = i.sizeId + '_' + i.color;
                 if (i.sizeId !== undefined) {
-                  if (uniqeSize[i.sizeId]) {
-                    errorText = '存在相同的尺码,请检查删除';
+                  if (uniqeSize[id]) {
+                    errorText = '存在相同的尺码颜色,请检查删除';
                     return i;
                   }
                 }
@@ -308,7 +305,7 @@ function SizeNumberPriceList(props: { readonly?: boolean; colorGroup: string[] }
                 ) {
                   errorText = '';
                 }
-                uniqeSize[i.sizeId] = i;
+                uniqeSize[id] = i;
                 return false;
               });
               if (errorText) {

@@ -5,14 +5,20 @@ import { Table, Popover, List } from 'antd';
 import { isEmpty } from 'lodash';
 import { useState, useEffect } from 'react';
 import SelectTreeSizeTemplate from '../../techology-manage/SizeTemplate/components/SelectTreeSizeTemplate';
+/**@name 物料编码尺码仓库数量 */
+export type MaterialToWarehouseGoodsTableDataSource = BusOrderSizePriceNumber & {
+  total: number;
+  mateGoods?: BusWarehouseGoodsType[];
+};
 
-/**@name 尺码数量价格表 */
-const SizeNumberPriceTable: React.FC<{ materialCode: string; data?: BusOrderSizePriceNumber[] }> = (
-  props,
-) => {
-  const [dataSource, setDateSource] = useState<
-    BusOrderSizePriceNumber & { total: number; mateGoods?: BusWarehouseGoodsType[] }[]
-  >();
+/**@name 通过物料编码尺码查询仓库表 */
+const MaterialToWarehouseGoodsTable: React.FC<{
+  title?: string;
+  materialCode: string;
+  data?: BusOrderSizePriceNumber[];
+  onChangeDataSource?: (dataSource: MaterialToWarehouseGoodsTableDataSource[]) => void;
+}> = (props) => {
+  const [dataSource, setDateSource] = useState<MaterialToWarehouseGoodsTableDataSource[]>();
   const [loading, setLoading] = useState(false);
   async function getGoodsQuantity() {
     setLoading(true);
@@ -36,8 +42,13 @@ const SizeNumberPriceTable: React.FC<{ materialCode: string; data?: BusOrderSize
         ...i,
       };
     });
-    setDateSource((data as any) || []);
+    setDateSource(data || []);
   }
+  useEffect(() => {
+    if (!isEmpty(dataSource)) {
+      props?.onChangeDataSource?.(dataSource as any);
+    }
+  }, [dataSource]);
   useEffect(() => {
     getGoodsQuantity();
   }, [props.data]);
@@ -96,8 +107,8 @@ const SizeNumberPriceTable: React.FC<{ materialCode: string; data?: BusOrderSize
         },
       ]}
       dataSource={dataSource}
-      title={() => '尺码数量价格表'}
+      title={() => props.title || '尺码数量价格表'}
     />
   );
 };
-export default SizeNumberPriceTable;
+export default MaterialToWarehouseGoodsTable;

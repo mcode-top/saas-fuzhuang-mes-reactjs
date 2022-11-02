@@ -67,7 +67,7 @@ const ManyPutOutInGoods: React.FC<{
         warehouseType={props.warehouseType}
       />
       <ProFormTextArea label="出入库原因" name="remark" />
-      <SelectUndoneContractSelect label="绑定合同单" name="contractNumber" />
+      {/* <SelectUndoneContractSelect label="绑定合同单" name="contractNumber" /> */}
     </ModalForm>
   );
 };

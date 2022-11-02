@@ -49,3 +49,14 @@ export type UpdateManufactureDto = {
   isUpdateWorkPrice: boolean;
   opinion: string;
 };
+/**@name 生产单货品入库 */
+export type ManufactureGoodsPutInStockDto = {
+  contractNumber: string;
+  contractGoodsList: ManufactureContractGoodsPutIn[];
+};
+/**@name 货品入库列表 */
+export type ManufactureContractGoodsPutIn = {
+  contractGoodsId: number;
+  quantity: number;
+  shlefId: number;
+};
