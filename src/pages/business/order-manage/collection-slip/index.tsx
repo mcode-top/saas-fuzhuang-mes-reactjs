@@ -19,7 +19,7 @@ const OrderCollectionSlip: React.FC = () => {
   const location = useLocation();
   const columns: ProColumns<BusOrderContractCollectionSlip>[] = [
     {
-      title: '合同单号',
+      title: '订单单号',
       dataIndex: 'contractNumber',
     },
     {
@@ -36,17 +36,17 @@ const OrderCollectionSlip: React.FC = () => {
       valueEnum: OrderContractTypeValueEnum.CollectionSlip,
     },
     {
-      title: '合同总金额',
+      title: '订单总金额',
       dataIndex: 'totalAmount',
       renderFormItem: () => {
-        return <ProFormDigitRange placeholder="查询合同总金额范围" />;
+        return <ProFormDigitRange placeholder="查询订单总金额范围" />;
       },
     },
     {
       title: '已收款金额',
       dataIndex: 'collectionAmount',
       renderFormItem: () => {
-        return <ProFormDigitRange placeholder="查询合同总金额范围" />;
+        return <ProFormDigitRange placeholder="查询订单总金额范围" />;
       },
     },
     {

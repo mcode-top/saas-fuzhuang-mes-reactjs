@@ -75,7 +75,7 @@ const ManufacturePutInStockModal: React.FC<{
       grid={true}
     >
       <ProFormGroup colProps={{ span: 4 }}>
-        <ProFormItem label="合同单号">
+        <ProFormItem label="订单单号">
           <div>{nContractNumber}</div>
         </ProFormItem>
       </ProFormGroup>
@@ -149,7 +149,12 @@ const PutInStockFormListDom: React.FC<
         return fetchFindContractNumberToGoodsList(contractNumber)
           .then(async (res) => {
             const materialContractGoodsList: Record<string, any> = {};
+            console.log(res);
+
             const resultList = res.data.map((item) => {
+              console.log('====================================');
+              console.log(item, 'item');
+              console.log('====================================');
               const result = {
                 contractGoodsId: item.id,
                 color: item.color,
@@ -233,6 +238,7 @@ const PutInStockFormListDom: React.FC<
       listRef.current?.add(item);
     });
   }
+
   return (
     <>
       {loading ? <Spin spinning /> : null}

@@ -1,4 +1,7 @@
-import type { BusOrderStyleDemand } from '@/apis/business/order-manage/contract/typing';
+import type {
+  BusOrderStyleDemand,
+  BusOrderTypeEnum,
+} from '@/apis/business/order-manage/contract/typing';
 import { BusOrderStyleTypeEnum } from '@/apis/business/order-manage/contract/typing';
 
 import { OrderContractTypeValueEnum } from '@/configs/commValueEnum';
@@ -88,7 +91,7 @@ const ContractOrderStyleModal: React.FC<{
       onFinish={onFinish}
     >
       <ProFormRadio.Group
-        label="合同订单类型"
+        label="订单款式类型"
         name="styleType"
         help="现货:表示已经存在的款式 | 现货定制:表示系统有相似的款式但是可能需要变更一些工艺参数（面料、部位更改）| 全新定制:表示系统中没有相同的款式需要重新填写工艺参数"
         rules={[{ required: true }]}

@@ -16,34 +16,41 @@ const OrderProcessLogTableModal: React.FC<{
 
   return (
     <ModalForm width={700} title={'查看流程记录'} formRef={formRef} trigger={props.children}>
-      <Table
-        rowKey={'id'}
-        dataSource={props.processLog}
-        size="small"
-        pagination={{ size: 'small', pageSize: 10 }}
-        columns={[
-          {
-            title: '记录内容',
-            dataIndex: 'message',
-          },
-          {
-            title: '流程状态',
-            dataIndex: 'status',
-            render(value, record, index) {
-              return BusOrderContractTypeValueEnum.Process.get(value)?.text;
-            },
-          },
-          {
-            title: '创建时间',
-            dataIndex: 'createdAt',
-            defaultSortOrder: 'descend',
-            sorter: (a, b) => {
-              return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-            },
-          },
-        ]}
-      />
+      <OrderProcessLogTable processLog={props.processLog} />
     </ModalForm>
   );
 };
 export default OrderProcessLogTableModal;
+
+/**@name 流程记录表格 */
+export const OrderProcessLogTable: React.FC<{ processLog: ContractProcessLog[] }> = (props) => {
+  return (
+    <Table
+      rowKey={'id'}
+      dataSource={props.processLog}
+      size="small"
+      pagination={{ size: 'small', pageSize: 10 }}
+      columns={[
+        {
+          title: '记录内容',
+          dataIndex: 'message',
+        },
+        {
+          title: '流程状态',
+          dataIndex: 'status',
+          render(value, record, index) {
+            return BusOrderContractTypeValueEnum.Process.get(value)?.text;
+          },
+        },
+        {
+          title: '创建时间',
+          dataIndex: 'createdAt',
+          defaultSortOrder: 'descend',
+          sorter: (a, b) => {
+            return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+          },
+        },
+      ]}
+    />
+  );
+};

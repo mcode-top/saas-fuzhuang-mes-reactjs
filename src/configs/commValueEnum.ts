@@ -127,9 +127,11 @@ export const OrderContractTypeValueEnum = {
     [BusOrderStyleTypeEnum.Custom, { text: '全新定制' }],
   ]),
   OrderType: new Map([
-    [BusOrderTypeEnum.Sample, { text: '样品单', color: '#1890ff' }],
-    [BusOrderTypeEnum.Normal, { text: '普通单', color: '#52c41a' }],
-    [BusOrderTypeEnum.Urgent, { text: '加急单', color: '#f5222d' }],
+    [BusOrderTypeEnum.Normal, { text: '普通单' }],
+    [BusOrderTypeEnum.SampleProofing, { text: '样品单-打样' }],
+    [BusOrderTypeEnum.SampleCharge, { text: '样品单-收费寄样' }],
+    [BusOrderTypeEnum.SampleSend, { text: '样品单-免费寄样' }],
+    [BusOrderTypeEnum.Add, { text: '追加单' }],
   ]),
   Process: new Map([
     [ContractProcessEnum.Running, { text: '运行中', type: 'Processing' }],

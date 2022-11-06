@@ -17,13 +17,18 @@ const OrderContractProcess: React.FC = () => {
   const location = useLocation();
   const columns: ProColumns<OrderContractProcessType>[] = [
     {
-      title: '合同单号',
+      title: '订单单号',
       dataIndex: 'contractNumber',
     },
     {
       title: '流程状态',
       dataIndex: 'status',
       valueEnum: OrderContractTypeValueEnum.Process,
+    },
+    {
+      title: '流程描述',
+      ellipsis: true,
+      dataIndex: 'message',
     },
     ...COM_PRO_TABLE_TIME.updatedAt,
     ...COM_PRO_TABLE_TIME.createdAt,

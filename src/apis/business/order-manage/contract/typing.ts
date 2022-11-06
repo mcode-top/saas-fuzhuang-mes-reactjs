@@ -1,7 +1,7 @@
 import type { BusSizeTemplateItemType } from './../../../../pages/business/techology-manage/SizeTemplate/typing';
 import type { BusMaterialType } from './../../../../pages/business/techology-manage/Material/typing';
 import type { BusCustomerAddressType, BusCustomerContacterType } from './../../customer/typing';
-import type { ActProcess } from '@/apis/process/typings';
+import type { ActProcess, ApproveTaskDto } from '@/apis/process/typings';
 import type { BusCustomerCompanyType } from '../../customer/typing';
 
 /**
@@ -18,12 +18,16 @@ export enum BusOrderStyleTypeEnum {
 }
 /**@name 订单类型 */
 export enum BusOrderTypeEnum {
-  /**@name 样品单 */
-  Sample = '0',
   /**@name 普通单 */
-  Normal = '1',
-  /**@name 加急单 */
-  Urgent = '2',
+  Normal = '0',
+  /**@name 样品单-打样 */
+  SampleProofing = '1',
+  /**@name 样品单-收费寄样 */
+  SampleCharge = '2',
+  /**@name 样品单-免费寄样 */
+  SampleSend = '3',
+  /**@name 加单 */
+  Add = '4',
 }
 /**@name 订单款式编号 */
 export type BusOrderStyleDemand = {
@@ -104,19 +108,26 @@ export type BusOrderContract = {
   salesCommissions?: number;
   logisticsMode: string;
   payment: string;
-  type?: BusOrderTypeEnum;
+  type: BusOrderTypeEnum;
   styleDemand: BusOrderStyleDemand[];
   remark?: string;
   processId: number;
   process?: ActProcess;
+  /**@name 有无样衣 */
+  sampleRemark?: string;
+  /**@name 配货单是否打印 */
+  distributionPrint?: boolean;
+};
+/**@name 创建合同单-加单参数 */
+export type BusOrderContractOrderAddDto = BusOrderContract & {
+  contractNumber: string;
+  suffixContractNumber: string;
 };
 /**@name 审核合同单 */
-export type ApproveContractDto = {
+export type ApproveContractDto = ApproveTaskDto & {
   contractNumber: string;
   /**@name 销售人员提成 */
   salesCommissions: number;
-  result: boolean;
-  opinion: string;
 };
 /**@name 合同单分页查询 */
 export type ContractToProcessPageQuery = {
@@ -139,4 +150,54 @@ export type BusOrderContractGoodsEntity = {
   beenInQuantity: number;
   beenOutQuantity: number;
   color: string;
+};
+/**@name 创建寄样单 */
+export type CreateSampleSendDto = {
+  /**@name 寄样单分免费与收费两种 */
+  type: BusOrderTypeEnum.SampleCharge | BusOrderTypeEnum.SampleSend;
+  // ------- 客户信息
+  companyId: number;
+  contactId?: number;
+  addressId: number;
+  /**@name 物流方式 */
+  logisticsMode?: string;
+  /**@name 包装要求 */
+  packageDemand?: string;
+  /**@name 付款方式 -付费寄养 */
+  payment?: string;
+  /**@name 预付比例 -付费寄养 */
+  prepayPercent?: number;
+  orderSampleStyleDemand: OrderSampleStyleDemand[];
+};
+/**@name 修改寄样单 */
+export type UpdateSampleSendDto = {
+  // ------- 客户信息
+  companyId: number;
+  contactId?: number;
+  addressId: number;
+  /**@name 物流方式 */
+  logisticsMode?: string;
+  /**@name 包装要求 */
+  packageDemand?: string;
+  /**@name 付款方式 -付费寄养 */
+  payment?: string;
+  /**@name 预付比例 -付费寄养 */
+  prepayPercent?: number;
+  orderSampleStyleDemand: OrderSampleStyleDemand[];
+};
+/**@name 寄样单款式需求 */
+export type OrderSampleStyleDemand = {
+  /**@name 物料编码 */
+  materialCode: string;
+  /**@name 总价 & 如果是送样则无 */
+  totalPrice?: number;
+  /**@name 尺码价格数量 & 如果是送样则不需要填写价格或为0 */
+  sizePriceNumber: BusOrderSizePriceNumber[];
+};
+
+/**@name 审核寄样单 */
+export type ApprvoeSampleSendDto = ApproveTaskDto & {
+  /**@name 销售提成 -付费寄养 */
+  salesCommissions?: number;
+  contractNumber: string;
 };

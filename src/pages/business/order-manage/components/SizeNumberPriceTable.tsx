@@ -25,8 +25,20 @@ const MaterialToWarehouseGoodsTable: React.FC<{
     const result = await checkMaterialCodeToGoodsQuantity(props.materialCode).finally(() =>
       setLoading(false),
     );
+    if (isEmpty(props.data)) {
+      return setDateSource(
+        result?.data?.goods?.map((i) => {
+          return {
+            ...i,
+            mateGoods: [i],
+            total: i.quantity,
+          } as any;
+        }) || [],
+      );
+    }
     const data = props?.data?.map((i) => {
       let total = 0;
+
       const mateGoods = result?.data?.goods?.filter(
         (goods) => goods.sizeId === i.sizeId && goods.color === i.color,
       );
@@ -51,12 +63,13 @@ const MaterialToWarehouseGoodsTable: React.FC<{
   }, [dataSource]);
   useEffect(() => {
     getGoodsQuantity();
-  }, [props.data]);
+  }, [props.data, props.materialCode]);
   return (
     <Table
       size="small"
-      rowKey="sizeId"
+      rowKey={(entity) => `${entity.color} + ${entity.sizeId} + ${entity.number} + ${entity.total}`}
       loading={loading}
+      style={{ width: '100%' }}
       columns={[
         {
           dataIndex: 'sizeId',
@@ -72,39 +85,55 @@ const MaterialToWarehouseGoodsTable: React.FC<{
           },
         },
         { dataIndex: 'color', title: '颜色' },
-        { dataIndex: 'number', title: '数量' },
-        {
-          dataIndex: 'total',
-          title: '现有库存数量',
-          render(value, record, index) {
-            const mateGoods = record.mateGoods;
-            if (isEmpty(mateGoods)) {
-              return '-';
-            }
-            return (
-              <Popover
-                content={
-                  <List
-                    style={{ width: 400 }}
-                    dataSource={mateGoods}
-                    renderItem={(data) => {
-                      return (
-                        <List.Item>
-                          <List.Item.Meta
-                            title={`位置:${data.shelf?.warehouse?.name}/${data.shelf?.name}`}
-                          />
-                          <div>{`库存数量:${data.quantity}`}</div>
-                        </List.Item>
-                      );
-                    }}
-                  />
-                }
-              >
-                <a>{value}</a>
-              </Popover>
-            );
-          },
-        },
+        ...(isEmpty(props.data)
+          ? [
+              {
+                dataIndex: 'warehouseName',
+                title: '仓库位置',
+                render: (v, record, index) => record?.shelf?.warehouse.name,
+              },
+              {
+                dataIndex: 'shelfName',
+                title: '货架位置',
+                render: (v, record, index) => record?.shelf?.name,
+              },
+              { dataIndex: 'quantity', title: '库存数量' },
+            ]
+          : [
+              { dataIndex: 'number', title: '数量' },
+              {
+                dataIndex: 'total',
+                title: '现有库存数量',
+                render(value, record: MaterialToWarehouseGoodsTableDataSource, index) {
+                  const mateGoods = record.mateGoods;
+                  if (isEmpty(mateGoods)) {
+                    return '-';
+                  }
+                  return (
+                    <Popover
+                      content={
+                        <List
+                          style={{ width: 400 }}
+                          dataSource={mateGoods}
+                          renderItem={(data) => {
+                            return (
+                              <List.Item>
+                                <List.Item.Meta
+                                  title={`位置:${data?.shelf?.warehouse?.name}/${data.shelf?.name}`}
+                                />
+                                <div>{`库存数量:${data?.quantity}`}</div>
+                              </List.Item>
+                            );
+                          }}
+                        />
+                      }
+                    >
+                      <a>{value}</a>
+                    </Popover>
+                  );
+                },
+              },
+            ]),
       ]}
       dataSource={dataSource}
       title={() => props.title || '尺码数量价格表'}

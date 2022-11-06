@@ -1,5 +1,5 @@
 import {
-  fetchRecorPieceLogList,
+  fetchRecordPieceLogList,
   fetchWorkProcessLogList,
 } from '@/apis/business/order-manage/record-piece';
 import type { BusOrderRecordPieceLog } from '@/apis/business/order-manage/record-piece/typing';
@@ -29,7 +29,7 @@ const RecordPieceLogModal: React.FC<{
         if (v) {
           setLoading(true);
           if (props.type === 'findOne') {
-            fetchRecorPieceLogList(props.data.recordPieceId)
+            fetchRecordPieceLogList(props.data.recordPieceId)
               .then((res) => {
                 setList(res.data);
               })
@@ -45,54 +45,64 @@ const RecordPieceLogModal: React.FC<{
       }}
       trigger={props.children}
     >
-      <Table
-        dataSource={list}
-        size="small"
-        loading={loading}
-        rowKey="id"
-        pagination={{ size: 'small' }}
-        columns={[
-          {
-            title: '工序名称',
-            dataIndex: 'a',
-            render(value, record, index) {
-              return record.workProcess.name;
-            },
-          },
-          {
-            title: '员工',
-            dataIndex: 'workerUser',
-            render(value, record, index) {
-              return record.workerUser.name;
-            },
-          },
-          {
-            title: '工价',
-            dataIndex: 'price',
-          },
-          {
-            title: '计件数量',
-            dataIndex: 'number',
-          },
-          {
-            title: '领料数',
-            dataIndex: 'materialNumber',
-          },
-
-          {
-            title: '操作人',
-            dataIndex: 'workerUser',
-            render(value, record, index) {
-              return record.workerUser.name;
-            },
-          },
-          {
-            title: '记录时间',
-            dataIndex: 'createdAt',
-          },
-        ]}
-      />
+      <RecordPieceLogTable list={list} loading={loading} />
     </ModalForm>
   );
 };
 export default RecordPieceLogModal;
+
+/**@name 计件单记录表格 */
+export const RecordPieceLogTable: React.FC<{
+  list: BusOrderRecordPieceLog[];
+  loading?: boolean;
+}> = (props) => {
+  return (
+    <Table
+      dataSource={props.list}
+      size="small"
+      loading={props.loading}
+      rowKey="id"
+      pagination={{ size: 'small' }}
+      columns={[
+        {
+          title: '工序名称',
+          dataIndex: 'a',
+          render(value, record, index) {
+            return record.workProcess.name;
+          },
+        },
+        {
+          title: '员工',
+          dataIndex: 'workerUser',
+          render(value, record, index) {
+            return record.workerUser.name;
+          },
+        },
+        {
+          title: '工价',
+          dataIndex: 'price',
+        },
+        {
+          title: '计件数量',
+          dataIndex: 'number',
+        },
+        {
+          title: '领料数',
+          dataIndex: 'materialNumber',
+        },
+
+        {
+          title: '操作人',
+          dataIndex: 'workerUser',
+          render(value, record, index) {
+            return record.workerUser.name;
+          },
+        },
+        {
+          title: '记录时间',
+          dataIndex: 'createdAt',
+        },
+      ]}
+    />
+  );
+};

@@ -65,6 +65,7 @@ const originRoutes: Router[] = [
       {
         name: '消息记录',
         hideInMenu: true,
+        white: true,
         path: '/account/message',
         component: './message/Account',
       },
@@ -99,6 +100,12 @@ const originRoutes: Router[] = [
         name: '合同单管理',
         key: 'contract',
         component: './business/order-manage/contract',
+      },
+      {
+        path: '/order-manage/sample',
+        name: '样品单管理',
+        key: 'sample',
+        component: './business/order-manage/sample',
       },
       {
         path: '/order-manage/info-contract',
@@ -156,6 +163,21 @@ const originRoutes: Router[] = [
         name: '审批人员管理',
         key: 'order-workflow',
         component: './business/order-manage/workflow',
+      },
+
+      {
+        path: '/order-manage/sample-info-proofing',
+        key: 'sample-info-proofing',
+        name: '样品单-打样单详情',
+        hideInMenu: true,
+        component: './business/order-manage/contract/Info',
+      },
+      {
+        path: '/order-manage/sample-info-send',
+        key: 'sample-info-send',
+        name: '样品单-寄样单详情',
+        hideInMenu: true,
+        component: './business/order-manage/sample/components/SampleSendForm',
       },
     ],
   },

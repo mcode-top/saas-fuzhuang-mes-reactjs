@@ -1,5 +1,6 @@
 import type { BusOrderManufacture } from '@/apis/business/order-manage/manufacture/typing';
 import { fetchManufactureUseModfiyRecordPieceList } from '@/apis/business/order-manage/record-piece';
+import { OrderContractTypeValueEnum } from '@/configs/commValueEnum';
 import { COM_PRO_TABLE_TIME } from '@/configs/index.config';
 import { nestPaginationTable } from '@/utils/proTablePageQuery';
 import { SettingOutlined } from '@ant-design/icons';
@@ -19,7 +20,7 @@ const OrderRecordPiece: React.FC = () => {
   const location = useLocation();
   const columns: ProColumns<BusOrderManufacture>[] = [
     {
-      title: '合同单号',
+      title: '订单单号',
       dataIndex: 'contractNumber',
     },
     {
@@ -45,6 +46,7 @@ const OrderRecordPiece: React.FC = () => {
         }
       },
     },
+
     {
       title: '交期时间',
       dataIndex: 'deliverDate',
@@ -60,7 +62,6 @@ const OrderRecordPiece: React.FC = () => {
       valueType: 'dateRange',
       hideInTable: true,
     },
-    ...COM_PRO_TABLE_TIME.updatedAt,
     ...COM_PRO_TABLE_TIME.createdAt,
     {
       title: '备注信息',

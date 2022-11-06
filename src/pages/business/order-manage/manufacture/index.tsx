@@ -49,12 +49,11 @@ const OrderContract: React.FC = () => {
   }
   const columns: ProColumns<BusOrderManufacture>[] = [
     {
-      title: '合同单号',
+      title: '订单单号',
       dataIndex: 'contractNumber',
     },
     {
       title: '订单类型',
-      width: 80,
       dataIndex: 'type',
       renderText: (t, record) => record.contract?.type,
       valueEnum: OrderContractTypeValueEnum.OrderType,
@@ -100,7 +99,7 @@ const OrderContract: React.FC = () => {
       },
     },
     {
-      title: '交期时间',
+      title: '生产交期时间',
       dataIndex: 'deliverDate',
       key: 'deliverDate-table',
       valueType: 'dateTime',
@@ -121,7 +120,6 @@ const OrderContract: React.FC = () => {
       valueType: 'dateRange',
       hideInTable: true,
     },
-    ...COM_PRO_TABLE_TIME.updatedAt,
     ...COM_PRO_TABLE_TIME.createdAt,
     {
       title: '备注信息',

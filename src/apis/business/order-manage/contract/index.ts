@@ -2,14 +2,27 @@ import type { ActProcess } from '@/apis/process/typings';
 import { request } from 'umi';
 import type {
   ApproveContractDto,
+  ApprvoeSampleSendDto,
   BusOrderContract,
   BusOrderContractGoodsEntity,
+  BusOrderContractOrderAddDto,
+  BusOrderTypeEnum,
   ContractToProcessPageQuery,
+  CreateSampleSendDto,
+  UpdateSampleSendDto,
 } from './typing';
 
 /**@name 创建合同单 */
 export function fetchCreateContract(data: BusOrderContract) {
   return request<RESULT_SUCCESS<any>>('/contract', {
+    method: 'POST',
+    data,
+  });
+}
+
+/**@name 创建合同单-加单 */
+export function fetchCreateOrderAddContract(data: BusOrderContractOrderAddDto) {
+  return request<RESULT_SUCCESS<any>>('/contract/add-order', {
     method: 'POST',
     data,
   });
@@ -36,6 +49,16 @@ export function fetchContractList(data: PAGINATION_QUERY.Param<ContractToProcess
     method: 'POST',
     data,
   });
+}
+/**@name 样品单分页 */
+export function fetchSamplePageList(data: PAGINATION_QUERY.Param<ContractToProcessPageQuery>) {
+  return request<RESULT_SUCCESS<PAGINATION_QUERY.Result<BusOrderContract>>>(
+    '/contract/sample/page',
+    {
+      method: 'POST',
+      data,
+    },
+  );
 }
 /**@name 删除合同单 */
 export function fetchRemoveContract(contractNumber: string) {
@@ -78,11 +101,14 @@ export function fetchContractSerialNumber() {
   });
 }
 /**@name 通过部分合同号获取已完成合同列表 */
-export function fetchContractNumberToDoneList(contractNumber: string) {
+export function fetchContractNumberToDoneList(contractNumber: string, types?: BusOrderTypeEnum[]) {
   return request<RESULT_SUCCESS<{ contractNumber: string; process: ActProcess }[]>>(
     '/contract/part/' + contractNumber,
     {
       method: 'GET',
+      params: {
+        types,
+      },
     },
   );
 }
@@ -94,4 +120,33 @@ export function fetchFindContractNumberToGoodsList(contractNumber: string) {
       method: 'GET',
     },
   );
+}
+
+/**@name 创建样品单(打样) */
+export function fetchCreateProofingOrder(data: BusOrderContract) {
+  return request<RESULT_SUCCESS>('/contract/sample-proofing/create', {
+    method: 'POST',
+    data,
+  });
+}
+/**@name 创建寄样单 */
+export function fetchCreateSampleSend(data: CreateSampleSendDto) {
+  return request<RESULT_SUCCESS>('/contract/sample-send/create', {
+    method: 'POST',
+    data,
+  });
+}
+/**@name 修改寄样单 */
+export function fetchUpdateSampleSend(contractNumber: string, data: UpdateSampleSendDto) {
+  return request<RESULT_SUCCESS>('/contract/sample-send/' + contractNumber, {
+    method: 'Patch',
+    data,
+  });
+}
+/**@name 审核寄样单 */
+export function fetchApproveSampleSennd(data: ApprvoeSampleSendDto) {
+  return request<RESULT_SUCCESS>('/contract/sample-send/approve', {
+    method: 'POST',
+    data,
+  });
 }

@@ -2,7 +2,10 @@ import {
   fetchContractNumberToDoneList,
   fetchWatchContract,
 } from '@/apis/business/order-manage/contract';
-import type { BusOrderContract } from '@/apis/business/order-manage/contract/typing';
+import type {
+  BusOrderContract,
+  BusOrderTypeEnum,
+} from '@/apis/business/order-manage/contract/typing';
 import {
   fetchOrderApproveDelivery,
   fetchOrderCreateDelivery,
@@ -30,8 +33,8 @@ import type { DeliveryLocationQuery } from '..';
 import { PutInStockFormList } from '../../manufacture/Info/ManufacturePutInStockModal';
 
 /**@name 货品选择表单类型 */
-type GoodsOptional = LabelValue & { goods: BusWarehouseGoodsType };
-/**@name 创建发货单 */
+export type GoodsOptional = LabelValue & { goods: BusWarehouseGoodsType };
+/**@name 发货单表单&详情 */
 const OrderDeliveryInfo: React.FC = () => {
   const formRef = useRef<ProFormInstance>();
   const [contractInfo, setContractInfo] = useState<BusOrderContract>();
@@ -93,22 +96,7 @@ const OrderDeliveryInfo: React.FC = () => {
     window.layoutTabsAction.goAndClose('/order-manage/delivery', true);
     message.success('操作成功');
   }
-  /**@name 将货品转换为LabelValueSelect */
-  function transformGoodsToLabelValue(dataSource: BusWarehouseGoodsType[]) {
-    if (isEmpty(dataSource)) {
-      return [];
-    }
-    return dataSource.reduce<(LabelValue & { goods: BusWarehouseGoodsType })[]>((p, n) => {
-      if (n) {
-        p.push({
-          label: `${n.shelf?.warehouse?.name}-${n.shelf?.name}-${n.material?.name}(${n.material?.code})-${n.color}-${n.size?.name}(${n.size?.specification})-${n.quantity}`,
-          value: n.id,
-          goods: n,
-        });
-      }
-      return p;
-    }, []);
-  }
+
   /**@name 获取合同单数据 */
   function getContractInfo(contractNumber: string) {
     listFormRef.current?.loadData(contractNumber);
@@ -213,7 +201,7 @@ const OrderDeliveryInfo: React.FC = () => {
         <PutInStockFormList
           ref={listFormRef}
           readonly={true}
-          label="合同单需求"
+          label="订单发货需求"
           rowProps={{ align: 'middle' }}
           onDataSourceChange={(d) => {
             setGoodsOptional(transformGoodsToLabelValue(d));
@@ -231,15 +219,18 @@ const OrderDeliveryInfo: React.FC = () => {
   );
 };
 
-/**@name 补全合同号 */
-function PartToContractNumber(props: { onChange?: (v: any) => void }) {
+/**@name 补全已完成的合同订单号 */
+export function PartToContractNumber(props: {
+  onChange?: (v: string) => void;
+  orderType?: BusOrderTypeEnum[];
+}) {
   return (
     <ProFormSelect
       colProps={{ span: 24 }}
       name="contractNumber"
-      label="选择已完成的合同单"
+      label="选择已完成审批的订单单号"
       fieldProps={{
-        placeholder: '请输入搜索已完成的合同单',
+        placeholder: '请输入搜索已完成审批的订单单号',
         showSearch: true,
         onChange: (v) => {
           props?.onChange?.(v);
@@ -247,7 +238,7 @@ function PartToContractNumber(props: { onChange?: (v: any) => void }) {
       }}
       request={async (params: { keyWords: string | undefined }, _props1) => {
         if (params.keyWords && params.keyWords.length > 2) {
-          const { data } = await fetchContractNumberToDoneList(params.keyWords);
+          const { data } = await fetchContractNumberToDoneList(params.keyWords, props.orderType);
           return data.map((item) => {
             return {
               label: item.contractNumber,
@@ -367,3 +358,19 @@ function DeliveryPutOutFormList(props: {
   );
 }
 export default OrderDeliveryInfo;
+/**@name 将仓库货品转换为LabelValueSelect */
+export function transformGoodsToLabelValue(dataSource: BusWarehouseGoodsType[]) {
+  if (isEmpty(dataSource)) {
+    return [];
+  }
+  return dataSource.reduce<(LabelValue & { goods: BusWarehouseGoodsType })[]>((p, n) => {
+    if (n) {
+      p.push({
+        label: `${n.shelf?.warehouse?.name}-${n.shelf?.name}-${n.material?.name}(${n.material?.code})-${n.color}-${n.size?.name}(${n.size?.specification})-${n.quantity}`,
+        value: n.id,
+        goods: n,
+      });
+    }
+    return p;
+  }, []);
+}

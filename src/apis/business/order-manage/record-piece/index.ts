@@ -33,7 +33,7 @@ export function fetchRecordPieceAdd(data: RecordPieceAddDto) {
 }
 
 /**@name 获取计件单记录 */
-export function fetchRecorPieceLogList(recordPieceId: number) {
+export function fetchRecordPieceLogList(recordPieceId: number) {
   return request<RESULT_SUCCESS<BusOrderRecordPieceLog[]>>(
     '/record-piece/watch-log/' + recordPieceId,
     {

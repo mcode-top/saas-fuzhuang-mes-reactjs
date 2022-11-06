@@ -1,7 +1,8 @@
 import { fetchOrderDeliveryList } from '@/apis/business/order-manage/delivery';
 import type { BusOrderDeliveryEntity } from '@/apis/business/order-manage/delivery/typing';
 import { processRecall } from '@/apis/process/process';
-import { ActTaskModelTypeEnum } from '@/apis/process/typings';
+import { ActProcessStatusEnum, ActTaskModelTypeEnum } from '@/apis/process/typings';
+import { ProcessValueEnum } from '@/configs/commValueEnum';
 import { COM_PRO_TABLE_TIME } from '@/configs/index.config';
 import ReviewProcess from '@/pages/account/Task/components/ReviewProcess';
 import { nestPaginationTable } from '@/utils/proTablePageQuery';
@@ -28,7 +29,7 @@ function gotoDeliveryInfo(query: DeliveryLocationQuery) {
   }
   window.tabsAction.goBackTab(url, undefined, true);
 }
-
+/**@name 发货单表格 */
 const OrderDelivery: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const location = useLocation();
@@ -46,7 +47,7 @@ const OrderDelivery: React.FC = () => {
   }
   const columns: ProColumns<BusOrderDeliveryEntity>[] = [
     {
-      title: '合同单号',
+      title: '订单单号',
       dataIndex: 'contractNumber',
     },
     {
@@ -83,6 +84,14 @@ const OrderDelivery: React.FC = () => {
       },
     },
     {
+      title: '流程状态',
+      dataIndex: 'process.status',
+      valueEnum: ProcessValueEnum.ActProcessStatusEnum,
+      width: 100,
+      fieldProps: { mode: 'multiple' },
+      renderText: (t, record) => record.process?.status || ActProcessStatusEnum.Complete,
+    },
+    {
       title: '当前任务进度',
       dataIndex: 'process.runningTask.name',
       width: 100,
@@ -101,7 +110,6 @@ const OrderDelivery: React.FC = () => {
         return (record as any)?.approveUser?.name || '无需审批';
       },
     },
-    ...COM_PRO_TABLE_TIME.updatedAt,
     ...COM_PRO_TABLE_TIME.createdAt,
 
     {
@@ -171,7 +179,7 @@ const OrderDelivery: React.FC = () => {
                   },
                   {
                     key: 'recall',
-                    label: <div>撤回合同单</div>,
+                    label: <div>撤回发货单</div>,
                     onClick: () => {
                       processRecall(entity.processId).then((res) => {
                         action?.reload();

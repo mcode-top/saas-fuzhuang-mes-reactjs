@@ -1,9 +1,12 @@
+import type { BusManufactureWorkPriceTable } from '@/apis/business/order-manage/manufacture/typing';
 import SelectWorkPrice from '@/pages/business/techology-manage/WorkPrice/components/SelectWorkPrice';
 import SelectWorkPriceContent from '@/pages/business/techology-manage/WorkPrice/components/SelectWorkPriceContent';
 import { jsonUniq } from '@/utils';
 import type { FormListActionType } from '@ant-design/pro-form';
+import { ProFormItem } from '@ant-design/pro-form';
+import { ProFormGroup } from '@ant-design/pro-form';
 import ProForm, { ProFormDependency, ProFormList, ProFormMoney } from '@ant-design/pro-form';
-import { Alert } from 'antd';
+import { Alert, Empty, Table } from 'antd';
 import React, { useState } from 'react';
 
 /**@name 工序工价可编辑列表 */
@@ -14,7 +17,15 @@ const EditWorkProcessWrokPriceList: React.FC<{
   key?: string;
 }> = (props) => {
   const actionRef = React.useRef<FormListActionType>();
-
+  if (props.readonly) {
+    return (
+      <ProFormGroup colProps={{ span: 24 }}>
+        <ProFormItem name={props.name} label={props.label} key={props.key}>
+          <WrokPriceAndWorkProcessReadonlyTable title={false} />
+        </ProFormItem>
+      </ProFormGroup>
+    );
+  }
   return (
     <ProFormList
       creatorButtonProps={
@@ -85,9 +96,7 @@ const EditWorkProcessWrokPriceList: React.FC<{
 };
 
 function WorkPriceProcessLinked(props: { workPriceId: number; readonly: boolean }) {
-  const [price, setPrice] = useState(0);
   const actionRef = React.useRef<FormListActionType>();
-
   return (
     <ProFormList
       name="workProcessWrokPrice"
@@ -177,4 +186,70 @@ function WorkPriceProcessLinked(props: { workPriceId: number; readonly: boolean 
   );
 }
 
+/**@name 工价工序只读表 */
+export const WrokPriceAndWorkProcessReadonlyTable: React.FC<{
+  value?: BusManufactureWorkPriceTable[];
+  title?: string | boolean;
+}> = (props) => {
+  /**@name 展开的工序工价 */
+  const expandedWorkProcessWrokPrice = (r: BusManufactureWorkPriceTable) => {
+    return (
+      <Table
+        size="small"
+        dataSource={r.workProcessWrokPrice}
+        pagination={false}
+        rowKey="workProcessId"
+        columns={[
+          {
+            title: '工序',
+            dataIndex: 'workProcessId',
+            render(value, record, index) {
+              return <SelectWorkPriceContent workPriceId={r.workPriceId} fieldProps={{ value }} />;
+            },
+          },
+          {
+            title: '工价',
+            dataIndex: 'price',
+          },
+          {
+            title: '变更工价',
+            dataIndex: 'changePrice',
+          },
+        ]}
+      />
+    );
+  };
+  return props.value ? (
+    <Table
+      dataSource={props.value?.map((item) => {
+        return {
+          ...item,
+          key: item.workPriceId,
+        };
+      })}
+      size="small"
+      rowKey="workPriceId"
+      style={{ width: '100%', minWidth: 800 }}
+      title={() => (props.title === props.title ? '' : props.title || '工序工价表')}
+      pagination={false}
+      className="not-margin-bottom-form-item"
+      expandable={{
+        expandedRowRender: expandedWorkProcessWrokPrice,
+        defaultExpandAllRows: true,
+        defaultExpandedRowKeys: props.value?.map((item) => {
+          return item.workPriceId;
+        }),
+      }}
+      columns={[
+        {
+          title: '工价表',
+          dataIndex: 'workPriceId',
+          render(value, record, index) {
+            return <SelectWorkPrice fieldProps={{ value }} />;
+          },
+        },
+      ]}
+    />
+  ) : null;
+};
 export default EditWorkProcessWrokPriceList;

@@ -179,7 +179,7 @@ export const OrderCollectionSlipLogTable: React.FC<{
   return (
     <Table
       size="small"
-      title={() => '合同收款单记录'}
+      title={() => '订单收款单记录'}
       style={{ width: '100%' }}
       columns={[
         {

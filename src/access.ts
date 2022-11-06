@@ -1,3 +1,4 @@
+import type { MenuTreeType } from '@/apis/person/typings';
 import type { RouteContextType } from '@ant-design/pro-layout';
 import { isEmpty } from 'lodash';
 import { Router } from 'umi';
@@ -11,15 +12,24 @@ import type { InitialStateType } from './app';
  * */
 export default function access(initialState: InitialStateType) {
   const { currentUser } = initialState || {};
-
+  const authMenus = currentUser?.menus?.reduce<Record<string, boolean>>((p, n) => {
+    p[n.name + '_' + n.router] = true;
+    n.children?.forEach((e) => {
+      p[e.name + '_' + e.router] = true;
+    });
+    return p;
+  }, {});
   const isAdmin = currentUser?.isAdmin;
   const apis = currentUser?.apis;
   return {
     /**
      * 菜单权限
      */
-    menuAuth: (route: { name: string; path: string }) => {
+    menuAuth: (route: { access: string; name: string; path: string }) => {
       // TODO:待补充
+      if (route.access === 'menuAuth') {
+        return Boolean(authMenus?.[route.name + '_' + route.path]);
+      }
       return true;
     },
 

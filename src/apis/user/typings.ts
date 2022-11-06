@@ -1,3 +1,5 @@
+import type { ApiTreeType, MenuTreeType } from '../person/typings';
+
 /*
  * @Author: mmmmmmmm
  * @Date: 2022-03-01 09:36:34
@@ -14,6 +16,8 @@ export type UserInfo = {
   id: number;
   deptId: number;
   roleList: any[];
+  menus?: MenuTreeType[];
+  apis?: ApiTreeType[];
   name: string;
   phone: string;
   email: string;

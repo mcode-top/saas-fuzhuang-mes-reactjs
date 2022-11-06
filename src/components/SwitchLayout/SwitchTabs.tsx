@@ -52,7 +52,6 @@ export default function SwitchTabs(props: SwitchTabsProps): JSX.Element {
       history,
       actionRef,
     });
-  console.log(tabs, activeKey, 'tabs, activeKey');
 
   const remove = usePersistFn((key: string) => {
     handleRemove(key);

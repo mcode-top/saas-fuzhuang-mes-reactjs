@@ -12,20 +12,21 @@ const ContractStyleDemand: React.FC<{
   styleDemand: BusOrderStyleDemand;
   contractNumber: string;
   deliverDate?: string;
+  sampleRemark?: string;
 }> = (props) => {
-  console.log('====================================');
-  console.log(props.styleDemand.logo);
-  console.log('====================================');
   return (
     <div>
       <Descriptions>
-        <Descriptions.Item label="合同号">{props?.contractNumber}</Descriptions.Item>
+        <Descriptions.Item label="订单单号">{props?.contractNumber}</Descriptions.Item>
         <Descriptions.Item label="订单类型">
           {dictValueEnum(OrderContractTypeValueEnum.Style, props?.styleDemand.styleType)}
         </Descriptions.Item>
         <Descriptions.Item label="物料编码(型号)">
           {props?.styleDemand.materialCode}
         </Descriptions.Item>
+        {props.sampleRemark && props.sampleRemark !== '无' ? (
+          <Descriptions.Item label="有样衣">{props.sampleRemark}</Descriptions.Item>
+        ) : null}
         <Descriptions.Item label="合同交期时间">{props.deliverDate}</Descriptions.Item>
         <Descriptions.Item label="产品名称(款式)">{props?.styleDemand.style}</Descriptions.Item>
         <Descriptions.Item label="面料">{props?.styleDemand.shellFabric}</Descriptions.Item>

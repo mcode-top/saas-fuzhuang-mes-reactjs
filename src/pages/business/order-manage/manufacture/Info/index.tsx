@@ -74,7 +74,9 @@ const OrderManufactureInfo: React.FC = () => {
     resultSuccess();
   }
   /**@name 审核生产单 */
-  function approveManufacture(isAgree: boolean) {
+  async function approveManufacture(isAgree: boolean) {
+    await formRef.current?.validateFields();
+
     return new Promise((resolve, reject) => {
       let value = '';
       Modal.confirm({
@@ -111,15 +113,18 @@ const OrderManufactureInfo: React.FC = () => {
   return (
     <Card style={{ width: 1000, margin: 'auto' }}>
       {contractResult ? (
-        <ContractStyleDemand
-          deliverDate={contractResult?.contract?.deliverDate}
-          contractNumber={contractResult?.contractNumber}
-          styleDemand={contractResult?.styleDemand}
-        />
+        <>
+          <ContractStyleDemand
+            sampleRemark={contractResult?.contract?.sampleRemark}
+            deliverDate={contractResult?.contract?.deliverDate}
+            contractNumber={contractResult?.contractNumber}
+            styleDemand={contractResult?.styleDemand}
+          />
+        </>
       ) : null}
       <ProForm
         style={{ paddingTop: 12 }}
-        layout={'horizontal'}
+        layout={readonly ? 'horizontal' : 'vertical'}
         formRef={formRef}
         readonly={readonly}
         submitter={{

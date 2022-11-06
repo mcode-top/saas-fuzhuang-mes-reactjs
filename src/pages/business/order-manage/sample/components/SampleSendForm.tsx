@@ -1,18 +1,21 @@
 import {
   fetchApproveContract,
+  fetchApproveSampleSennd,
   fetchContractSerialNumber,
   fetchCreateContract,
-  fetchCreateOrderAddContract,
   fetchCreateProofingOrder,
+  fetchCreateSampleSend,
   fetchUpdateContract,
+  fetchUpdateSampleSend,
   fetchWatchContract,
 } from '@/apis/business/order-manage/contract';
 import type {
   BusOrderContract,
-  BusOrderContractOrderAddDto,
   BusOrderStyleDemand,
+  CreateSampleSendDto,
+  OrderSampleStyleDemand,
+  UpdateSampleSendDto,
 } from '@/apis/business/order-manage/contract/typing';
-import { BusOrderStyleTypeEnum } from '@/apis/business/order-manage/contract/typing';
 import { BusOrderTypeEnum } from '@/apis/business/order-manage/contract/typing';
 import { DraftsModal, saveDrafts } from '@/components/Comm/Drafts';
 import { disabledLastDate } from '@/components/Comm/helper';
@@ -32,22 +35,23 @@ import ProForm, {
 import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { Alert, Button, Card, Input, message, Modal, Space } from 'antd';
+import { Button, Card, Input, message, Modal, Space } from 'antd';
 import { isEmpty, omit } from 'lodash';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useHistory, useLocation, useModel, useParams } from 'umi';
 import useSwitchTabs from 'use-switch-tabs';
 import BusSelectCustomerAddress from '../../components/SelectCustomerAddress';
 import BusSelectCustomerCompany from '../../components/SelectCustomerCompany';
 import BusSelectCustomerContacter from '../../components/SelectCustomerContacter';
 import BusSelectUser from '../../components/SelectUser';
-import type { ContractLocationQuery } from '../typing';
-import ContractOrderStyleModal from './ContractOrderStyleModal';
 import { OrderCollectionSlipLogTable } from '../../collection-slip/components/OrderCollectionSlipAddLog';
 import { fetchCollectionSlipInfo } from '@/apis/business/order-manage/collection-slip';
 import type { BusOrderContractCollectionSlip } from '@/apis/business/order-manage/collection-slip/typing';
+import type { SampleSendLocationQuery } from '../typing';
+import type { SampleSendStyleDemandModalRef } from './SampleSendStyleDemandModal';
+import SampleSendStyleDemandModal from './SampleSendStyleDemandModal';
 
-/**@name 合同单详情 */
+/**@name 寄样单详情 */
 const OrderContractInfo: React.FC = (props) => {
   /**@name 收款记录 */
   const [collectionInfo, setCollectionInfo] = useState<BusOrderContractCollectionSlip>();
@@ -56,7 +60,7 @@ const OrderContractInfo: React.FC = (props) => {
   const { initialState } = useModel('@@initialState');
   const formRef = React.useRef<ProFormInstance>();
   const location = useLocation();
-  const query = (location as any).query as ContractLocationQuery;
+  const query = (location as any).query as SampleSendLocationQuery;
   useEffect(() => {
     if (query.type === 'create') {
       // refrshContractNumber();
@@ -72,36 +76,21 @@ const OrderContractInfo: React.FC = (props) => {
       }
     }
   }, []);
-  /**@name 设置合同数据 */
+  /**@name 设置订单数据 */
   function setContractValues(contractNumber: string) {
     return fetchWatchContract(contractNumber).then((res) => {
-      const values = res.data;
-      if (query.orderType === BusOrderTypeEnum.Add) {
-        // 如果是加单则修改款式中的数量将其归零
-        values.styleDemand = values.styleDemand.map((style) => {
-          style.sizePriceNumber = [];
-          style.totalPrice = 0;
-          // 由于已经生成合同单则应该为现货
-          style.styleType = BusOrderStyleTypeEnum.SpotGoods;
-          return style;
-        });
-      }
-      formRef.current?.setFieldsValue(values);
+      console.log('====================================');
+      console.log(res.data);
+      console.log('====================================');
+      formRef.current?.setFieldsValue({
+        ...res.data,
+        orderSampleStyleDemand: res.data.styleDemand,
+      });
     });
   }
-  /**@name 新增合同单 */
-  async function createContract(data: BusOrderContract) {
-    await fetchCreateContract(data);
-    resultSuccess();
-  }
-  /**@name 新增合同单-加单 */
-  async function createOrderAddContract(data: BusOrderContractOrderAddDto) {
-    await fetchCreateOrderAddContract(data);
-    resultSuccess();
-  }
-  /**@name 新建打样单 */
-  async function createSampleProofing(data: BusOrderContract) {
-    await fetchCreateProofingOrder(data);
+  /**@name 新建寄样单 */
+  async function createSampleSend(data: CreateSampleSendDto) {
+    await fetchCreateSampleSend(data);
     resultSuccess();
   }
   /**@name 获取收款单数据 */
@@ -112,8 +101,8 @@ const OrderContractInfo: React.FC = (props) => {
       }
     });
   }
-  /**@name 审核合同单 */
-  async function approveContract(isAgree: boolean) {
+  /**@name 审核寄样单 */
+  async function approveSampleSend(isAgree: boolean) {
     await formRef.current?.validateFields();
 
     return new Promise((resolve, reject) => {
@@ -121,8 +110,8 @@ const OrderContractInfo: React.FC = (props) => {
       Modal.confirm({
         title: '请您填写审批意见(可不填)',
         content: <Input.TextArea onChange={(e) => (value = e.target.value)} />,
-        onOk: () => {
-          fetchApproveContract({
+        onOk: async () => {
+          fetchApproveSampleSennd({
             contractNumber: formRef.current?.getFieldValue('contractNumber'),
             isAgree,
             opinion: value,
@@ -140,19 +129,17 @@ const OrderContractInfo: React.FC = (props) => {
       });
     });
   }
-  /**@name 修改合同单 */
-  async function updateContract(data: BusOrderContract) {
-    await fetchUpdateContract(data);
+  /**@name 修改寄样单 */
+  async function updateSampleSend(contractNumber: string, data: UpdateSampleSendDto) {
+    await fetchUpdateSampleSend(contractNumber, data);
     resultSuccess();
   }
   function resultSuccess() {
-    if (query.orderType === BusOrderTypeEnum.SampleProofing) {
-      window.layoutTabsAction.goAndClose('/order-manage/sample', true);
-    } else {
-      window.layoutTabsAction.goAndClose('/order-manage/contract', true);
-    }
+    window.layoutTabsAction.goAndClose('/order-manage/sample', true);
     message.success('操作成功');
   }
+  /**@name 是否收费 */
+  const isCharge = query.orderType === BusOrderTypeEnum.SampleCharge;
   return (
     <Card style={{ width: 1000, margin: 'auto' }}>
       <ProForm
@@ -166,13 +153,13 @@ const OrderContractInfo: React.FC = (props) => {
                 <LoadingButton
                   onLoadingClick={async () => {
                     const values = await formRef.current?.getFieldsValue();
-                    await saveDrafts('contract', values);
+                    await saveDrafts('charge', values);
                   }}
                 >
                   另存为草稿箱
                 </LoadingButton>
                 <DraftsModal
-                  businessKey="contract"
+                  businessKey="charge"
                   onFinish={async (values) => {
                     await formRef.current?.setFieldsValue(omit(values, 'contractNumber'));
                   }}
@@ -182,14 +169,14 @@ const OrderContractInfo: React.FC = (props) => {
                   </Button>
                 </DraftsModal>
                 <LoadingButton
-                  onLoadingClick={() => approveContract(true)}
+                  onLoadingClick={() => approveSampleSend(true)}
                   hidden={query.type !== 'approve'}
                   type="primary"
                 >
                   同意通过
                 </LoadingButton>
                 <LoadingButton
-                  onLoadingClick={() => approveContract(false)}
+                  onLoadingClick={() => approveSampleSend(false)}
                   hidden={query.type !== 'approve'}
                   danger
                 >
@@ -200,7 +187,7 @@ const OrderContractInfo: React.FC = (props) => {
                   type="primary"
                   onLoadingClick={async () => {
                     const values = await formRef.current?.validateFields();
-                    await updateContract(values as any);
+                    await updateSampleSend(query.contractNumber as string, values as any);
                   }}
                 >
                   保存修改
@@ -210,24 +197,13 @@ const OrderContractInfo: React.FC = (props) => {
                   type="primary"
                   onLoadingClick={async () => {
                     const values = await formRef.current?.validateFields();
-                    if (query.orderType !== BusOrderTypeEnum.SampleProofing) {
-                      await createContract(values as any);
-                    } else {
-                      await createSampleProofing(values as any);
-                    }
+                    createSampleSend({
+                      ...values,
+                      type: query.orderType,
+                    });
                   }}
                 >
                   确定创建
-                </LoadingButton>
-                <LoadingButton
-                  hidden={query.orderType !== BusOrderTypeEnum.Add}
-                  type="primary"
-                  onLoadingClick={async () => {
-                    const values = await formRef.current?.validateFields();
-                    await createOrderAddContract(values);
-                  }}
-                >
-                  确定加单
                 </LoadingButton>
               </Space>
             </FooterToolbar>
@@ -242,16 +218,6 @@ const OrderContractInfo: React.FC = (props) => {
           name="contractNumber"
           placeholder="创建完订单后自动生成"
         />
-        {query.orderType === BusOrderTypeEnum.Add ? (
-          <ProFormText
-            label="订单单号后缀"
-            colProps={{ span: 8 }}
-            name="suffixContractNumber"
-            initialValue={'-1'}
-            rules={[{ required: true }]}
-            help={`填写后缀,如果为-1则生成合同号为"${query.contractNumber}-1"`}
-          />
-        ) : null}
         <BusSelectUser
           label="跟进人"
           colProps={{ span: 8 }}
@@ -267,6 +233,7 @@ const OrderContractInfo: React.FC = (props) => {
           rules={[{ required: true }]}
           label="交期时间"
           fieldProps={{ disabledDate: disabledLastDate }}
+          width="sm"
           name="deliverDate"
         />
         <BusSelectCustomerCompany
@@ -302,51 +269,71 @@ const OrderContractInfo: React.FC = (props) => {
             );
           }}
         </ProFormDependency>
-        <ProFormDigit
-          label="预付比例(%)"
-          colProps={{ span: 8 }}
-          rules={[{ required: true }]}
-          fieldProps={{
-            addonAfter: '%',
-            precision: 2,
-          }}
-          min={0}
-          readonly={readonly}
-          max={100}
-          name="prepayPercent"
-        />
+        {/* 仅需要收费时可填写 */}
+        {isCharge ? (
+          <>
+            <ProFormDigit
+              label="预付比例(%)"
+              colProps={{ span: 8 }}
+              rules={[{ required: true }]}
+              fieldProps={{
+                addonAfter: '%',
+                precision: 2,
+              }}
+              hidden={!isCharge}
+              min={0}
+              readonly={readonly}
+              max={100}
+              name="prepayPercent"
+            />
 
-        <ProFormRadio.Group
-          label="发票类型"
-          name="invoiceType"
-          colProps={{ span: 8 }}
-          readonly={readonly}
-          initialValue="发票"
-          rules={[{ required: true }]}
-          options={['发票', '普票', '无票']}
-        />
-        <ProFormText
-          readonly={readonly}
-          name="payment"
-          label="付款方式"
-          colProps={{ span: 8 }}
-          rules={[{ required: true }]}
-          placeholder="请输入名称"
-        />
-        {/**@name 需要审批人员设置销售提成 */}
-        <ProFormDigit
-          name="salesCommissions"
-          readonly={query.type !== 'approve'}
-          label="销售提成(%)"
-          colProps={{ span: 8 }}
-          fieldProps={{
-            addonAfter: '%',
-            precision: 2,
-          }}
-          min={0}
-          rules={[{ required: query.type === 'approve' }]}
-          max={100}
-        />
+            <ProFormRadio.Group
+              label="发票类型"
+              name="invoiceType"
+              colProps={{ span: 8 }}
+              hidden={!isCharge}
+              readonly={readonly}
+              initialValue="发票"
+              options={['发票', '普票', '无票']}
+            />
+            <ProFormText
+              readonly={readonly}
+              name="payment"
+              label="付款方式"
+              hidden={!isCharge}
+              colProps={{ span: 8 }}
+              rules={[{ required: true }]}
+              placeholder="请输入名称"
+            />
+            {/**@name 需要审批人员设置销售提成 */}
+
+            <ProFormDigit
+              name="salesCommissions"
+              readonly={query.type !== 'approve'}
+              label="销售提成(%)"
+              colProps={{ span: 8 }}
+              fieldProps={{
+                addonAfter: '%',
+                precision: 2,
+              }}
+              min={0}
+              rules={[{ required: query.type === 'approve' }]}
+              max={100}
+            />
+            <ProFormRadio.Group
+              name="distributionPrint"
+              readonly={query.type !== 'approve'}
+              label="配货单是否打印"
+              options={[
+                { label: '打印', value: true },
+                { label: '不打印', value: false },
+              ]}
+              initialValue={false}
+              colProps={{ span: 8 }}
+              rules={[{ required: query.type === 'approve' }]}
+            />
+          </>
+        ) : null}
         <ProFormText
           readonly={readonly}
           name="logisticsMode"
@@ -355,59 +342,25 @@ const OrderContractInfo: React.FC = (props) => {
           placeholder="请输入物流方式"
           rules={[{ required: true }]}
         />
-        {/**仅普通的合同单可以填写 */}
-        {query.orderType === BusOrderTypeEnum.Normal ? (
-          <ProFormText
-            label="有无样衣"
-            colProps={{ span: 8 }}
-            readonly={readonly}
-            help={readonly ? undefined : '如果有请填写客户来样或者打样单号'}
-            initialValue={'无'}
-            name="sampleRemark"
-          />
-        ) : null}
-
-        {query.orderType === BusOrderTypeEnum.Add ? (
-          <Alert
-            style={{ width: '100%' }}
-            type="warning"
-            message="追加定单,会复制整个订单,您仅需要填写要添加的尺码颜色数量价格即可,如果有多余款式无需加单删除即可"
-          />
-        ) : null}
         <ProForm.Item
-          name="styleDemand"
-          label="款式需求"
+          name="orderSampleStyleDemand"
+          label="仓库款式"
           rules={[
             {
-              validator(rule, value: BusOrderStyleDemand[], callback) {
+              validator(rule, value, callback) {
                 if (isEmpty(value)) {
-                  return callback('款式需求不能为空');
-                }
-                const some = value.some((item) => {
-                  if (isEmpty(item.sizePriceNumber)) {
-                    callback(`款式中的${item.materialCode}尺码数量价格表不能为空`);
-                    return true;
-                  }
-                  const find = item.sizePriceNumber.find((i) => {
-                    return i.number === 0;
-                  });
-                  if (find) {
-                    callback(`款式中的${item.materialCode}尺码数量价格表中数量必须大于0`);
-                    return true;
-                  }
-                });
-                if (some) {
-                  return;
+                  return callback('仓库款式不能为空');
                 }
                 callback();
               },
             },
           ]}
         >
-          {/** 如果订单类型是加单则可以随意修改内容 */}
-          <OrderStyleDemandTable readonly={readonly && query.orderType !== BusOrderTypeEnum.Add} />
+          <OrderStyleDemandTable isCharge={isCharge} readonly={readonly} />
         </ProForm.Item>
-
+        {collectionInfo?.collectionLog ? (
+          <OrderCollectionSlipLogTable list={collectionInfo?.collectionLog} />
+        ) : null}
         <ProFormTextArea
           colProps={{ span: 24 }}
           readonly={readonly}
@@ -420,9 +373,6 @@ const OrderContractInfo: React.FC = (props) => {
           label="备注说明"
           name="remark"
         />
-        {collectionInfo?.collectionLog && query.orderType !== BusOrderTypeEnum.Add ? (
-          <OrderCollectionSlipLogTable list={collectionInfo?.collectionLog} />
-        ) : null}
       </ProForm>
     </Card>
   );
@@ -430,16 +380,16 @@ const OrderContractInfo: React.FC = (props) => {
 export default OrderContractInfo;
 
 /**@name 订单款式 */
-export function OrderStyleDemandTable(props: {
-  onChange?: (styleGroup: BusOrderStyleDemand[]) => any;
-  value?: BusOrderStyleDemand[];
+function OrderStyleDemandTable(props: {
+  onChange?: (styleGroup: OrderSampleStyleDemand[]) => any;
+  value?: OrderSampleStyleDemand[];
+  isCharge: boolean;
   readonly?: boolean;
 }) {
-  const [dataSource, setDataSource] = useState<BusOrderStyleDemand[]>([]);
-  const columns: ProColumns[] = [
+  const modalRef = useRef<SampleSendStyleDemandModalRef>(null);
+  const [dataSource, setDataSource] = useState<OrderSampleStyleDemand[]>([]);
+  const columns: ProColumns<OrderSampleStyleDemand>[] = [
     { title: '物料编码(型号)', dataIndex: 'materialCode' },
-    { title: '产品名称', dataIndex: 'style' },
-    { title: '订单类型', dataIndex: 'styleType', valueEnum: OrderContractTypeValueEnum.Style },
     {
       title: '总数量',
       key: 'number',
@@ -451,10 +401,14 @@ export function OrderStyleDemandTable(props: {
         return total;
       },
     },
-    {
-      title: '总金额',
-      dataIndex: 'totalPrice',
-    },
+    ...(props.isCharge
+      ? [
+          {
+            title: '总金额',
+            dataIndex: 'totalPrice',
+          },
+        ]
+      : []),
     {
       title: '操作',
       fixed: 'right',
@@ -462,37 +416,42 @@ export function OrderStyleDemandTable(props: {
       render(dom, entity, index, action, schema) {
         return (
           <Space size="small">
-            <ContractOrderStyleModal
-              key="create"
-              node={{ type: 'watch', value: entity }}
-              title="查看订单款式"
+            <Button
+              type="link"
+              size="small"
+              onClick={() => {
+                modalRef.current?.show('watch', { ...entity, index });
+              }}
             >
-              <Button type="link" size="small">
-                查看
-              </Button>
-            </ContractOrderStyleModal>
+              查看
+            </Button>
+            <Button
+              hidden={props.readonly}
+              onClick={() => {
+                modalRef.current?.show('update', { ...entity, index });
+              }}
+              type="link"
+              size="small"
+            >
+              修改
+            </Button>
 
-            <ContractOrderStyleModal
-              key="update"
-              node={{ type: 'update', value: entity }}
-              title="修改订单款式"
-              onFinish={(value) => {
+            <Button
+              hidden={props.readonly}
+              type="link"
+              size="small"
+              danger
+              onClick={() => {
                 change(
-                  dataSource.map((item, di) => {
-                    if (di === index) {
-                      return value;
+                  dataSource.filter((i, dindex) => {
+                    if (dindex === index) {
+                      return false;
                     }
-                    return item;
+                    return true;
                   }),
                 );
               }}
             >
-              {/**@name 如果是加单则可以修改数量价格 */}
-              <Button hidden={props.readonly} type="link" size="small">
-                修改
-              </Button>
-            </ContractOrderStyleModal>
-            <Button hidden={props.readonly} type="link" size="small" danger>
               删除
             </Button>
           </Space>
@@ -503,34 +462,56 @@ export function OrderStyleDemandTable(props: {
   useEffect(() => {
     setDataSource(props.value || []);
   }, [props.value]);
-  function change(data: BusOrderStyleDemand[]) {
+  function change(data: OrderSampleStyleDemand[]) {
     setDataSource(data);
     props.onChange?.(data);
   }
   return (
-    <ProTable
-      rowKey="materialCode"
-      search={false}
-      columns={columns}
-      dataSource={dataSource}
-      style={{ width: 900 }}
-      size={'small'}
-      toolBarRender={(action: ActionType | undefined) => {
-        return props.readonly
-          ? []
-          : [
-              <ContractOrderStyleModal
-                key="create"
-                node={{ type: 'create' }}
-                title="新增订单款式"
-                onFinish={(value) => {
-                  change([...dataSource, value]);
-                }}
-              >
-                <Button>新增订单款式</Button>
-              </ContractOrderStyleModal>,
-            ];
-      }}
-    />
+    <>
+      <SampleSendStyleDemandModal
+        ref={modalRef}
+        isCharge={props.isCharge}
+        onFinish={(value, type) => {
+          console.log(value, 'SampleSendStyleDemandModalProps');
+          if (type === 'create') {
+            change([...dataSource, value]);
+          } else if (type === 'update') {
+            change([
+              ...dataSource.map((i, index) => {
+                console.log('====================================');
+                console.log((i as any).index, index, value);
+                console.log('====================================');
+                if (value.index === index) {
+                  return value;
+                }
+                return i;
+              }),
+            ]);
+          }
+        }}
+      />
+      <ProTable
+        rowKey="materialCode"
+        search={false}
+        columns={columns}
+        dataSource={dataSource}
+        style={{ width: 900 }}
+        size={'small'}
+        toolBarRender={(action: ActionType | undefined) => {
+          return props.readonly
+            ? []
+            : [
+                <Button
+                  key="create"
+                  onClick={() => {
+                    modalRef.current?.show('create');
+                  }}
+                >
+                  新增款式
+                </Button>,
+              ];
+        }}
+      />
+    </>
   );
 }
