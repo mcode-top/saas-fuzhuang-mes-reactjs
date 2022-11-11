@@ -1,16 +1,18 @@
 import { fetchOrderContractProcessList } from '@/apis/business/order-manage/order-process';
 import type { OrderContractProcessType } from '@/apis/business/order-manage/order-process/typing';
 import { OrderContractTypeValueEnum } from '@/configs/commValueEnum';
-import { COM_PRO_TABLE_TIME } from '@/configs/index.config';
+import { COM_PRO_TABLE_TIME, REQUEST_PREFIX, WEB_REQUEST_URL } from '@/configs/index.config';
 import { nestPaginationTable } from '@/utils/proTablePageQuery';
+import { downloadAction } from '@/utils/upload/upload';
 import { SettingOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { Button, Dropdown, Menu } from 'antd';
+import { Button, DatePicker, Dropdown, Menu, Modal } from 'antd';
 import { useRef } from 'react';
 import { useLocation } from 'umi';
 import OrderProcessAddModal from './components/OrderProcessAddModal';
 import OrderProcessLogTableModal from './components/OrderProcessLogTableModal';
+const { RangePicker } = DatePicker;
 
 const OrderContractProcess: React.FC = () => {
   const actionRef = useRef<ActionType>();
@@ -85,6 +87,38 @@ const OrderContractProcess: React.FC = () => {
       columns={columns}
       rowKey="contractNumber"
       headerTitle="流程记录"
+      toolBarRender={() => {
+        return [
+          <Button
+            key="export"
+            onClick={() => {
+              let value: any;
+              Modal.confirm({
+                title: '导出合同单销售额',
+                content: (
+                  <RangePicker
+                    picker="date"
+                    placeholder={['开始时间', '结束时间']}
+                    onChange={(v) => {
+                      value = v?.map((i) => i?.format('YYYY-MM-DD'));
+                    }}
+                  />
+                ),
+                onOk() {
+                  return downloadAction(
+                    WEB_REQUEST_URL +
+                      REQUEST_PREFIX +
+                      `/statisitics/month-contract-sales?rangeDate=${value[0]}&rangeDate=${value[1]}`,
+                    `${value[0]}至${value[1]}统计合同单销售提成.xlsx`.replace('-', '_'),
+                  );
+                },
+              });
+            }}
+          >
+            导出合同单销售额
+          </Button>,
+        ];
+      }}
       request={async (params, sort, filter) => {
         return nestPaginationTable(params, sort, filter, fetchOrderContractProcessList);
       }}

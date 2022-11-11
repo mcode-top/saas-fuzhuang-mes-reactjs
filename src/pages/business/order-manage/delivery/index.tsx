@@ -1,5 +1,6 @@
 import { fetchOrderDeliveryList } from '@/apis/business/order-manage/delivery';
 import type { BusOrderDeliveryEntity } from '@/apis/business/order-manage/delivery/typing';
+import { fetchOrderRecall } from '@/apis/business/order-manage/order-process';
 import { processRecall } from '@/apis/process/process';
 import { ActProcessStatusEnum, ActTaskModelTypeEnum } from '@/apis/process/typings';
 import { ProcessValueEnum } from '@/configs/commValueEnum';
@@ -181,7 +182,7 @@ const OrderDelivery: React.FC = () => {
                     key: 'recall',
                     label: <div>撤回发货单</div>,
                     onClick: () => {
-                      processRecall(entity.processId).then((res) => {
+                      fetchOrderRecall(entity.contractNumber, entity.processId).then((res) => {
                         action?.reload();
                       });
                     },

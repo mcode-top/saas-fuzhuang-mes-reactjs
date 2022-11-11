@@ -7,6 +7,8 @@ import {
 } from '@/apis/business/order-manage/contract';
 import type { BusOrderContract } from '@/apis/business/order-manage/contract/typing';
 import { BusOrderTypeEnum } from '@/apis/business/order-manage/contract/typing';
+import { fetchOrderRecall } from '@/apis/business/order-manage/order-process';
+import { fetchMonthStatisiticsContractSalesCommission } from '@/apis/business/order-manage/statisitics';
 import { processRecall } from '@/apis/process/process';
 import { ActTaskModelTypeEnum } from '@/apis/process/typings';
 import {
@@ -15,13 +17,15 @@ import {
   OrderContractTypeValueEnum,
   ProcessValueEnum,
 } from '@/configs/commValueEnum';
-import { COM_PRO_TABLE_TIME } from '@/configs/index.config';
+import { COM_PRO_TABLE_TIME, REQUEST_PREFIX, WEB_REQUEST_URL } from '@/configs/index.config';
 import ReviewProcess from '@/pages/account/Task/components/ReviewProcess';
 import { nestPaginationTable } from '@/utils/proTablePageQuery';
+import { downloadAction } from '@/utils/upload/upload';
 import { SettingOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { Button, Dropdown, Menu, Modal, Tag } from 'antd';
+import { Button, DatePicker, Dropdown, Menu, Modal, Tag } from 'antd';
+const { RangePicker } = DatePicker;
 import React, { useRef } from 'react';
 import { useLocation, useModel } from 'umi';
 import OrderCollectionSlipAddLog from '../collection-slip/components/OrderCollectionSlipAddLog';
@@ -222,7 +226,7 @@ const OrderContract: React.FC = () => {
                     key: 'recall',
                     label: <div>撤回合同单</div>,
                     onClick: () => {
-                      processRecall(entity.processId).then((res) => {
+                      fetchOrderRecall(entity.contractNumber, entity.processId).then((res) => {
                         action?.reload();
                       });
                     },

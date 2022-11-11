@@ -1,12 +1,13 @@
 import type { BusOrderManufacture } from '@/apis/business/order-manage/manufacture/typing';
 import { fetchManufactureUseModfiyRecordPieceList } from '@/apis/business/order-manage/record-piece';
 import { OrderContractTypeValueEnum } from '@/configs/commValueEnum';
-import { COM_PRO_TABLE_TIME } from '@/configs/index.config';
+import { COM_PRO_TABLE_TIME, REQUEST_PREFIX, WEB_REQUEST_URL } from '@/configs/index.config';
 import { nestPaginationTable } from '@/utils/proTablePageQuery';
+import { downloadAction } from '@/utils/upload/upload';
 import { SettingOutlined } from '@ant-design/icons';
 import type { ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { Dropdown, Menu, Button } from 'antd';
+import { Dropdown, Menu, Button, DatePicker, Modal } from 'antd';
 import { useRef } from 'react';
 import { useLocation } from 'umi';
 import type { ActionType } from 'use-switch-tabs';
@@ -14,6 +15,7 @@ import BusMaterialSelect from '../../techology-manage/Material/components/Materi
 import { getTableStyleName } from '../manufacture/helper';
 import RecordPieceAddModal from './components/RecordPieceAddModal';
 import RecordPieceLogModal from './components/RecordPieceLogModal';
+const { RangePicker } = DatePicker;
 
 const OrderRecordPiece: React.FC = () => {
   const actionRef = useRef<ActionType>();
@@ -138,6 +140,38 @@ const OrderRecordPiece: React.FC = () => {
       columns={columns}
       rowKey="manufactureId"
       headerTitle="计件单"
+      toolBarRender={() => {
+        return [
+          <Button
+            key="export"
+            onClick={() => {
+              let value: any;
+              Modal.confirm({
+                title: '导出计件数与工资',
+                content: (
+                  <RangePicker
+                    picker="date"
+                    placeholder={['开始时间', '结束时间']}
+                    onChange={(v) => {
+                      value = v?.map((i) => i?.format('YYYY-MM-DD'));
+                    }}
+                  />
+                ),
+                onOk() {
+                  return downloadAction(
+                    WEB_REQUEST_URL +
+                      REQUEST_PREFIX +
+                      `/statisitics/month-record-piece?rangeDate=${value[0]}&rangeDate=${value[1]}`,
+                    `${value[0]}至${value[1]}按月统计计件数与工资.xlsx`.replace('-', '_'),
+                  );
+                },
+              });
+            }}
+          >
+            导出合同单销售额
+          </Button>,
+        ];
+      }}
       request={async (params, sort, filter) => {
         return nestPaginationTable(params, sort, filter, fetchManufactureUseModfiyRecordPieceList);
       }}

@@ -4,6 +4,7 @@ import {
   fetchRemoveManufacture,
 } from '@/apis/business/order-manage/manufacture';
 import type { BusOrderManufacture } from '@/apis/business/order-manage/manufacture/typing';
+import { fetchOrderRecall } from '@/apis/business/order-manage/order-process';
 import { processRecall } from '@/apis/process/process';
 import { ActProcessStatusEnum, ActTaskModelTypeEnum } from '@/apis/process/typings';
 import { OrderContractTypeValueEnum, ProcessValueEnum } from '@/configs/commValueEnum';
@@ -210,7 +211,7 @@ const OrderContract: React.FC = () => {
                     onClick: () => {
                       fetchCheckManufactureIsRecall(entity.id).then((is) => {
                         if (is) {
-                          processRecall(entity.processId).then((res) => {
+                          fetchOrderRecall(entity.contractNumber, entity.processId).then((res) => {
                             action?.reload();
                           });
                         } else {

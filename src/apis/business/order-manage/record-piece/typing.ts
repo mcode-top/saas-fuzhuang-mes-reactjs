@@ -32,6 +32,7 @@ export type BusOrderRecordPieceLog = {
   materialNumber?: number;
   userId: number;
   workerUser: UserListItem;
+  operator: UserListItem;
 };
 /**@name 填写计件单 */
 export type RecordPieceAddDto = {

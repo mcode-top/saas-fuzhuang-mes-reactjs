@@ -9,6 +9,7 @@ import {
   TENANT_HEADER,
   TENANT_SESSION_PATH,
   TENANT_HEADER_TOKEN,
+  REQUEST_PREFIX,
 } from '@/configs/index.config';
 import _ from 'lodash';
 import { useRequest, RequestConfig, history } from 'umi';
@@ -25,21 +26,18 @@ export const requestInterceptors: RequestInterceptor[] = [
     };
     if (!apiWhiteList.includes(orginUrl)) {
       const token = sessionStorage.getItem(TENANT_HEADER_TOKEN);
-      console.log(token);
-
       if (!token) {
         history.push(LOGIN_PATH);
       }
       headers[TENANT_HEADER_TOKEN] = token;
     }
-    const prefix = '/v1/api';
+    const prefix = REQUEST_PREFIX;
     if (orginUrl.indexOf('http://') === 0 || orginUrl.indexOf('https://') === 0) {
       url = orginUrl;
     } else {
       url = prefix + orginUrl;
     }
     headers = _.merge(headers, options.headers);
-
     return {
       url,
       options: <RequestOptionsInit>{

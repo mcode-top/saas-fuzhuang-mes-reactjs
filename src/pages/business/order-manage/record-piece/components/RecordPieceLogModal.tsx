@@ -93,9 +93,9 @@ export const RecordPieceLogTable: React.FC<{
 
         {
           title: '操作人',
-          dataIndex: 'workerUser',
+          dataIndex: 'operator',
           render(value, record, index) {
-            return record.workerUser.name;
+            return record?.operator?.name;
           },
         },
         {

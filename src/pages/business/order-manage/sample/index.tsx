@@ -8,6 +8,7 @@ import {
 } from '@/apis/business/order-manage/contract';
 import type { BusOrderContract } from '@/apis/business/order-manage/contract/typing';
 import { BusOrderTypeEnum } from '@/apis/business/order-manage/contract/typing';
+import { fetchOrderRecall } from '@/apis/business/order-manage/order-process';
 import { processRecall } from '@/apis/process/process';
 import { ActTaskModelTypeEnum } from '@/apis/process/typings';
 import {
@@ -173,7 +174,7 @@ const OrderSample: React.FC = () => {
                     key: 'recall',
                     label: <div>撤回合同单</div>,
                     onClick: () => {
-                      processRecall(entity.processId).then((res) => {
+                      fetchOrderRecall(entity.contractNumber, entity.processId).then((res) => {
                         action?.reload();
                       });
                     },

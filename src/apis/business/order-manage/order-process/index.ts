@@ -26,3 +26,11 @@ export function fetchUndoneContractList(partContractNumber: string) {
     params: { partContractNumber },
   });
 }
+/**
+ * 业务订单撤回流程
+ */
+export function fetchOrderRecall(contractNumber: string, processId: number) {
+  return request<RESULT_SUCCESS>('/order-process/recall/' + contractNumber + '/' + processId, {
+    method: 'POST',
+  });
+}

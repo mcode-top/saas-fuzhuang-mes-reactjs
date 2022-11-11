@@ -1,22 +1,39 @@
-import { fetchCreateStation, fetchUpdateStation } from '@/apis/business/techology-manage/station';
+import {
+  fetchCreateStation,
+  fetchStationList,
+  fetchUpdateStation,
+  fetchWatchStation,
+} from '@/apis/business/techology-manage/station';
 import SelectSystemPersonButton from '@/components/Comm/FormlyComponents/SelectSystemPersonButton';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import { Button, Form } from 'antd';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import type { BusStationType } from './typing';
 
 const StationTableModal: React.FC<{
   node: {
     type: 'create' | 'update' | 'watch';
-    value?: BusStationType;
+    value?: {
+      stationId: number;
+    };
   };
   title: string;
   onFinish?: (value: BusStationType) => void;
   children: JSX.Element;
 }> = (props) => {
   const formRef = useRef<ProFormInstance>();
+  function getStationValue(stationId: number) {
+    return fetchWatchStation(stationId).then((res) => {
+      const data = res.data;
 
+      if (data?.userList && Array.isArray(data.userList)) {
+        data.userList = { userIds: data?.userList?.map((u: any) => u.id) || [] } as any;
+      }
+      formRef.current?.setFieldsValue(data);
+      return data;
+    });
+  }
   function onFinish(): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
       try {
@@ -46,10 +63,9 @@ const StationTableModal: React.FC<{
       formRef={formRef}
       onVisibleChange={(v) => {
         formRef.current?.resetFields();
-        if (props.node.value?.userList && Array.isArray(props.node.value.userList)) {
-          props.node.value.userList = { userIds: props.node.value?.userList } as any;
+        if (v && props.node.value?.stationId) {
+          getStationValue(props.node.value?.stationId);
         }
-        formRef.current?.setFieldsValue(props.node.value);
       }}
       trigger={props.children}
       onFinish={onFinish}

@@ -58,13 +58,6 @@ const TableAlertOptionDom: React.FC<{
   );
 };
 
-function formatUserList(data: BusStationType) {
-  if (Array.isArray(data?.userList)) {
-    return { ...data, userList: data?.userList?.map((u: any) => u.id) || [] };
-  }
-  return data;
-}
-
 /**@name 表格操作行 */
 const TableOperationDom: React.FC<{
   record: BusStationType;
@@ -83,7 +76,12 @@ const TableOperationDom: React.FC<{
               label: (
                 <StationTableModal
                   title="查看工位"
-                  node={{ type: 'watch', value: formatUserList(props.record) }}
+                  node={{
+                    type: 'watch',
+                    value: {
+                      stationId: props.record.id as number,
+                    },
+                  }}
                 >
                   <div>查看工位</div>
                 </StationTableModal>
@@ -99,7 +97,12 @@ const TableOperationDom: React.FC<{
                     message.success('修改成功');
                     props?.action?.reload();
                   }}
-                  node={{ type: 'update', value: formatUserList(props.record) }}
+                  node={{
+                    type: 'update',
+                    value: {
+                      stationId: props.record.id as number,
+                    },
+                  }}
                 >
                   <div>修改工位</div>
                 </StationTableModal>
@@ -127,14 +130,6 @@ const BusStation: React.FC = () => {
     {
       title: '工位设备',
       dataIndex: 'device',
-    },
-    {
-      title: '绑定员工',
-      ellipsis: true,
-      dataIndex: 'userList',
-      renderText(text, record, index, action) {
-        return text?.map((u) => u.name).join(',');
-      },
     },
     {
       title: '备注信息',

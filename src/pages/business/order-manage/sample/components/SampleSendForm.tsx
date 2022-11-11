@@ -1,17 +1,10 @@
 import {
-  fetchApproveContract,
   fetchApproveSampleSennd,
-  fetchContractSerialNumber,
-  fetchCreateContract,
-  fetchCreateProofingOrder,
   fetchCreateSampleSend,
-  fetchUpdateContract,
   fetchUpdateSampleSend,
   fetchWatchContract,
 } from '@/apis/business/order-manage/contract';
 import type {
-  BusOrderContract,
-  BusOrderStyleDemand,
   CreateSampleSendDto,
   OrderSampleStyleDemand,
   UpdateSampleSendDto,
@@ -20,10 +13,7 @@ import { BusOrderTypeEnum } from '@/apis/business/order-manage/contract/typing';
 import { DraftsModal, saveDrafts } from '@/components/Comm/Drafts';
 import { disabledLastDate } from '@/components/Comm/helper';
 import LoadingButton from '@/components/Comm/LoadingButton';
-import { OrderContractTypeValueEnum } from '@/configs/commValueEnum';
-import { ReloadOutlined } from '@ant-design/icons';
 import type { ProFormInstance } from '@ant-design/pro-form';
-import { ProFormSelect } from '@ant-design/pro-form';
 import ProForm, {
   ProFormDatePicker,
   ProFormDependency,
@@ -32,14 +22,13 @@ import ProForm, {
   ProFormText,
   ProFormTextArea,
 } from '@ant-design/pro-form';
-import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
+import { FooterToolbar } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { Button, Card, Input, message, Modal, Space } from 'antd';
 import { isEmpty, omit } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
-import { useHistory, useLocation, useModel, useParams } from 'umi';
-import useSwitchTabs from 'use-switch-tabs';
+import { useLocation, useModel } from 'umi';
 import BusSelectCustomerAddress from '../../components/SelectCustomerAddress';
 import BusSelectCustomerCompany from '../../components/SelectCustomerCompany';
 import BusSelectCustomerContacter from '../../components/SelectCustomerContacter';

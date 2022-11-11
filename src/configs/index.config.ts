@@ -3,14 +3,21 @@
  * @Date: 2022-02-28 18:41:20
  * @Description: 文件描述
  */
-// export const WEB_SOCKET_URL = 'ws://localhost:4000';
-console.log('====================================');
-console.log(window.location.host.search('localhost') !== -1);
-console.log('====================================');
+
 export const WEB_SOCKET_URL =
   window.location.host.search('localhost') !== -1
     ? 'ws://localhost:4000'
     : 'ws://121.40.228.54/fz-saas';
+
+console.log('====================================');
+console.log(window.location.host);
+console.log('====================================');
+/**@name 接口地址 */
+export const WEB_REQUEST_URL =
+  window.location.host.search('localhost') !== -1
+    ? 'http://' + window.location.host
+    : 'http://121.40.228.54';
+
 /**
  * 租户IDsession存储位置
  */
@@ -29,6 +36,8 @@ export const TENANT_HEADER = 'x-tenant-id';
  */
 export const LOGIN_PATH = '/user/login';
 
+/**@name 常用接口前缀 */
+export const REQUEST_PREFIX = '/v1/api';
 /**
  * 公用的ProTable updatedAt
  */

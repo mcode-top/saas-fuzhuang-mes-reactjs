@@ -126,8 +126,19 @@ export function downloadAction(url: string, filename: string = '') {
     url: url,
     filename: filename,
     autoStart: false,
+    headers: [
+      {
+        value: sessionStorage.getItem(TENANT_HEADER_TOKEN) as any,
+        name: TENANT_HEADER_TOKEN,
+      },
+      {
+        value: sessionStorage.getItem(TENANT_SESSION_PATH) as any,
+        name: TENANT_HEADER,
+      },
+    ],
   });
   file.params.contentType = false;
+
   const p = file.start();
   file.request.onprogress = (event) => {
     uid = uploadProgress(uid, tips, { loaded: event.loaded, total: event.total });

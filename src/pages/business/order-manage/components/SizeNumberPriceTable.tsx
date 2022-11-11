@@ -103,7 +103,7 @@ const MaterialToWarehouseGoodsTable: React.FC<{
               { dataIndex: 'number', title: '数量' },
               {
                 dataIndex: 'total',
-                title: '现有库存数量',
+                title: '现有库存数量(实时)',
                 render(value, record: MaterialToWarehouseGoodsTableDataSource, index) {
                   const mateGoods = record.mateGoods;
                   if (isEmpty(mateGoods)) {

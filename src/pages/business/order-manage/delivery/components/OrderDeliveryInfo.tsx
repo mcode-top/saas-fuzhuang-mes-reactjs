@@ -25,7 +25,7 @@ import { ProFormGroup } from '@ant-design/pro-form';
 import { ProFormText } from '@ant-design/pro-form';
 import { ProFormList } from '@ant-design/pro-form';
 import FooterToolbar from '@ant-design/pro-layout/lib/components/FooterToolbar';
-import { Card, Descriptions, message, Spin, Table } from 'antd';
+import { Alert, Card, Descriptions, message, Spin, Table } from 'antd';
 import { isEmpty } from 'lodash';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'umi';
@@ -86,6 +86,9 @@ const OrderDeliveryInfo: React.FC = () => {
     return fetchOrderWatchDelivery(deliveryId).then((res) => {
       if (res?.data?.goodsAndNumber) {
         setGoodsAndNumber(res.data.goodsAndNumber);
+      }
+      if (query.type === 'update') {
+        res.data.goodsAndNumber = [];
       }
       formRef.current?.setFieldsValue(res.data);
     });
@@ -210,9 +213,23 @@ const OrderDeliveryInfo: React.FC = () => {
         />
         <DeliveryPutOutFormList
           goodsOptional={goodsOptional}
-          readonly={readonly}
+          readonly={readonly || query.type === 'update'}
           dataSource={goodsAndNumber}
         />
+
+        {query.type === 'update' ? (
+          <>
+            <Alert
+              type="warning"
+              message="如果需要修改出库品类与数量则需要全部重新填写,如果不修改则不填写"
+            />
+            <DeliveryPutOutFormList
+              goodsOptional={goodsOptional}
+              readonly={false}
+              dataSource={[]}
+            />
+          </>
+        ) : null}
         <ProFormTextArea name="remark" label="备注信息" />
       </ProForm>
     </Card>
@@ -298,7 +315,7 @@ function DeliveryPutOutFormList(props: {
             },
           },
           {
-            title: '货品库存',
+            title: '现有库存',
             dataIndex: 'shelf',
             render(_value, record, _index) {
               return `${record?.goods?.quantity}`;

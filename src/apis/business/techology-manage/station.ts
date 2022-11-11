@@ -37,3 +37,9 @@ export function fetchNameListStation() {
     method: 'GET',
   });
 }
+/**@name 查看工位 */
+export function fetchWatchStation(stationId: number) {
+  return request<RESULT_SUCCESS<BusStationType>>('/station/' + stationId, {
+    method: 'GET',
+  });
+}
