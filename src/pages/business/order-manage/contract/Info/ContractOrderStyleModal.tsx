@@ -15,7 +15,7 @@ import { ProFormDigit } from '@ant-design/pro-form';
 import { ProFormDependency } from '@ant-design/pro-form';
 import { ProFormRadio } from '@ant-design/pro-form';
 import { ModalForm, ProFormGroup, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { validatorMaterialCode } from '@/pages/business/techology-manage/Material/helper';
 import SelectTreeSizeTemplate from '@/pages/business/techology-manage/SizeTemplate/components/SelectTreeSizeTemplate';
 import { useLocation } from 'umi';
@@ -25,13 +25,18 @@ import type { ColProps } from 'antd';
 import { isEmpty, omit } from 'lodash';
 import './replace.css';
 import LogoCraftsmanship from './LogoCraftsmanship';
-/**@name 计算单个款式的总价 */
+/**
+ * @name 计算单个款式的总价
+ * 产品价格(含其他费用)+(印刷单价+绣花单价)*数量+版费
+ *  */
 export function computedTotalAmount(entity: BusOrderStyleDemand) {
   let totalPrice = 0;
   entity.sizePriceNumber?.forEach((i) => {
     totalPrice +=
-      i.number * i.price + (entity['版费'] || 0) * i.number + (entity['印刷单价'] || 0) * i.number;
-    // (entity['绣花单价'] || 0) * i.number;
+      i.number * i.price +
+      (entity['印刷单价'] || 0) * i.number +
+      (entity['绣花单价'] || 0) * i.number +
+      (entity['版费'] || 0);
   });
   return totalPrice;
 }
@@ -48,6 +53,12 @@ const ContractOrderStyleModal: React.FC<{
   const location = useLocation();
   const query = (location as any).query as ContractLocationQuery;
   const [colorGroup, setColorGroup] = useState<string[]>([]);
+
+  const [
+    /**@name 是否为现货,如何是现货则填写物料编码时自动填装工艺,仅可填写尺码数量价格表 */
+    isSpot,
+    setIsSpot,
+  ] = useState<boolean>(false);
   function onFinish(): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
       try {
@@ -97,6 +108,11 @@ const ContractOrderStyleModal: React.FC<{
         rules={[{ required: true }]}
         valueEnum={OrderContractTypeValueEnum.Style}
         initialValue={BusOrderStyleTypeEnum.Custom}
+        fieldProps={{
+          onChange: (e) => {
+            setIsSpot(e.target.value === BusOrderStyleTypeEnum.SpotGoods);
+          },
+        }}
       />
       <ProFormDependency name={['styleType']}>
         {({ styleType }) => {
@@ -107,6 +123,7 @@ const ContractOrderStyleModal: React.FC<{
                   <MaterialFillStyleDemand
                     name="oldMaterialCode"
                     readonly={disabled}
+                    styleType={styleType}
                     onChangeStyleDemand={changeStyleDemand}
                     action={formRef.current}
                   />
@@ -158,16 +175,18 @@ const ContractOrderStyleModal: React.FC<{
                 <ProFormGroup>
                   <MaterialFillStyleDemand
                     name="materialCode"
+                    styleType={styleType}
                     onChangeStyleDemand={changeStyleDemand}
                     readonly={disabled}
                     colProps={{ span: 12 }}
                     action={formRef.current}
                   />
                   <ProFormText
-                    colProps={{ span: 12 }}
+                    rules={[{ required: true }]}
                     name="style"
-                    width="md"
-                    readonly={true}
+                    disabled={isSpot}
+                    colProps={{ span: 12 }}
+                    placeholder="产品名称(款式)"
                     label="产品名称(款式)"
                   />
                 </ProFormGroup>
@@ -183,68 +202,98 @@ const ContractOrderStyleModal: React.FC<{
           label="面料"
           materialType={BusMaterialTypeEnum.Material}
           colProps={{ span: 8 }}
+          readonly={isSpot}
           serachLength={1}
         />
-        {/* <ProFormText colProps={{ span: 8 }} name="shellFabric" label="面料" /> */}
-        <ProFormText colProps={{ span: 8 }} name="商标" label="商标" />
-        <ProFormText colProps={{ span: 8 }} name="口袋" label="口袋" />
+        <ProFormText colProps={{ span: 8 }} name="商标" label="商标" readonly={isSpot} />
+        <ProFormText colProps={{ span: 8 }} name="口袋" label="口袋" readonly={isSpot} />
       </ProFormGroup>
       <ProFormGroup>
-        <ProFormText name="领号" colProps={{ span: 8 }} label="领号" />
-        <ProFormText name="领子颜色" colProps={{ span: 8 }} label="领子颜色" />
-        <ProFormText name="后备扣" colProps={{ span: 8 }} label="后备扣" />
+        <ProFormText name="领号" colProps={{ span: 8 }} label="领号" readonly={isSpot} />
+        <ProFormText name="领子颜色" colProps={{ span: 8 }} label="领子颜色" readonly={isSpot} />
+        <ProFormText name="后备扣" colProps={{ span: 8 }} label="后备扣" readonly={isSpot} />
       </ProFormGroup>
       <ProFormGroup>
-        <ProFormTextArea colProps={{ span: 12 }} name="领部缝纫工艺" label="领部缝纫工艺" />
-        <ProFormTextArea colProps={{ span: 12 }} name="门襟工艺" label="门襟工艺" />
+        <ProFormTextArea
+          colProps={{ span: 12 }}
+          name="领部缝纫工艺"
+          label="领部缝纫工艺"
+          readonly={isSpot}
+        />
+        <ProFormTextArea
+          colProps={{ span: 12 }}
+          name="门襟工艺"
+          label="门襟工艺"
+          readonly={isSpot}
+        />
       </ProFormGroup>
       <ProFormGroup>
-        <ProFormTextArea colProps={{ span: 12 }} name="袖口工艺" label="袖口工艺" />
-        <ProFormTextArea colProps={{ span: 12 }} name="下摆工艺" label="下摆工艺" />
+        <ProFormTextArea
+          colProps={{ span: 12 }}
+          name="袖口工艺"
+          label="袖口工艺"
+          readonly={isSpot}
+        />
+        <ProFormTextArea
+          colProps={{ span: 12 }}
+          name="下摆工艺"
+          label="下摆工艺"
+          readonly={isSpot}
+        />
       </ProFormGroup>
       <ProFormGroup>
-        <ProFormTextArea colProps={{ span: 12 }} name="纽扣工艺" label="纽扣工艺" />
-        <ProFormTextArea colProps={{ span: 12 }} name="其他工艺" label="其他工艺" />
+        <ProFormTextArea
+          colProps={{ span: 12 }}
+          name="纽扣工艺"
+          label="纽扣工艺"
+          readonly={isSpot}
+        />
+        <ProFormTextArea
+          colProps={{ span: 12 }}
+          name="其他工艺"
+          label="其他工艺"
+          readonly={isSpot}
+        />
       </ProFormGroup>
       <ProFormGroup>
         <ProFormMoney
+          colProps={{ span: 6 }}
           fieldProps={{ precision: 4 }}
-          colProps={{ span: 8 }}
+          name="其他费用"
+          min={0}
+          initialValue={0}
+          label="其他费用"
+          readonly={isSpot}
+        />
+        <ProFormMoney
+          fieldProps={{ precision: 4 }}
+          colProps={{ span: 6 }}
+          readonly={isSpot}
+          initialValue={0}
           name="印刷单价"
           min={0}
           label="印刷单价"
         />
         <ProFormMoney
           fieldProps={{ precision: 4 }}
-          colProps={{ span: 8 }}
+          colProps={{ span: 6 }}
           name="绣花单价"
+          initialValue={0}
+          readonly={isSpot}
           min={0}
           label="绣花单价"
         />
         <ProFormMoney
           fieldProps={{ precision: 4 }}
-          colProps={{ span: 8 }}
+          colProps={{ span: 6 }}
+          initialValue={0}
           name="版费"
+          readonly={isSpot}
           min={0}
           label="版费"
         />
       </ProFormGroup>
-      <ProFormDependency name={['sizePriceNumber', '印刷单价', '绣花单价', '版费']}>
-        {(data) => {
-          let totalPrice = 0;
-          let pn = 0;
-          const bf = data['版费'] || 0;
-          const yh = data['印刷单价'] || 0;
-          // const xh = data['绣花单价'] || 0;
-          data.sizePriceNumber?.forEach((i) => {
-            pn += i.number || 0;
-            totalPrice += (i.number || 0) * (i.price || 0);
-          });
-          return `总金额:产品价格[${totalPrice}] + (版费[${bf}]+版费[${yh}])*数量[${pn}]=${
-            totalPrice + (bf + yh) * pn
-          }`;
-        }}
-      </ProFormDependency>
+
       {/* <ProFormGroup>
         <ProFormText colProps={{ span: 12 }} name="logo生产流程" label="logo生产流程" />
         <ProFormText colProps={{ span: 12 }} name="logo工艺位置" label="logo工艺位置" />
@@ -263,9 +312,32 @@ const ContractOrderStyleModal: React.FC<{
         />
       </ProForm.Item> */}
       <div style={{ width: '100%' }}>
-        <LogoCraftsmanship value={props.node?.value?.logo} readonly={disabled} />
+        <LogoCraftsmanship value={props.node?.value?.logo} readonly={disabled || isSpot} />
       </div>
       <SizeNumberPriceList colorGroup={colorGroup} readonly={disabled} />
+      <ProFormDependency name={['sizePriceNumber', '印刷单价', '绣花单价', '其他费用', '版费']}>
+        {(data) => {
+          let totalPrice = 0;
+          let pn = 0;
+          const bf = data['版费'] || 0;
+          const yh = data['印刷单价'] || 0;
+          const xh = data['绣花单价'] || 0;
+          data.sizePriceNumber?.forEach((i) => {
+            pn += i.number || 0;
+            totalPrice += (i.number || 0) * (i.price || 0);
+          });
+
+          return (
+            <div
+              style={{ fontSize: 22, fontWeight: 'bold' }}
+            >{`总金额:产品价格[${totalPrice}](含其他费用[${
+              data['其他费用'] || 0
+            }]) + 版费[${bf}] + (绣花单价[${xh}]+印刷单价[${yh}])*数量[${pn}]=${
+              totalPrice + bf + (xh + yh) * pn
+            }`}</div>
+          );
+        }}
+      </ProFormDependency>
     </ModalForm>
   );
 };
@@ -333,7 +405,7 @@ function SizeNumberPriceList(props: { readonly?: boolean; colorGroup: string[] }
               tooltipText: '删除此行',
             }
       }
-      initialValue={[]}
+      initialValue={[{}]}
     >
       <ProFormGroup key="group">
         <SelectTreeSizeTemplate colProps={{ span: 10 }} name="sizeId" label="尺码规格" />
@@ -366,12 +438,24 @@ function MaterialFillStyleDemand(props: {
   action: ProFormInstance<any> | undefined;
   readonly?: boolean;
   colProps?: ColProps;
+  styleType: BusOrderStyleTypeEnum;
   onChangeStyleDemand?: (data: any) => void;
 }) {
   const [visible, setVisible] = useState(false);
   const [styleDemandData, setStyleDemandData] = useState(null);
   const [currentMaterialCode, setCurrentMaterialCode] = useState('');
-  const [name, setName] = useState('');
+  /**@name 设置款式到表单中 */
+  function setStyleDemandForm() {
+    if (props.readonly !== true) {
+      props.action?.setFieldsValue(omit(styleDemandData, 'styleType'));
+      props?.onChangeStyleDemand?.(styleDemandData);
+    }
+  }
+  useEffect(() => {
+    if (styleDemandData !== null && props.styleType === BusOrderStyleTypeEnum.SpotGoods) {
+      setStyleDemandForm();
+    }
+  }, [styleDemandData]);
   return (
     <>
       <BusMaterialSelect
@@ -383,32 +467,33 @@ function MaterialFillStyleDemand(props: {
         help={props.readonly === true ? '' : '请选择系统的物料编码'}
         materialType={BusMaterialTypeEnum.Product}
         onChangeName={(v, n) => {
-          setName(n);
+          props.action?.setFieldValue('style', n);
         }}
       />
       <ProFormDependency name={[props.name]}>
         {(data, form) => {
           const materialCode: string = data[props.name];
-          form.setFieldValue('style', name);
+          // form.setFieldValue('style', name);
           if (materialCode && currentMaterialCode !== materialCode) {
             setCurrentMaterialCode(materialCode);
             fetchMaterialToStyleDemandData(materialCode).then((r) => {
               if (r?.data?.styleDemandData) {
-                setStyleDemandData(r.data.styleDemandData);
                 setVisible(true);
+                setStyleDemandData(r.data.styleDemandData);
               } else {
-                setStyleDemandData(null);
                 setVisible(false);
+                setStyleDemandData(null);
               }
             });
           }
-
+          if (props.styleType === BusOrderStyleTypeEnum.SpotGoods) {
+            return null;
+          }
           return (
             <a
               hidden={!visible || props.readonly === true}
               onClick={() => {
-                props.action?.setFieldsValue(omit(styleDemandData, 'styleType'));
-                props?.onChangeStyleDemand?.(styleDemandData);
+                setStyleDemandForm();
               }}
             >
               发现系统中相同款式表单,可单击设置款式

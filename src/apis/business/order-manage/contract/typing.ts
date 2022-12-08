@@ -73,7 +73,8 @@ export type BusOrderStyleDemand = {
   绣花单价?: number;
   /**@name 版费 */
   版费?: number;
-  logo: {
+  其他费用?: number;
+  logo?: {
     /**@name logo生产流程 */
     logo生产流程?: string;
     /**@name logo工艺位置 */

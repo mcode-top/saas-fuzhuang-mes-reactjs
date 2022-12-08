@@ -46,6 +46,7 @@ const EditWorkProcessWrokPriceList: React.FC<{
         label={props.label}
         key={props.key}
         actionRef={actionRef}
+        initialValue={[{}]}
         copyIconProps={
           props.readonly
             ? false
@@ -113,6 +114,7 @@ function WorkPriceProcessLinked(props: { workPriceId: number; readonly: boolean 
       creatorRecord={{ workProcessId: undefined, price: 0, changePrice: undefined }}
       key={props.workPriceId}
       label="工序工价"
+      initialValue={[{}]}
       copyIconProps={
         props.readonly
           ? false

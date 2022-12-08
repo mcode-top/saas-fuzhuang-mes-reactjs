@@ -1,16 +1,16 @@
 import type { BusOrderManufacture } from '@/apis/business/order-manage/manufacture/typing';
 import { fetchManufactureUseModfiyRecordPieceList } from '@/apis/business/order-manage/record-piece';
+import { BusRecordPieceStatusEnum } from '@/apis/business/order-manage/record-piece/typing';
 import { OrderContractTypeValueEnum } from '@/configs/commValueEnum';
 import { COM_PRO_TABLE_TIME, REQUEST_PREFIX, WEB_REQUEST_URL } from '@/configs/index.config';
 import { nestPaginationTable } from '@/utils/proTablePageQuery';
 import { downloadAction } from '@/utils/upload/upload';
 import { SettingOutlined } from '@ant-design/icons';
-import type { ProColumns } from '@ant-design/pro-table';
+import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { Dropdown, Menu, Button, DatePicker, Modal } from 'antd';
 import { useRef } from 'react';
 import { useLocation } from 'umi';
-import type { ActionType } from 'use-switch-tabs';
 import BusMaterialSelect from '../../techology-manage/Material/components/MaterialSelect';
 import { getTableStyleName } from '../manufacture/helper';
 import RecordPieceAddModal from './components/RecordPieceAddModal';
@@ -40,11 +40,12 @@ const OrderRecordPiece: React.FC = () => {
       dataIndex: 'recordPiece',
       hideInSearch: true,
       hideInForm: true,
+      valueEnum: OrderContractTypeValueEnum.RecordPieceStatus,
       renderText(text, record, index, action) {
         if (text) {
-          return '已填写';
+          return text.status;
         } else {
-          return '未填写';
+          return BusRecordPieceStatusEnum.NotFilledIn;
         }
       },
     },
@@ -116,6 +117,9 @@ const OrderRecordPiece: React.FC = () => {
                         type="add"
                         title="填写计件单"
                         value={{ manufactureId: entity.id }}
+                        onFinish={() => {
+                          actionRef.current?.reload();
+                        }}
                       >
                         <div onClick={() => {}}>填写计件单</div>
                       </RecordPieceAddModal>
@@ -140,35 +144,26 @@ const OrderRecordPiece: React.FC = () => {
       columns={columns}
       rowKey="manufactureId"
       headerTitle="计件单"
+      actionRef={actionRef}
       toolBarRender={() => {
         return [
           <Button
-            key="export"
+            key="all"
+            type="primary"
             onClick={() => {
-              let value: any;
-              Modal.confirm({
-                title: '导出计件数与工资',
-                content: (
-                  <RangePicker
-                    picker="date"
-                    placeholder={['开始时间', '结束时间']}
-                    onChange={(v) => {
-                      value = v?.map((i) => i?.format('YYYY-MM-DD'));
-                    }}
-                  />
-                ),
-                onOk() {
-                  return downloadAction(
-                    WEB_REQUEST_URL +
-                      REQUEST_PREFIX +
-                      `/statisitics/month-record-piece?rangeDate=${value[0]}&rangeDate=${value[1]}`,
-                    `${value[0]}至${value[1]}按月统计计件数与工资.xlsx`.replace('-', '_'),
-                  );
-                },
-              });
+              window.tabsAction.goBackTab('/order-manage/statisitics/date-record-piece');
             }}
           >
-            导出合同单销售额
+            统计整体计件数与工资
+          </Button>,
+          <Button
+            key="single"
+            type="primary"
+            onClick={() => {
+              window.tabsAction.goBackTab('/order-manage/statisitics/worker-date-record-piece');
+            }}
+          >
+            统计单个员工计件数与工资
           </Button>,
         ];
       }}

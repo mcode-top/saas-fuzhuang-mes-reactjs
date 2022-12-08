@@ -3,6 +3,7 @@
 import SelectUploadFile from '@/components/Comm/FormlyComponents/Upload';
 import ProForm, { ProFormGroup, ProFormList, ProFormText } from '@ant-design/pro-form';
 import { Table } from 'antd';
+import { isEmpty } from 'lodash';
 
 const LogoCraftsmanship: React.FC<{
   readonly?: boolean;
@@ -11,10 +12,14 @@ const LogoCraftsmanship: React.FC<{
   console.log('====================================');
   console.log(props);
   console.log('====================================');
+  if (props.readonly && isEmpty(props.value)) {
+    return <ProFormText readonly={true} label="Logo内容" />;
+  }
   return props.readonly ? (
     <Table
       size="small"
       rowKey="logo生产流程"
+      title={() => 'Logo内容'}
       columns={[
         { title: 'logo生产流程', dataIndex: 'logo生产流程' },
         { title: 'logo工艺位置', dataIndex: 'logo工艺位置' },
@@ -60,7 +65,7 @@ const LogoCraftsmanship: React.FC<{
               tooltipText: '删除此行',
             }
       }
-      initialValue={props.value ? props.value : []}
+      initialValue={props.value ? props.value : [{}]}
     >
       <ProFormGroup>
         <ProFormText colProps={{ span: 12 }} name="logo生产流程" label="logo生产流程" />

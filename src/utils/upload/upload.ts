@@ -228,3 +228,19 @@ export function fileToBinaryString(file: File): Promise<ArrayBuffer | string | n
     reader.readAsBinaryString(file);
   });
 }
+
+/**@name 浏览器下载文件ArrayBuffer */
+export function browersArrayBufferDownload(filename: string, buf: ArrayBuffer) {
+  const link = document.createElement('a');
+  const body = document.querySelector('body');
+  link.href = window.URL.createObjectURL(new Blob([buf], { type: 'arrayBuffer' }));
+  link.download = filename;
+
+  link.style.display = 'none';
+  body?.appendChild(link);
+
+  link.click();
+  body?.removeChild(link);
+  // 释放对象
+  window.URL.revokeObjectURL(link.href);
+}

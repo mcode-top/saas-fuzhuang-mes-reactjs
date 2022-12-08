@@ -12,7 +12,10 @@ import {
   fetchOrderUpdateDelivery,
   fetchOrderWatchDelivery,
 } from '@/apis/business/order-manage/delivery';
-import type { BusOrderDeliveryGoodsAndNumberEntity } from '@/apis/business/order-manage/delivery/typing';
+import type {
+  BusOrderDeliveryEntity,
+  BusOrderDeliveryGoodsAndNumberEntity,
+} from '@/apis/business/order-manage/delivery/typing';
 import type { BusWarehouseGoodsType } from '@/apis/business/warehouse/typing';
 import LoadingButton from '@/components/Comm/LoadingButton';
 import type { LabelValue } from '@/components/typing';
@@ -41,13 +44,18 @@ const OrderDeliveryInfo: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [goodsOptional, setGoodsOptional] = useState<GoodsOptional[]>([]);
   const [goodsAndNumber, setGoodsAndNumber] = useState<BusOrderDeliveryGoodsAndNumberEntity[]>([]);
+  const [deliveryInfo, setDeliveryInfo] = useState<BusOrderDeliveryEntity>();
   const listFormRef = useRef<{ loadData: (contractNumber: string) => any }>();
   const location = useLocation();
   const query: DeliveryLocationQuery = (location as any).query;
   /**@name 创建发货单 */
   async function createDelivery() {
     const value = await formRef.current?.validateFields();
-    await fetchOrderCreateDelivery(value);
+    await fetchOrderCreateDelivery({
+      contractNumber: deliveryInfo?.contractNumber,
+      ...value,
+      id: deliveryInfo?.id,
+    });
     resultSuccess();
   }
   /**@name 审核发货单 */
@@ -90,6 +98,7 @@ const OrderDeliveryInfo: React.FC = () => {
       if (query.type === 'update') {
         res.data.goodsAndNumber = [];
       }
+      setDeliveryInfo(res.data);
       formRef.current?.setFieldsValue(res.data);
     });
   }
@@ -111,6 +120,7 @@ const OrderDeliveryInfo: React.FC = () => {
             address: res.data.address?.address,
             contact: res.data.address?.name,
             phone: res.data.address?.phone,
+            logisticsCompany: res.data.logisticsMode,
           });
           setContractInfo(res.data);
         }
@@ -120,6 +130,7 @@ const OrderDeliveryInfo: React.FC = () => {
       });
   }
   const readonly = query.type === 'watch' || query.type === 'approve';
+
   return (
     <Card style={{ width: 1000, margin: 'auto' }}>
       <ProForm
@@ -148,7 +159,7 @@ const OrderDeliveryInfo: React.FC = () => {
               <LoadingButton
                 hidden={query?.type !== 'update'}
                 type="primary"
-                onLoadingClick={updateDelivery}
+                onLoadingClick={!deliveryInfo?.isEdit ? createDelivery : updateDelivery}
               >
                 确定修改
               </LoadingButton>
@@ -328,7 +339,7 @@ function DeliveryPutOutFormList(props: {
   }
   return (
     <ProFormList
-      initialValue={[]}
+      initialValue={[{}]}
       colProps={{ span: 24 }}
       name="goodsAndNumber"
       label="出库品类与数量"

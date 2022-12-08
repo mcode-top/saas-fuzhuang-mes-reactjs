@@ -22,6 +22,7 @@ import GoodsOutInLogModal from '../Log/GoodsOutInLogModal';
 import { GoodsExcelPutInTemplate, GoodsImportExcelPutIn } from './GoodsExcelOperation';
 import ExcelHintGoodsPutInModal from './CheckExcelGoodsPutInModal';
 import ManyPutOutInGoods from './ManyPutOutInGoods';
+import ProduceGoodsManyPutInModal from './ProduceGoodsManyPutInModal';
 
 /**@name 表格栏操作 */
 const TableBarDom = (
@@ -47,6 +48,19 @@ const TableBarDom = (
         其他货品入库
       </Button>
     </GoodsPutInModal>,
+    <ProduceGoodsManyPutInModal
+      key="成衣批量入库"
+      shelfId={shelfNode.id}
+      title="成衣批量入库"
+      onFinish={() => {
+        message.success('货品批量入库成功');
+        action?.reload();
+      }}
+    >
+      <Button type="primary" key="manyCreate">
+        成衣批量入库
+      </Button>
+    </ProduceGoodsManyPutInModal>,
     <ExcelHintGoodsPutInModal
       onFinish={() => {
         action?.reload?.();

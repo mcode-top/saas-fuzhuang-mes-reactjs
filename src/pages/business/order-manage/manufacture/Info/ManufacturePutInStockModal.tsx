@@ -132,6 +132,7 @@ export function ExistingStock(props: { value?: BusWarehouseGoodsType[] }) {
     </Popover>
   );
 }
+/**@name 批量入库 */
 const PutInStockFormListDom: React.FC<
   ProFormListProps<any> & {
     readonly?: boolean;
@@ -139,7 +140,7 @@ const PutInStockFormListDom: React.FC<
     onDataSourceChange?: (dataSource: BusWarehouseGoodsType[]) => any;
   }
 > = (props, ref: React.Ref<any>) => {
-  const [list, setList] = useState<any[]>([]);
+  const [list, setList] = useState<any[]>([{}]);
   const [loading, setLoading] = useState(false);
   const listRef = useRef<FormListActionType>();
   useImperativeHandle(ref, () => {

@@ -19,6 +19,7 @@ export type BusOrderCreateDeliveryDto = {
   /**@name 发货单的品类和数量实体 */
   goodsAndNumber: BusOrderDeliveryGoodsAndNumberDto[];
   remark: string;
+  id?: number;
 };
 /**@name 修改发货单 */
 export type BusOrderUpdateDeliveryDto = {
@@ -48,6 +49,7 @@ export type BusOrderDeliveryEntity = {
   phone: string;
   goodsAndNumber?: BusOrderDeliveryGoodsAndNumberEntity[];
   processId: number;
+  isEdit: boolean;
   process?: ActProcess;
   remark: string;
 };

@@ -3,7 +3,7 @@ import type { BusOrderDeliveryEntity } from '@/apis/business/order-manage/delive
 import { fetchOrderRecall } from '@/apis/business/order-manage/order-process';
 import { processRecall } from '@/apis/process/process';
 import { ActProcessStatusEnum, ActTaskModelTypeEnum } from '@/apis/process/typings';
-import { ProcessValueEnum } from '@/configs/commValueEnum';
+import { OrderContractTypeValueEnum, ProcessValueEnum } from '@/configs/commValueEnum';
 import { COM_PRO_TABLE_TIME } from '@/configs/index.config';
 import ReviewProcess from '@/pages/account/Task/components/ReviewProcess';
 import { nestPaginationTable } from '@/utils/proTablePageQuery';
@@ -77,6 +77,11 @@ const OrderDelivery: React.FC = () => {
       dataIndex: 'contact',
     },
     {
+      title: '填写状态',
+      dataIndex: 'isEdit',
+      valueEnum: OrderContractTypeValueEnum.DeliveryEditStatus,
+    },
+    {
       title: '发货数量',
       dataIndex: 'deliverNumber',
       hideInSearch: true,
@@ -90,16 +95,20 @@ const OrderDelivery: React.FC = () => {
       valueEnum: ProcessValueEnum.ActProcessStatusEnum,
       width: 100,
       fieldProps: { mode: 'multiple' },
-      renderText: (t, record) => record.process?.status || ActProcessStatusEnum.Complete,
+      renderText: (t, record) => {
+        if (record.process?.status !== undefined) {
+          return record.process?.status;
+        }
+        return record.isEdit ? ActProcessStatusEnum.Complete : ActProcessStatusEnum.Running;
+      },
     },
     {
       title: '当前任务进度',
       dataIndex: 'process.runningTask.name',
       width: 100,
+      ellipsis: true,
       hideInSearch: true,
       renderText: (t, record) => {
-        console.log(t, record);
-
         return record.process?.runningTask?.name || '无需审批';
       },
     },
@@ -216,8 +225,6 @@ const OrderDelivery: React.FC = () => {
                       !entity.processId
                     );
                   } else if (item.key === 'review') {
-                    console.log(entity.processId, 'entity.processId');
-
                     return entity.processId;
                   }
                   return true;

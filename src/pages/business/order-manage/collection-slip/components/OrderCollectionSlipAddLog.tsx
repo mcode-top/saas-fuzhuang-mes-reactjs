@@ -121,7 +121,7 @@ const OrderCollectionSlipAddLog: React.FC<{
       )}
       {readonly ? null : (
         <ProFormList
-          initialValue={[]}
+          initialValue={[{}]}
           colProps={{ span: 24 }}
           name="paymentList"
           label="收款记录列表"

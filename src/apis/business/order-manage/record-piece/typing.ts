@@ -18,6 +18,7 @@ export type BusOrderRecordPiece = {
   id: number;
   manufactureId: number;
   manufacture: BusOrderManufacture;
+  status: BusRecordPieceStatusEnum;
   staffAndWorkProcessList: BusRecordPieceStaffAndWorkProcess[];
 };
 
@@ -33,13 +34,22 @@ export type BusOrderRecordPieceLog = {
   userId: number;
   workerUser: UserListItem;
   operator: UserListItem;
+  createdAt: string;
 };
 /**@name 填写计件单 */
 export type RecordPieceAddDto = {
   manufactureId: number;
   staffAndWorkProcessList: BusRecordPieceStaffAndWorkProcess[];
 };
-
+/**@name 计件单状态 */
+export enum BusRecordPieceStatusEnum {
+  /**@name 未填写 */
+  NotFilledIn = '0',
+  /**@name 已填写 */
+  FilledIn = '1',
+  /**@name 已完成 */
+  Complete = '2',
+}
 /**@name 获取计件单当前工序员工记录 */
 export type RecordPieceWatchLogDto = {
   recordPieceId: number;

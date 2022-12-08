@@ -23,6 +23,7 @@ import {
 import { UserSexEnum } from '@/apis/user/typings';
 import { ContractProcessEnum } from '@/apis/business/order-manage/order-process/typing';
 import { BusCollectionShilStatusEnmu } from '@/apis/business/order-manage/collection-slip/typing';
+import { BusRecordPieceStatusEnum } from '@/apis/business/order-manage/record-piece/typing';
 
 export const UserValueEnum = {
   Sex: new Map([
@@ -134,17 +135,31 @@ export const OrderContractTypeValueEnum = {
     [BusOrderTypeEnum.Add, { text: '追加单' }],
   ]),
   Process: new Map([
-    [ContractProcessEnum.Running, { text: '运行中', type: 'Processing' }],
-    [ContractProcessEnum.Stop, { text: '已停止', type: 'Error' }],
-    [ContractProcessEnum.Done, { text: '已完成', type: 'Success' }],
+    [ContractProcessEnum.Running, { text: '运行中', status: 'Processing' }],
+    [ContractProcessEnum.Stop, { text: '已停止', status: 'Error' }],
+    [ContractProcessEnum.Done, { text: '已完成', status: 'Success' }],
   ]),
   /**@name 收款类型 */
   CollectionSlip: new Map([
-    [BusCollectionShilStatusEnmu.Collection, { text: '已完成', type: 'Success', color: '#1890ff' }],
+    [
+      BusCollectionShilStatusEnmu.Collection,
+      { text: '已完成', status: 'Success', color: '#1890ff' },
+    ],
     [
       BusCollectionShilStatusEnmu.UnCollection,
-      { text: '未完成', type: 'Processing', color: '#f5222d' },
+      { text: '未完成', status: 'Processing', color: '#f5222d' },
     ],
+  ]),
+  /**@name 计件单填写状态 */
+  RecordPieceStatus: new Map([
+    [BusRecordPieceStatusEnum.NotFilledIn, { text: '未填写', status: 'Error' }],
+    [BusRecordPieceStatusEnum.FilledIn, { text: '已填写', status: 'Processing' }],
+    [BusRecordPieceStatusEnum.Complete, { text: '已完成', status: 'Success' }],
+  ]),
+  /**@name 收货单填写状态 */
+  DeliveryEditStatus: new Map([
+    [false, { text: '未填写', status: 'Error' }],
+    [true, { text: '已填写', status: 'Success' }],
   ]),
 };
 

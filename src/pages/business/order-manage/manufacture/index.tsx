@@ -1,5 +1,6 @@
 import {
   fetchCheckManufactureIsRecall,
+  fetchConfirmManufactureOrderComplete,
   fetchManufactureList,
   fetchRemoveManufacture,
 } from '@/apis/business/order-manage/manufacture';
@@ -94,9 +95,9 @@ const OrderContract: React.FC = () => {
     {
       title: '当前执行人',
       hideInSearch: true,
-      dataIndex: 'approveUser',
+      dataIndex: 'approveUserList',
       renderText: (t, record) => {
-        return (record as any)?.approveUser?.name;
+        return (record as any)?.approveUserList?.map((i) => i.name).join(',');
       },
     },
     {
@@ -251,10 +252,32 @@ const OrderContract: React.FC = () => {
                       putInStockModalRef.current?.show(entity.contractNumber);
                     },
                   },
+                  {
+                    key: 'confirm-complete',
+                    label: <div>确认完成</div>,
+                    onClick: () => {
+                      Modal.confirm({
+                        title: '系统提示',
+                        content: (
+                          <p>您确定当前生产单生产完成吗?确认完毕后将无法继续添加计件单与生产入库</p>
+                        ),
+                        onOk: () =>
+                          fetchConfirmManufactureOrderComplete(entity.id).then((r) =>
+                            actionRef.current?.reload(),
+                          ),
+                      });
+                    },
+                  },
                 ].filter((item) => {
                   const isOperator =
                     initialState?.currentUser?.id === entity.process?.operatorId ||
                     initialState?.currentUser?.isAdmin;
+                  /**@name 是否为审批人 */
+                  const isApprover =
+                    (entity as any)?.approveUserList?.find(
+                      (i) => i?.user.id === initialState?.currentUser?.id,
+                    ) !== undefined;
+
                   if (item.key === 'recall') {
                     return (
                       isOperator &&
@@ -272,16 +295,18 @@ const OrderContract: React.FC = () => {
                         isOperator)
                     );
                   } else if (item.key === 'approve') {
-                    return (
-                      (entity as any)?.approveUser?.id === initialState?.currentUser?.id &&
-                      entity.process?.runningTask?.type === ActTaskModelTypeEnum.Approve
-                    );
+                    return isApprover && entity.process?.runningTask?.name === '人员审批';
                   } else if (item.key === 'start') {
                     return entity.processId === null;
                   } else if (item.key === 'review') {
                     return entity.process !== null;
                   } else if (item.key === 'put-in-stock') {
-                    return entity.process?.status === ActProcessStatusEnum.Complete;
+                    return entity.process?.runningTask?.name === '开始生产';
+                  } else if (item.key === 'confirm-complete') {
+                    console.log('====================================');
+                    console.log(entity.process?.runningTask?.name === '开始生产' && isApprover);
+                    console.log('====================================');
+                    return entity.process?.runningTask?.name === '开始生产' && isApprover;
                   }
                   return true;
                 })}

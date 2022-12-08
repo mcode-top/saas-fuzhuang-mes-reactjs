@@ -22,7 +22,7 @@ const RecordPieceLogModal: React.FC<{
   const [list, setList] = useState<BusOrderRecordPieceLog[]>([]);
   return (
     <ModalForm
-      width={800}
+      width={1200}
       title={'查看工价单记录'}
       formRef={formRef}
       onVisibleChange={(v) => {
@@ -70,6 +70,7 @@ export const RecordPieceLogTable: React.FC<{
           render(value, record, index) {
             return record.workProcess.name;
           },
+          width: 200,
         },
         {
           title: '员工',
@@ -77,6 +78,7 @@ export const RecordPieceLogTable: React.FC<{
           render(value, record, index) {
             return record.workerUser.name;
           },
+          width: 100,
         },
         {
           title: '工价',
@@ -97,10 +99,18 @@ export const RecordPieceLogTable: React.FC<{
           render(value, record, index) {
             return record?.operator?.name;
           },
+          width: 100,
         },
         {
           title: '记录时间',
           dataIndex: 'createdAt',
+          width: 150,
+        },
+        {
+          title: '备注',
+          dataIndex: 'remark',
+          ellipsis: true,
+          width: 200,
         },
       ]}
     />

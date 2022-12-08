@@ -65,12 +65,6 @@ const RecordPieceAddModal: React.FC<{
   }, [props.value.manufactureId]);
   useEffect(() => {
     const curList = formListRef.current?.getList?.();
-    console.log(
-      curList,
-      Array(curList?.length || 0)
-        .fill({})
-        .map((item, index) => index),
-    );
     const allIndex = Array(curList?.length || 0)
       .fill({})
       .map((item, index) => index);
@@ -202,7 +196,7 @@ const RecordPieceAddModal: React.FC<{
                   tooltipText: '删除此行',
                 }
           }
-          initialValue={[]}
+          initialValue={[{}]}
         >
           {(f: BusRecordPieceStaffAndWorkProcessForm, index, action) => {
             const data: BusRecordPieceStaffAndWorkProcessForm = action.getCurrentRowData();

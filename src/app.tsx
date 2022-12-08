@@ -24,7 +24,6 @@ import { PhotoProvider } from 'react-photo-view';
 import 'react-photo-view/dist/react-photo-view.css';
 import IPageLoading from './components/PageLoading';
 import { message } from 'antd';
-
 const isDev = process.env.NODE_ENV === 'development';
 
 /** 获取用户信息比较慢的时候会展示一个 loading */
@@ -60,7 +59,6 @@ export async function getInitialState(): Promise<InitialStateType> {
       history.push(LOGIN_PATH);
     }
   };
-
   // 如果是登录页面，不执行
   if (history.location.pathname !== LOGIN_PATH) {
     if (sessionStorage.getItem(TENANT_HEADER_TOKEN)) {

@@ -9,6 +9,7 @@ import type {
   ExcelManyPutInGoodsDto,
   ManyPutOutInDto,
   BusWarehouseGoodQuantityType,
+  ProducuGoodsManyPutInDto,
 } from './typing';
 import { request } from 'umi';
 
@@ -100,6 +101,14 @@ export function fetchWarehouseManyPutOutInGoods(data: ManyPutOutInDto) {
   });
 }
 
+/**@name 成衣货品批量入口 */
+export function fetchProduceGoodsManyPutIn(data: ProducuGoodsManyPutInDto) {
+  return request('/warehouse/goods/produce/many-put-in', {
+    method: 'POST',
+    data,
+  });
+}
+
 /**@name 修改货品备注信息 */
 export function fetchUpdateWarehouseGoodsRemark(data: { goodsId: number; remark: string }) {
   return request('/warehouse/goods', {
@@ -152,4 +161,16 @@ export function checkMaterialCodeToGoodsQuantity(
       },
     },
   );
+}
+
+/**@name 模糊查找全仓库的货品 */
+export function fetchFuzzyFindAllWarehouseInGoods(data: {
+  searchText: string;
+  color?: string;
+  size?: string;
+}) {
+  return request<RESULT_SUCCESS<BusWarehouseGoodsType[]>>('/warehouse/fuzzy', {
+    method: 'GET',
+    params: data,
+  });
 }

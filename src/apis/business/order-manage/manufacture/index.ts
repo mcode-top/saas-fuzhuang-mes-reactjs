@@ -70,3 +70,9 @@ export function fetchManufactureGoodsPutInStock(data: ManufactureGoodsPutInStock
     data,
   });
 }
+/**@name 确认生产单完成 */
+export function fetchConfirmManufactureOrderComplete(manufactureId: number) {
+  return request<RESULT_SUCCESS<any>>('/manufacture/confirm-complete/' + manufactureId, {
+    method: 'POST',
+  });
+}

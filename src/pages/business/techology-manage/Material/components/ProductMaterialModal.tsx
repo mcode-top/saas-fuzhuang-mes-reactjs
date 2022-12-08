@@ -14,6 +14,7 @@ import type { ContractLocationQuery } from '@/pages/business/order-manage/contra
 import { useRef, useState } from 'react';
 import { useLocation } from 'umi';
 import { fetchAddProductMaterialStyleDemand } from '@/apis/business/order-manage/contract';
+import LogoCraftsmanship from '@/pages/business/order-manage/contract/Info/LogoCraftsmanship';
 
 const ProductMaterialModal: React.FC<{
   node: {
@@ -93,27 +94,41 @@ const ProductMaterialModal: React.FC<{
       </ProFormGroup>
       <ProFormGroup>
         <ProFormMoney
+          colProps={{ span: 6 }}
           fieldProps={{ precision: 4 }}
-          colProps={{ span: 8 }}
+          name="其他费用"
+          min={0}
+          initialValue={0}
+          label="其他费用"
+        />
+        <ProFormMoney
+          fieldProps={{ precision: 4 }}
+          colProps={{ span: 6 }}
+          initialValue={0}
           name="印刷单价"
           min={0}
           label="印刷单价"
         />
         <ProFormMoney
           fieldProps={{ precision: 4 }}
-          colProps={{ span: 8 }}
+          colProps={{ span: 6 }}
           name="绣花单价"
+          initialValue={0}
           min={0}
           label="绣花单价"
         />
         <ProFormMoney
           fieldProps={{ precision: 4 }}
-          colProps={{ span: 8 }}
+          colProps={{ span: 6 }}
+          initialValue={0}
           name="版费"
           min={0}
           label="版费"
         />
       </ProFormGroup>
+      <div style={{ width: '100%' }}>
+        <LogoCraftsmanship value={props.node?.value?.logo} readonly={disabled} />
+      </div>
       <ProFormList
         name="colorGroup"
         label="颜色列表"
@@ -143,7 +158,7 @@ const ProductMaterialModal: React.FC<{
           </div>
         )}
       >
-        <ProFormText width="xs" name="color" label="颜色" />
+        <ProFormText width="xs" name="color" />
       </ProFormList>
     </ModalForm>
   );
@@ -185,4 +200,12 @@ export type ProductMaterialType = {
   绣花单价?: number;
   /**@name 版费 */
   版费?: number;
+  logo?: {
+    /**@name logo生产流程 */
+    logo生产流程?: string;
+    /**@name logo工艺位置 */
+    logo工艺位置?: string;
+    /**@name logo效果图 */
+    logo效果图?: { name: string; position?: string }[];
+  }[];
 };

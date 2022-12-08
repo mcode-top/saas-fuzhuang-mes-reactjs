@@ -3,20 +3,20 @@ import type { BusWarehouseType } from '@/apis/business/warehouse/typing';
 import { WarehouseTypeValueEnum } from '@/configs/commValueEnum';
 import { STORAGE_WAREHOUSE_LIST } from '@/configs/storage.config';
 import storageDataSource from '@/utils/storage';
-import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import ProList from '@ant-design/pro-list';
 import type { ActionType } from '@ant-design/pro-table';
 import { Button, Descriptions, message, Modal, Space } from 'antd';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useContext } from 'react';
 import WarehouseTypeTag from '../components/WarehouseTypeTag';
 import { WarehouseContext } from '../context';
 import WarehouseListModal from './WarehouseListModal';
+import { history } from 'umi';
 
 /**@naem 仓库列表 */
 const WarehouseList: React.FC = () => {
   const wContext = useContext(WarehouseContext);
-
   return (
     <ProList<BusWarehouseType>
       grid={{ gutter: 12, column: 3 }}
@@ -100,6 +100,16 @@ const toolBarRender = (action: ActionType | undefined) => {
         新增仓库
       </Button>
     </WarehouseListModal>,
+    <Button
+      type="primary"
+      key="search"
+      icon={<SearchOutlined />}
+      onClick={() => {
+        window.tabsAction.goBackTab('/search-warehouse');
+      }}
+    >
+      搜索仓库货品
+    </Button>,
     <Button
       key="3"
       icon={<ReloadOutlined />}

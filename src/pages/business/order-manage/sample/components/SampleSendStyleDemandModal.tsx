@@ -126,7 +126,7 @@ const SampleSendStyleDemandModal: React.FC<SampleSendStyleDemandModalProps> = (p
                 />
               </ProFormGroup>
               <ProFormList
-                initialValue={[]}
+                initialValue={[{}]}
                 colProps={{ span: 24 }}
                 name="sizePriceNumber"
                 label="品类数量与价格"

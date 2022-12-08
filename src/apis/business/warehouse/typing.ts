@@ -151,3 +151,19 @@ export type BusWarehouseGoodQuantityType = {
   total?: number;
   goods?: BusWarehouseGoodsType[];
 };
+
+/**@name 成衣货品批量入库 */
+export type ProducuGoodsManyPutInDto = {
+  data: ProduceGoodsManyPutInDataDto[];
+  remark?: string;
+  /**@name 绑定的合同单 */
+  contractNumber?: string;
+};
+/**@name 其他货品批量出入库数据 */
+export type ProduceGoodsManyPutInDataDto = {
+  sizeId: number;
+  color: string;
+  materialCode: string;
+  operationNumber: number;
+  shelfId: number;
+};

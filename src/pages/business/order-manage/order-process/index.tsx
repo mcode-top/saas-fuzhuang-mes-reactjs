@@ -87,35 +87,16 @@ const OrderContractProcess: React.FC = () => {
       columns={columns}
       rowKey="contractNumber"
       headerTitle="流程记录"
+      actionRef={actionRef}
       toolBarRender={() => {
         return [
           <Button
             key="export"
             onClick={() => {
-              let value: any;
-              Modal.confirm({
-                title: '导出合同单销售额',
-                content: (
-                  <RangePicker
-                    picker="date"
-                    placeholder={['开始时间', '结束时间']}
-                    onChange={(v) => {
-                      value = v?.map((i) => i?.format('YYYY-MM-DD'));
-                    }}
-                  />
-                ),
-                onOk() {
-                  return downloadAction(
-                    WEB_REQUEST_URL +
-                      REQUEST_PREFIX +
-                      `/statisitics/month-contract-sales?rangeDate=${value[0]}&rangeDate=${value[1]}`,
-                    `${value[0]}至${value[1]}统计合同单销售提成.xlsx`.replace('-', '_'),
-                  );
-                },
-              });
+              window.tabsAction.goBackTab('/order-manage/statisitics/contract-sales');
             }}
           >
-            导出合同单销售额
+            查询合同销售额
           </Button>,
         ];
       }}

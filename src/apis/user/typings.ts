@@ -1,4 +1,5 @@
-import type { ApiTreeType, MenuTreeType } from '../person/typings';
+import type { RoleTreeType } from '@/apis/person/typings';
+import type { ApiTreeType, DeptTreeType, MenuTreeType } from '../person/typings';
 
 /*
  * @Author: mmmmmmmm
@@ -15,13 +16,13 @@ export type UserInfo = {
   headImage: string;
   id: number;
   deptId: number;
-  roleList: any[];
+  roleList: RoleTreeType[];
   menus?: MenuTreeType[];
   apis?: ApiTreeType[];
   name: string;
   phone: string;
   email: string;
-  dept: any;
+  dept: DeptTreeType;
   /**@name 状态 0:禁用 1:启用 */
   status: number;
   sex: UserSexEnum;
