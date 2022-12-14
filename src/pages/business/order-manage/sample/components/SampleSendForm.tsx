@@ -39,6 +39,7 @@ import type { BusOrderContractCollectionSlip } from '@/apis/business/order-manag
 import type { SampleSendLocationQuery } from '../typing';
 import type { SampleSendStyleDemandModalRef } from './SampleSendStyleDemandModal';
 import SampleSendStyleDemandModal from './SampleSendStyleDemandModal';
+import { exportSendSampleExcel } from './exportExcel';
 
 /**@name 寄样单详情 */
 const OrderContractInfo: React.FC = (props) => {
@@ -68,9 +69,6 @@ const OrderContractInfo: React.FC = (props) => {
   /**@name 设置订单数据 */
   function setContractValues(contractNumber: string) {
     return fetchWatchContract(contractNumber).then((res) => {
-      console.log('====================================');
-      console.log(res.data);
-      console.log('====================================');
       formRef.current?.setFieldsValue({
         ...res.data,
         orderSampleStyleDemand: res.data.styleDemand,
@@ -139,6 +137,19 @@ const OrderContractInfo: React.FC = (props) => {
           render: (_, dom) => (
             <FooterToolbar>
               <Space>
+                <Button
+                  hidden={query.type === 'create' || query.type === 'update'}
+                  onClick={async () =>
+                    exportSendSampleExcel(
+                      query.orderType === BusOrderTypeEnum.SampleSend
+                        ? '寄样单(送样)'
+                        : '寄样单(收费)',
+                      formRef.current?.getFieldsValue() as any,
+                    )
+                  }
+                >
+                  导出寄样单单
+                </Button>
                 <LoadingButton
                   onLoadingClick={async () => {
                     const values = await formRef.current?.getFieldsValue();
@@ -214,6 +225,9 @@ const OrderContractInfo: React.FC = (props) => {
           placeholder="请输入名称"
           name="operatorId"
           width="sm"
+          formItemProps={{
+            className: 'send-sample-excel-data-operatorId',
+          }}
           readonly={true}
         />
         <ProFormDatePicker
@@ -232,6 +246,9 @@ const OrderContractInfo: React.FC = (props) => {
           readonly={readonly}
           rules={[{ required: true }]}
           name="companyId"
+          formItemProps={{
+            className: 'send-sample-excel-data-companyId',
+          }}
         />
         <ProFormDependency name={['companyId']}>
           {({ companyId }) => {
@@ -244,6 +261,9 @@ const OrderContractInfo: React.FC = (props) => {
                   width="lg"
                   companyId={companyId}
                   name="contactId"
+                  formItemProps={{
+                    className: 'send-sample-excel-data-contactId',
+                  }}
                 />
                 <BusSelectCustomerAddress
                   label="客户收货地址"
@@ -253,6 +273,9 @@ const OrderContractInfo: React.FC = (props) => {
                   width="lg"
                   companyId={companyId}
                   name="addressId"
+                  formItemProps={{
+                    className: 'send-sample-excel-data-addressId',
+                  }}
                 />
               </>
             );
@@ -311,7 +334,7 @@ const OrderContractInfo: React.FC = (props) => {
             />
             <ProFormRadio.Group
               name="distributionPrint"
-              readonly={query.type !== 'approve'}
+              readonly={query.type !== 'create' && query.type !== 'update'}
               label="配货单是否打印"
               options={[
                 { label: '打印', value: true },

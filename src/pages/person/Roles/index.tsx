@@ -93,7 +93,8 @@ const Roles: React.FC = () => {
               }}
             />
           </ProCard.TabPane>
-          <ProCard.TabPane key="api" tab="接口配置">
+          {/* TODO:功能未开发暂时不支持 */}
+          {/* <ProCard.TabPane key="api" tab="接口配置">
             <ApiTree
               authApiTree={apiTree}
               role={selectRole}
@@ -102,7 +103,7 @@ const Roles: React.FC = () => {
                 setRoleInMenuIds(selectRoleInApiIds);
               }}
             />
-          </ProCard.TabPane>
+          </ProCard.TabPane> */}
         </ProCard>
       </Col>
     </Row>

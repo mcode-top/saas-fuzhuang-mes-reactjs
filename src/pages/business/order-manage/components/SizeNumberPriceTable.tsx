@@ -1,9 +1,10 @@
 import type { BusOrderSizePriceNumber } from '@/apis/business/order-manage/contract/typing';
 import { checkMaterialCodeToGoodsQuantity } from '@/apis/business/warehouse';
 import type { BusWarehouseGoodsType } from '@/apis/business/warehouse/typing';
-import { Table, Popover, List } from 'antd';
+import { Table, Popover, List, InputNumber, message } from 'antd';
 import { isEmpty } from 'lodash';
-import { useState, useEffect } from 'react';
+import React from 'react';
+import { useState, useEffect, useImperativeHandle } from 'react';
 import SelectTreeSizeTemplate from '../../techology-manage/SizeTemplate/components/SelectTreeSizeTemplate';
 /**@name 物料编码尺码仓库数量 */
 export type MaterialToWarehouseGoodsTableDataSource = BusOrderSizePriceNumber & {
@@ -11,13 +12,29 @@ export type MaterialToWarehouseGoodsTableDataSource = BusOrderSizePriceNumber & 
   mateGoods?: BusWarehouseGoodsType[];
 };
 
-/**@name 通过物料编码尺码查询仓库表 */
-const MaterialToWarehouseGoodsTable: React.FC<{
+/**@name 通过物料编码尺码查询仓库表Ref */
+export type MaterialToWarehouseGoodsTableRef = {
+  /**@name 获取列字段 */
+  getNeedQuantityColumns: () => Record<string, any>[] | undefined;
+};
+/**@name 通过物料编码尺码查询仓库表Props */
+export type MaterialToWarehouseGoodsTableProps = {
   title?: string;
   materialCode: string;
   data?: BusOrderSizePriceNumber[];
   onChangeDataSource?: (dataSource: MaterialToWarehouseGoodsTableDataSource[]) => void;
-}> = (props) => {
+  /**@name 业务附加 */
+  business?: {
+    type: 'manufacture';
+    edit: boolean;
+    value: any;
+  };
+};
+/**@name 通过物料编码尺码查询仓库表 */
+export const MaterialToWarehouseGoodsTable = React.forwardRef<
+  MaterialToWarehouseGoodsTableRef,
+  MaterialToWarehouseGoodsTableProps
+>((props: MaterialToWarehouseGoodsTableProps, ref: React.Ref<MaterialToWarehouseGoodsTableRef>) => {
   const [dataSource, setDateSource] = useState<MaterialToWarehouseGoodsTableDataSource[]>();
   const [loading, setLoading] = useState(false);
   async function getGoodsQuantity() {
@@ -64,12 +81,32 @@ const MaterialToWarehouseGoodsTable: React.FC<{
   useEffect(() => {
     getGoodsQuantity();
   }, [props.data, props.materialCode]);
+  useImperativeHandle(ref, () => ({
+    getNeedQuantityColumns: () => {
+      const inputList = document.querySelectorAll('.manufacture-needProduction input');
+
+      const result = dataSource?.map((item, index) => {
+        const currentInputValue = (inputList[index] as HTMLInputElement).value;
+        return {
+          ...item,
+          needQuantity: currentInputValue.length > 0 ? Number(currentInputValue) || 0 : undefined,
+        };
+      });
+      const error = result?.find((item) => item.needQuantity === undefined);
+      if (error) {
+        message.warning('尺码数量价格表中的需要生产数量是必填的');
+        return undefined;
+      }
+      return result;
+    },
+  }));
   return (
     <Table
       size="small"
       rowKey={(entity) => `${entity.color} + ${entity.sizeId} + ${entity.number} + ${entity.total}`}
       loading={loading}
       style={{ width: '100%' }}
+      pagination={false}
       columns={[
         {
           dataIndex: 'sizeId',
@@ -90,7 +127,7 @@ const MaterialToWarehouseGoodsTable: React.FC<{
               {
                 dataIndex: 'warehouseName',
                 title: '仓库位置',
-                render: (v, record, index) => record?.shelf?.warehouse.name,
+                render: (v, record, index) => record?.shelf?.warehouse?.name,
               },
               {
                 dataIndex: 'shelfName',
@@ -100,7 +137,7 @@ const MaterialToWarehouseGoodsTable: React.FC<{
               { dataIndex: 'quantity', title: '库存数量' },
             ]
           : [
-              { dataIndex: 'number', title: '数量' },
+              { dataIndex: 'number', title: '需求数量' },
               {
                 dataIndex: 'total',
                 title: '现有库存数量(实时)',
@@ -134,10 +171,32 @@ const MaterialToWarehouseGoodsTable: React.FC<{
                 },
               },
             ]),
+        ...(props?.business?.type === 'manufacture'
+          ? [
+              {
+                title: '需要生产数量',
+                dataIndex: 'needProduction',
+                render: (v, r) => {
+                  const find = props.business?.value.find(
+                    (item) => item.sizeId === r.sizeId && item.color && r.color,
+                  );
+                  if (!props.business?.edit) {
+                    return find?.needQuantity || 0;
+                  }
+                  return (
+                    <InputNumber
+                      min={0}
+                      className="manufacture-needProduction"
+                      defaultValue={find?.needQuantity || 0}
+                    />
+                  );
+                },
+              },
+            ]
+          : []),
       ]}
       dataSource={dataSource}
       title={() => props.title || '尺码数量价格表'}
     />
   );
-};
-export default MaterialToWarehouseGoodsTable;
+});

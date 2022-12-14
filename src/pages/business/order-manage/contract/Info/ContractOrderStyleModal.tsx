@@ -197,14 +197,7 @@ const ContractOrderStyleModal: React.FC<{
       </ProFormDependency>
 
       <ProFormGroup>
-        <BusMaterialSelect
-          name="shellFabric"
-          label="面料"
-          materialType={BusMaterialTypeEnum.Material}
-          colProps={{ span: 8 }}
-          readonly={isSpot}
-          serachLength={1}
-        />
+        <ProFormText colProps={{ span: 8 }} name="shellFabric" label="面料" readonly={isSpot} />
         <ProFormText colProps={{ span: 8 }} name="商标" label="商标" readonly={isSpot} />
         <ProFormText colProps={{ span: 8 }} name="口袋" label="口袋" readonly={isSpot} />
       </ProFormGroup>
@@ -329,7 +322,7 @@ const ContractOrderStyleModal: React.FC<{
 
           return (
             <div
-              style={{ fontSize: 22, fontWeight: 'bold' }}
+              style={{ fontSize: 18, fontWeight: 'bold' }}
             >{`总金额:产品价格[${totalPrice}](含其他费用[${
               data['其他费用'] || 0
             }]) + 版费[${bf}] + (绣花单价[${xh}]+印刷单价[${yh}])*数量[${pn}]=${

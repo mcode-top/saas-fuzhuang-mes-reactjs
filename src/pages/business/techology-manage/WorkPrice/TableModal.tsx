@@ -237,7 +237,7 @@ const WorkPriceEditTableToolBar = (
       type="primary"
       onClick={() => {
         const data = editableFormRef?.current?.getRowsData?.();
-        busWorkPriceExportExcel(data);
+        busWorkPriceExportExcel('模板', data);
       }}
     >
       导出Excel模板
@@ -304,7 +304,7 @@ const WorkPriceEditTableToolBar = (
 };
 
 /**@name 导出Excel */
-export function busWorkPriceExportExcel(data: BusWorkPriceItem[] | undefined) {
+export function busWorkPriceExportExcel(name: string, data: BusWorkPriceItem[] | undefined) {
   let ws;
   if (data && Array.isArray(data) && data.length > 0) {
     ws = utils.json_to_sheet(
@@ -327,7 +327,7 @@ export function busWorkPriceExportExcel(data: BusWorkPriceItem[] | undefined) {
   const wb = utils.book_new();
   ws['!cols'] = cellWidth;
   utils.book_append_sheet(wb, ws, '工价单');
-  writeFileXLSX(wb, '工价单模板.xlsx');
+  writeFileXLSX(wb, name + '_工价单.xlsx');
 }
 
 /**@name 导入Excel */

@@ -23,17 +23,22 @@ import type { ManufactureLocationQuery } from '../typing';
 import { disabledLastDate } from '@/components/Comm/helper';
 import EditWorkProcessWrokPriceList from './EditWorkProcessWrokPriceList';
 import ContractStyleDemand from './ContractStyleDemand';
+import type { MaterialToWarehouseGoodsTableRef } from '../../components/SizeNumberPriceTable';
+import { MaterialToWarehouseGoodsTable } from '../../components/SizeNumberPriceTable';
+import { exportManufactureFormExcel } from './exportExcel';
 
 /**@name 生产单详情 */
 const OrderManufactureInfo: React.FC = () => {
-  /**@name 合同单信息 */
-  const [contractResult, setContractResult] = useState<BusOrderManufacture>();
+  /**@name 生产单信息 */
+  const [manufactureResult, setManufactureResult] = useState<BusOrderManufacture>();
   const [readonly, setReadonly] = useState(false);
   /**@name 相同物料编码的数据 */
   const [sysWorkPriceTable, setSysWorkPriceTable] = useState<{ visible: boolean; data: any }>({
     visible: false,
     data: {},
   });
+  /**@name 需要生产数量Ref实例 */
+  const needProductionRef = React.useRef<MaterialToWarehouseGoodsTableRef>(null);
   /**@name 主表单实例 */
   const formRef = React.useRef<ProFormInstance>();
   const location = useLocation();
@@ -44,12 +49,13 @@ const OrderManufactureInfo: React.FC = () => {
       setReadonly(true);
     }
   }, []);
-  /**@name 获取生产单与合同单数据 */
+  /**@name 获取生产单数据 */
   function getManufactureValues(id: number) {
     return fetchReadManufacture(id).then(async (res) => {
       formRef.current?.setFieldsValue(res.data);
+      console.log(res.data);
 
-      setContractResult(res.data);
+      setManufactureResult(res.data);
 
       if (query.type === 'create' || query.type === 'update') {
         fetchMaterialToStyleDemandData(res.data.materialCode).then((r) => {
@@ -67,6 +73,49 @@ const OrderManufactureInfo: React.FC = () => {
         });
       }
     });
+  }
+  /**@name 获取表单 */
+  async function getFormValues() {
+    const values = await formRef.current?.validateFields();
+    const needProduction = needProductionRef.current?.getNeedQuantityColumns();
+    if (!needProduction) {
+      return Promise.reject('尺码数量价格表中的需要生产数量是必填的');
+    }
+    return {
+      ...values,
+      needProduction,
+    };
+  }
+  /**@name 确定创建生产单 */
+  async function buttonCreateManufacture() {
+    const values = await getFormValues();
+    const workPriceTable: BusManufactureWorkPriceTable[] = values.workPriceTable;
+    let isUpdate = false;
+    if (Array.isArray(workPriceTable)) {
+      isUpdate =
+        workPriceTable.findIndex((w) => {
+          let bl = false;
+          if (Array.isArray(w.workProcessWrokPrice)) {
+            w.workProcessWrokPrice.forEach((v) => {
+              if (v.changePrice !== undefined || v.changePrice > 0) {
+                bl = true;
+              }
+            });
+          }
+          return bl;
+        }) !== -1;
+    }
+    const uploadFetchData = { ...values, isUpdateWorkPrice: isUpdate };
+    const productionTotal = values.needProduction.reduce((p, n) => p + n.needQuantity, 0);
+    if (productionTotal === 0) {
+      return Modal.confirm({
+        title: '系统提示',
+        content: <p>检测到需要生产的数量为0,当前生产单审批完成后将自动完成生产单,是否确定提交?</p>,
+        onOk: () => startManufacture(uploadFetchData),
+      });
+    } else {
+      return await startManufacture(uploadFetchData);
+    }
   }
   /**@name 开始生产单 */
   async function startManufacture(data: UpdateManufactureDto) {
@@ -108,29 +157,47 @@ const OrderManufactureInfo: React.FC = () => {
     window.layoutTabsAction.goAndClose('/order-manage/manufacture', true);
     message.success('操作成功');
   }
-  console.log(contractResult);
-
   return (
     <Card style={{ width: 1000, margin: 'auto' }}>
-      {contractResult ? (
+      {manufactureResult ? (
         <>
           <ContractStyleDemand
-            sampleRemark={contractResult?.contract?.sampleRemark}
-            deliverDate={contractResult?.contract?.deliverDate}
-            contractNumber={contractResult?.contractNumber}
-            styleDemand={contractResult?.styleDemand}
+            sampleRemark={manufactureResult?.contract?.sampleRemark}
+            deliverDate={manufactureResult?.contract?.deliverDate}
+            contractNumber={manufactureResult?.contractNumber}
+            styleDemand={manufactureResult?.styleDemand}
+            operatorId={manufactureResult?.contract?.process?.operatorId}
+          />
+          <MaterialToWarehouseGoodsTable
+            ref={needProductionRef}
+            materialCode={manufactureResult?.styleDemand.materialCode}
+            data={manufactureResult?.styleDemand.sizePriceNumber}
+            business={{
+              edit: query.type === 'create' || query.type === 'update',
+              type: 'manufacture',
+              value: manufactureResult.needProduction || [],
+            }}
           />
         </>
       ) : null}
+
       <ProForm
         style={{ paddingTop: 12 }}
-        layout={readonly ? 'horizontal' : 'vertical'}
+        layout={'horizontal'}
         formRef={formRef}
         readonly={readonly}
         submitter={{
           render: (_, dom) => (
             <FooterToolbar>
               <Space>
+                {manufactureResult && (
+                  <Button
+                    hidden={query.type === 'create' || query.type === 'update'}
+                    onClick={() => exportManufactureFormExcel(manufactureResult)}
+                  >
+                    导出生产单
+                  </Button>
+                )}
                 <LoadingButton
                   onLoadingClick={async () => {
                     const values = await formRef.current?.getFieldValue('workPriceTable');
@@ -167,7 +234,7 @@ const OrderManufactureInfo: React.FC = () => {
                   hidden={query.type !== 'update'}
                   type="primary"
                   onLoadingClick={async () => {
-                    const values = await formRef.current?.validateFields();
+                    const values = await getFormValues();
                     await updateManufacture(values as any);
                   }}
                 >
@@ -176,26 +243,7 @@ const OrderManufactureInfo: React.FC = () => {
                 <LoadingButton
                   hidden={query.type !== 'create'}
                   type="primary"
-                  onLoadingClick={async () => {
-                    const values = await formRef.current?.validateFields();
-                    const workPriceTable: BusManufactureWorkPriceTable[] = values.workPriceTable;
-                    let isUpdate = false;
-                    if (Array.isArray(workPriceTable)) {
-                      isUpdate =
-                        workPriceTable.findIndex((w) => {
-                          let bl = false;
-                          if (Array.isArray(w.workProcessWrokPrice)) {
-                            w.workProcessWrokPrice.forEach((v) => {
-                              if (v.changePrice !== undefined || v.changePrice > 0) {
-                                bl = true;
-                              }
-                            });
-                          }
-                          return bl;
-                        }) !== -1;
-                    }
-                    return await startManufacture({ ...values, isUpdateWorkPrice: isUpdate });
-                  }}
+                  onLoadingClick={buttonCreateManufacture}
                 >
                   确定创建
                 </LoadingButton>

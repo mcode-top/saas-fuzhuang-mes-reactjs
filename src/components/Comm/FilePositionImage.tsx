@@ -7,6 +7,7 @@ import { PhotoSlider } from 'react-photo-view';
 const FilePositionImage: React.FC<{
   src?: string;
   isRemote?: boolean;
+  className?: string;
   avaterProps?: AvatarProps;
 }> = (props) => {
   const [image, setImage] = useState<string>();
@@ -40,6 +41,7 @@ const FilePositionImage: React.FC<{
         onIndexChange={setPhotoIndex}
       />
       <Avatar
+        className={props.className}
         onClick={handleShowSlider}
         src={image}
         shape="square"

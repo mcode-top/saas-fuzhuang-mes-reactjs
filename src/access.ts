@@ -1,4 +1,4 @@
-import type { MenuTreeType } from '@/apis/person/typings';
+import type { ApiMethodEnum, MenuTreeType } from '@/apis/person/typings';
 import type { RouteContextType } from '@ant-design/pro-layout';
 import { isEmpty } from 'lodash';
 import { Router } from 'umi';
@@ -32,7 +32,10 @@ export default function access(initialState: InitialStateType) {
       }
       return true;
     },
-
+    /**@name 检查显示权限 */
+    checkShowAuth(url: string, method: ApiMethodEnum) {
+      return isAdmin || apis?.findIndex((api) => api?.uri === url && api?.method === method) !== -1;
+    },
     checkApi: (url: string, version = 1) => {
       return (
         isAdmin || apis?.findIndex((api) => api?.uri === formatVersonToFullUrl(url, version)) !== -1
@@ -49,8 +52,6 @@ export default function access(initialState: InitialStateType) {
       if (isEmpty(fileAuthGroup)) {
         return false;
       }
-      console.log(fileAuthGroup);
-
       return (
         fileAuthGroup.findIndex((auth) => {
           if (auth?.mode && auth?.mode >= authMode && currentUser) {

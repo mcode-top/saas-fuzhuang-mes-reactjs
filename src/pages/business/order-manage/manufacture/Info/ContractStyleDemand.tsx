@@ -1,10 +1,13 @@
 import type { BusOrderStyleDemand } from '@/apis/business/order-manage/contract/typing';
 import SelectUploadFile from '@/components/Comm/FormlyComponents/Upload';
 import { dictValueEnum, OrderContractTypeValueEnum } from '@/configs/commValueEnum';
+import { STORAGE_USER_LIST } from '@/configs/storage.config';
+import storageDataSource from '@/utils/storage';
 import ProForm from '@ant-design/pro-form';
 import { Descriptions } from 'antd';
 import { isEmpty } from 'lodash';
-import MaterialToWarehouseGoodsTable from '../../components/SizeNumberPriceTable';
+import { useEffect, useState } from 'react';
+import BusSelectUser from '../../components/SelectUser';
 import LogoCraftsmanship from '../../contract/Info/LogoCraftsmanship';
 
 /**@name 查看合同单中的款式信息 */
@@ -13,16 +16,30 @@ const ContractStyleDemand: React.FC<{
   contractNumber: string;
   deliverDate?: string;
   sampleRemark?: string;
+  operatorId?: number;
 }> = (props) => {
+  const [operatorName, setOperatorName] = useState('');
+  useEffect(() => {
+    if (props.operatorId) {
+      storageDataSource.getValue(STORAGE_USER_LIST).then((res) => {
+        setOperatorName(res.serachRecord[props.operatorId as number]);
+      });
+    }
+  }, [props.operatorId]);
   return (
     <div>
       <Descriptions>
         <Descriptions.Item label="订单单号">{props?.contractNumber}</Descriptions.Item>
         <Descriptions.Item label="订单类型">
-          {dictValueEnum(OrderContractTypeValueEnum.Style, props?.styleDemand.styleType)}
+          <span className="manufacture-excel-data-styleType">
+            {dictValueEnum(OrderContractTypeValueEnum.Style, props?.styleDemand.styleType)}
+          </span>
+        </Descriptions.Item>
+        <Descriptions.Item label="跟进人">
+          <span className="manufacture-excel-data-operatorId">{operatorName}</span>
         </Descriptions.Item>
         <Descriptions.Item label="物料编码(型号)">
-          {props?.styleDemand.materialCode}
+          <span className="manufacture-excel-data-materialInfo">{`${props?.styleDemand.materialCode}(${props.styleDemand.style})`}</span>
         </Descriptions.Item>
         {props.sampleRemark && props.sampleRemark !== '无' ? (
           <Descriptions.Item label="有样衣">{props.sampleRemark}</Descriptions.Item>
@@ -42,15 +59,11 @@ const ContractStyleDemand: React.FC<{
         <Descriptions.Item label="袖口工艺">{props?.styleDemand.袖口工艺}</Descriptions.Item>
         <Descriptions.Item label="下摆工艺">{props?.styleDemand.下摆工艺}</Descriptions.Item>
         <Descriptions.Item label="纽扣工艺">{props?.styleDemand.纽扣工艺}</Descriptions.Item>
+        <Descriptions.Item label="其他工艺">{props?.styleDemand.其他工艺}</Descriptions.Item>
       </Descriptions>
       {!isEmpty(props.styleDemand.logo) ? (
         <LogoCraftsmanship readonly={true} value={props.styleDemand.logo} />
       ) : null}
-
-      <MaterialToWarehouseGoodsTable
-        materialCode={props?.styleDemand.materialCode}
-        data={props?.styleDemand.sizePriceNumber}
-      />
     </div>
   );
 };

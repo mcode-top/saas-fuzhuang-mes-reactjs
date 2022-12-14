@@ -24,6 +24,9 @@ import { PhotoProvider } from 'react-photo-view';
 import 'react-photo-view/dist/react-photo-view.css';
 import IPageLoading from './components/PageLoading';
 import { message } from 'antd';
+import { testTemplate3 } from './browers-test/excel-template';
+import SelectUploadFile from './components/Comm/FormlyComponents/Upload';
+import FilePositionImage from './components/Comm/FilePositionImage';
 const isDev = process.env.NODE_ENV === 'development';
 
 /** 获取用户信息比较慢的时候会展示一个 loading */
@@ -49,6 +52,7 @@ export type InitialStateType = {
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
  * */
 export async function getInitialState(): Promise<InitialStateType> {
+  testTemplate3();
   const fetchUserInfo = async () => {
     try {
       const result = await getCurrentUser();
@@ -138,7 +142,9 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
               fixed={switchTabs?.fixed}
               routes={route!.routes}
             >
-              {children}
+              <>{children}</>
+
+              {/* 3cfbc387-b7be-40d7-b7af-8b04a701af28/2022-09-06/12_10_08_449_458181-200RQ45536.png */}
             </SwitchTabsLayout>
           );
         }

@@ -97,7 +97,7 @@ const OrderContract: React.FC = () => {
       hideInSearch: true,
       dataIndex: 'approveUserList',
       renderText: (t, record) => {
-        return (record as any)?.approveUserList?.map((i) => i.name).join(',');
+        return (record as any)?.approveUserList?.map((i) => i?.user?.name).join(',');
       },
     },
     {
@@ -275,7 +275,7 @@ const OrderContract: React.FC = () => {
                   /**@name 是否为审批人 */
                   const isApprover =
                     (entity as any)?.approveUserList?.find(
-                      (i) => i?.user.id === initialState?.currentUser?.id,
+                      (i) => i?.user?.id === initialState?.currentUser?.id,
                     ) !== undefined;
 
                   if (item.key === 'recall') {

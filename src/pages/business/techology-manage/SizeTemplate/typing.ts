@@ -14,4 +14,5 @@ export type BusSizeTemplateItemType = {
   specification: string;
   remark?: string;
   parentId: number;
+  parent?: BusSizeTemplateItemType;
 };

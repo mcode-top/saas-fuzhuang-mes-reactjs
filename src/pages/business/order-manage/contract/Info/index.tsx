@@ -46,9 +46,10 @@ import ContractOrderStyleModal from './ContractOrderStyleModal';
 import { OrderCollectionSlipLogTable } from '../../collection-slip/components/OrderCollectionSlipAddLog';
 import { fetchCollectionSlipInfo } from '@/apis/business/order-manage/collection-slip';
 import type { BusOrderContractCollectionSlip } from '@/apis/business/order-manage/collection-slip/typing';
+import { exportContractExcel } from './exportExcel';
 
 /**@name 合同单详情 */
-const OrderContractInfo: React.FC = (props) => {
+const OrderContractInfo: React.FC = () => {
   /**@name 收款记录 */
   const [collectionInfo, setCollectionInfo] = useState<BusOrderContractCollectionSlip>();
 
@@ -163,6 +164,23 @@ const OrderContractInfo: React.FC = (props) => {
           render: (_, dom) => (
             <FooterToolbar>
               <Space>
+                <Button
+                  hidden={query.type === 'create'}
+                  onClick={() => {
+                    const values = formRef.current?.getFieldsValue();
+                    let title = '';
+                    if (query.orderType === BusOrderTypeEnum.Add) {
+                      title = '合同单(加单)';
+                    } else if (query.orderType === BusOrderTypeEnum.SampleProofing) {
+                      title = '打样单';
+                    } else {
+                      title = '合同单';
+                    }
+                    exportContractExcel(title, values);
+                  }}
+                >
+                  导出Excel
+                </Button>
                 <LoadingButton
                   onLoadingClick={async () => {
                     const values = await formRef.current?.getFieldsValue();
@@ -259,6 +277,9 @@ const OrderContractInfo: React.FC = (props) => {
           placeholder="请输入名称"
           name="operatorId"
           width="sm"
+          formItemProps={{
+            className: 'contract-excel-data-operatorId',
+          }}
           readonly={true}
         />
         <ProFormDatePicker
@@ -274,6 +295,9 @@ const OrderContractInfo: React.FC = (props) => {
           width="lg"
           colProps={{ span: 12 }}
           readonly={readonly}
+          formItemProps={{
+            className: 'contract-excel-data-companyId',
+          }}
           rules={[{ required: true }]}
           name="companyId"
         />
@@ -286,6 +310,9 @@ const OrderContractInfo: React.FC = (props) => {
                   readonly={readonly}
                   colProps={{ span: 12 }}
                   width="lg"
+                  formItemProps={{
+                    className: 'contract-excel-data-contactId',
+                  }}
                   companyId={companyId}
                   name="contactId"
                 />
@@ -293,6 +320,9 @@ const OrderContractInfo: React.FC = (props) => {
                   label="客户收货地址"
                   style={{ width: '100%' }}
                   readonly={readonly}
+                  formItemProps={{
+                    className: 'contract-excel-data-addressId',
+                  }}
                   colProps={{ span: 24 }}
                   width="lg"
                   companyId={companyId}

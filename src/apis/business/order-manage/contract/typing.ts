@@ -29,6 +29,15 @@ export enum BusOrderTypeEnum {
   /**@name 加单 */
   Add = '4',
 }
+/**@name 订单款式Logo设计 */
+export type BusOrderStyleDemandLogo = {
+  /**@name logo生产流程 */
+  logo生产流程?: string;
+  /**@name logo工艺位置 */
+  logo工艺位置?: string;
+  /**@name logo效果图 */
+  logo效果图?: { name: string; position?: string }[];
+};
 /**@name 订单款式编号 */
 export type BusOrderStyleDemand = {
   /**@name 物料编码(型号) */
@@ -74,14 +83,7 @@ export type BusOrderStyleDemand = {
   /**@name 版费 */
   版费?: number;
   其他费用?: number;
-  logo?: {
-    /**@name logo生产流程 */
-    logo生产流程?: string;
-    /**@name logo工艺位置 */
-    logo工艺位置?: string;
-    /**@name logo效果图 */
-    logo效果图?: { name: string; position?: string }[];
-  }[];
+  logo?: BusOrderStyleDemandLogo[];
   /**@name 总价 */
   totalPrice: number;
 };

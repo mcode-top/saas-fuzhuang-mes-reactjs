@@ -36,7 +36,7 @@ const LogoCraftsmanship: React.FC<{
                 description="logo效果图"
                 imageProps={{
                   showImage: true,
-                  imageColumn: 3,
+                  imageColumn: 2,
                   imageSize: 128,
                 }}
               />
@@ -79,7 +79,7 @@ const LogoCraftsmanship: React.FC<{
           description="logo效果图"
           imageProps={{
             showImage: true,
-            imageColumn: 3,
+            imageColumn: 2,
             imageSize: props.readonly ? 128 : 192,
           }}
         />

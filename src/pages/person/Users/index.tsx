@@ -15,7 +15,9 @@ import { ProFormInstance } from '@ant-design/pro-form';
 import { UserValueEnum } from '@/configs/commValueEnum';
 import { nestPaginationTable } from '@/utils/proTablePageQuery';
 import type { DeptTreeType, UserListItem } from '@/apis/person/typings';
+import { ApiMethodEnum } from '@/apis/person/typings';
 import { COM_PRO_TABLE_TIME } from '@/configs/index.config';
+import { Access, useAccess } from 'umi';
 
 const Users: React.FC = () => {
   const [selectDeptId, setSelectDeptId] = useState<number | undefined>(undefined);
@@ -41,7 +43,7 @@ function TableUser(props: { selectDeptId: number | undefined }) {
     node: {},
   });
   const tableRef = useRef<ActionType>();
-
+  const access = useAccess();
   const columns: ProColumns<UserListItem>[] = [
     {
       title: '姓名',
@@ -157,15 +159,17 @@ function TableUser(props: { selectDeptId: number | undefined }) {
         headerTitle="用户列表"
         toolBarRender={() => {
           return [
-            <Button
-              type="primary"
-              key="create"
-              onClick={() => {
-                setUserOperationModal({ node: {}, type: 'create', visible: true });
-              }}
-            >
-              新增用户
-            </Button>,
+            <Access accessible={access.checkShowAuth('/user', ApiMethodEnum.POST)} key="create">
+              <Button
+                type="primary"
+                onClick={() => {
+                  setUserOperationModal({ node: {}, type: 'create', visible: true });
+                }}
+              >
+                新增用户
+              </Button>
+              ,
+            </Access>,
           ];
         }}
         request={async (params, sort, filter) => {
@@ -181,6 +185,7 @@ function TreeDept(props: { onSelect: (selectId: number | undefined) => void }) {
   const [expandedKeys, setExpandedKeys] = useState<number[]>([]);
   const [rightDeptNode, setRightDeptNode] = useState<DeptTreeType>();
   const [selectDeptId, setSelectDeptId] = useState<number | undefined>(undefined);
+  const access = useAccess();
   useEffect(() => {
     props?.onSelect?.(selectDeptId);
   }, [selectDeptId]);
@@ -218,14 +223,16 @@ function TreeDept(props: { onSelect: (selectId: number | undefined) => void }) {
       }
       extra={
         <Space>
-          <Button
-            type="link"
-            onClick={() => {
-              setDeptOperationModal({ node: {}, type: 'create', visible: true });
-            }}
-          >
-            新增部门
-          </Button>
+          <Access accessible={access.checkShowAuth('/dept', ApiMethodEnum.POST)} key="create">
+            <Button
+              type="link"
+              onClick={() => {
+                setDeptOperationModal({ node: {}, type: 'create', visible: true });
+              }}
+            >
+              新增部门
+            </Button>
+          </Access>
         </Space>
       }
     >
@@ -239,40 +246,44 @@ function TreeDept(props: { onSelect: (selectId: number | undefined) => void }) {
         }}
       />
       <Menu id={MenuId}>
-        <Item
-          onClick={() => {
-            setDeptOperationModal({
-              node: rightDeptNode as DeptTreeType,
-              type: 'update',
-              visible: true,
-            });
-          }}
-        >
-          <Space>
-            <PlusOutlined />
-            修改部门
-          </Space>
-        </Item>
-        <Item
-          onClick={() => {
-            if (rightDeptNode) {
-              Modal.confirm({
-                title: `删除[${rightDeptNode.name}]部门`,
-                type: 'error',
-                content: `删除当前部门前请确认已做好对部门及其子部门用户的转移,否则删除部门后对应用户账号将无法正常使用`,
-                onOk: async () => {
-                  await deleteDept(rightDeptNode.id);
-                  await fetchDeptTreeFormView();
-                },
+        <Access accessible={access.checkShowAuth('/dept', ApiMethodEnum.PATCH)} key="create">
+          <Item
+            onClick={() => {
+              setDeptOperationModal({
+                node: rightDeptNode as DeptTreeType,
+                type: 'update',
+                visible: true,
               });
-            }
-          }}
-        >
-          <Space>
-            <MinusOutlined />
-            删除部门
-          </Space>
-        </Item>
+            }}
+          >
+            <Space>
+              <PlusOutlined />
+              修改部门
+            </Space>
+          </Item>
+        </Access>
+        <Access accessible={access.checkShowAuth('/dept', ApiMethodEnum.DELETE)} key="delete">
+          <Item
+            onClick={() => {
+              if (rightDeptNode) {
+                Modal.confirm({
+                  title: `删除[${rightDeptNode.name}]部门`,
+                  type: 'error',
+                  content: `删除当前部门前请确认已做好对部门及其子部门用户的转移,否则删除部门后对应用户账号将无法正常使用`,
+                  onOk: async () => {
+                    await deleteDept(rightDeptNode.id);
+                    await fetchDeptTreeFormView();
+                  },
+                });
+              }
+            }}
+          >
+            <Space>
+              <MinusOutlined />
+              删除部门
+            </Space>
+          </Item>
+        </Access>
       </Menu>
       <Tree
         defaultExpandAll={true}

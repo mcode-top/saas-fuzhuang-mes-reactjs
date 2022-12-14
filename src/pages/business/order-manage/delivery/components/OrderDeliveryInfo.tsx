@@ -28,12 +28,13 @@ import { ProFormGroup } from '@ant-design/pro-form';
 import { ProFormText } from '@ant-design/pro-form';
 import { ProFormList } from '@ant-design/pro-form';
 import FooterToolbar from '@ant-design/pro-layout/lib/components/FooterToolbar';
-import { Alert, Card, Descriptions, message, Spin, Table } from 'antd';
+import { Alert, Button, Card, Descriptions, message, Spin, Table } from 'antd';
 import { isEmpty } from 'lodash';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'umi';
 import type { DeliveryLocationQuery } from '..';
 import { PutInStockFormList } from '../../manufacture/Info/ManufacturePutInStockModal';
+import { exportDeliveryExcel } from './exportExcel';
 
 /**@name 货品选择表单类型 */
 export type GoodsOptional = LabelValue & { goods: BusWarehouseGoodsType };
@@ -142,6 +143,18 @@ const OrderDeliveryInfo: React.FC = () => {
         submitter={{
           render: (_, _dom) => (
             <FooterToolbar>
+              <Button
+                hidden={query.type === 'create' || query.type === 'update'}
+                onClick={() => {
+                  if (deliveryInfo && contractInfo) {
+                    exportDeliveryExcel(deliveryInfo, contractInfo);
+                  } else {
+                    message.warning('发货单或合同信息不存在');
+                  }
+                }}
+              >
+                导出生产单
+              </Button>
               <LoadingButton
                 hidden={query?.type !== 'create'}
                 type="primary"
@@ -185,7 +198,7 @@ const OrderDeliveryInfo: React.FC = () => {
           <Spin spinning />
         ) : (
           <Descriptions>
-            <Descriptions.Item label="公司名称">{contractInfo?.company?.name}</Descriptions.Item>
+            <Descriptions.Item label="收货公司名">{contractInfo?.company?.name}</Descriptions.Item>
             <Descriptions.Item label="跟进人">
               {contractInfo?.process?.operator?.name}
             </Descriptions.Item>
@@ -232,7 +245,7 @@ const OrderDeliveryInfo: React.FC = () => {
           <>
             <Alert
               type="warning"
-              message="如果需要修改出库品类与数量则需要全部重新填写,如果不修改则不填写"
+              message="如果需要修改发货表数量则需要全部重新填写,如果不修改则不填写"
             />
             <DeliveryPutOutFormList
               goodsOptional={goodsOptional}
@@ -292,7 +305,7 @@ function DeliveryPutOutFormList(props: {
         dataSource={props.dataSource}
         size="small"
         style={{ width: '100%' }}
-        title={() => '出库品类与数量'}
+        title={() => '发货表'}
         pagination={false}
         rowKey="id"
         columns={[
@@ -307,7 +320,7 @@ function DeliveryPutOutFormList(props: {
             title: '尺码信息',
             dataIndex: 'sizeInfo',
             render(_value, record) {
-              return `${record?.goods?.size?.name}(${record?.goods?.size?.specification})`;
+              return `${record?.goods?.size?.parent?.name}/${record?.goods?.size?.name}(${record?.goods?.size?.specification})`;
             },
           },
 
@@ -319,10 +332,10 @@ function DeliveryPutOutFormList(props: {
             },
           },
           {
-            title: '货架位置',
+            title: '存放位置',
             dataIndex: 'shelf',
             render(_value, record, _index) {
-              return `${record?.goods?.shelf?.name}`;
+              return `${record?.goods?.shelf?.warehouse?.name}/${record?.goods?.shelf?.name}`;
             },
           },
           {
@@ -332,7 +345,7 @@ function DeliveryPutOutFormList(props: {
               return `${record?.goods?.quantity}`;
             },
           },
-          { title: '需要出库数量', dataIndex: 'quantity' },
+          { title: '发货数量', dataIndex: 'quantity' },
         ]}
       />
     );
@@ -342,7 +355,7 @@ function DeliveryPutOutFormList(props: {
       initialValue={[{}]}
       colProps={{ span: 24 }}
       name="goodsAndNumber"
-      label="出库品类与数量"
+      label="发货表"
       rules={[
         {
           validator(_rule, value: { goodsId: number; quantity: number }[], callback) {
@@ -351,7 +364,7 @@ function DeliveryPutOutFormList(props: {
               return goodsFilter.length >= 2;
             });
             if (find) {
-              return callback('出库品类出现相同货品');
+              return callback('发货表出现相同货品');
             }
             callback();
           },
@@ -376,7 +389,7 @@ function DeliveryPutOutFormList(props: {
                 min={0}
                 max={find?.goods.quantity}
                 name="quantity"
-                label="需要出库数量"
+                label="发货数量"
               />
             );
           }}

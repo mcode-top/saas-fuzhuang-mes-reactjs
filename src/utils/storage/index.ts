@@ -22,7 +22,7 @@ export class StorageDataSource {
   modules: Record<string, StorageModule> = {};
   queue: TaskQueue;
   constructor() {
-    this.queue = new TaskQueue(50);
+    this.queue = new TaskQueue(10);
     this.loader();
   }
   async runLoader(key, params) {

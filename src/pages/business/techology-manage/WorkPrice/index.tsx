@@ -100,7 +100,9 @@ const TableOperationDom: React.FC<{
               key: 'export',
               label: '导出工价',
               onClick: () => {
-                busWorkPriceExportExcel(props.record.data);
+                console.log(props.record);
+
+                busWorkPriceExportExcel(props.record.name, props.record.data);
               },
             },
           ]}
