@@ -6,6 +6,7 @@ import {
   fetchManyRemoveSizeTemplateItem,
   fetchSizeTemplateItemList,
 } from '@/apis/business/techology-manage/size-template';
+import { ApiMethodEnum } from '@/apis/person/typings';
 import LoadingButton from '@/components/Comm/LoadingButton';
 import { nestPaginationTable } from '@/utils/proTablePageQuery';
 import { SettingOutlined } from '@ant-design/icons';
@@ -15,50 +16,32 @@ import { Button, Dropdown, Menu, message, Space, Table } from 'antd';
 import react, { useEffect, useRef } from 'react';
 
 import React from 'react';
-import { Access } from 'umi';
+import { Access, useAccess } from 'umi';
 import SizeTemplateItemTableModal from './TableModal';
 import type { BusSizeTemplateItemType, BusSizeTemplateParentType } from './typing';
-
-/**@name 表格栏操作 */
-const TableBarDom = (action: ActionType | undefined, selectId: number | undefined) => {
-  return [
-    selectId === undefined ? null : (
-      <SizeTemplateItemTableModal
-        selectId={selectId}
-        key="新增尺码"
-        title="新增尺码"
-        node={{ type: 'create' }}
-        onFinish={() => {
-          message.success('新增成功');
-          action?.reload();
-        }}
-      >
-        <Button type="primary" key="create">
-          新增尺码
-        </Button>
-      </SizeTemplateItemTableModal>
-    ),
-  ];
-};
 
 /**@name 表格选择操作 */
 const TableAlertOptionDom: React.FC<{
   selectedRowKeys: (string | number)[];
   action: ActionType | undefined;
 }> = (props) => {
+  const access = useAccess();
+
   return (
     <Space size={16}>
-      <LoadingButton
-        onLoadingClick={async () =>
-          await fetchManyRemoveSizeTemplateItem(props.selectedRowKeys as number[]).then(() => {
-            props?.action?.clearSelected?.();
-            props?.action?.reload();
-            message.success('删除成功');
-          })
-        }
-      >
-        批量删除
-      </LoadingButton>
+      <Access accessible={access.checkShowAuth('/size-template', ApiMethodEnum.PATCH)} key="delete">
+        <LoadingButton
+          onLoadingClick={async () =>
+            await fetchManyRemoveSizeTemplateItem(props.selectedRowKeys as number[]).then(() => {
+              props?.action?.clearSelected?.();
+              props?.action?.reload();
+              message.success('删除成功');
+            })
+          }
+        >
+          批量删除
+        </LoadingButton>
+      </Access>
     </Space>
   );
 };
@@ -69,6 +52,8 @@ const TableOperationDom: React.FC<{
   action: ActionType | undefined;
   selectId: number;
 }> = (props) => {
+  const access = useAccess();
+
   return (
     <Dropdown
       key="Dropdown"
@@ -89,23 +74,27 @@ const TableOperationDom: React.FC<{
                 </SizeTemplateItemTableModal>
               ),
             },
-            {
-              key: 'modify',
-              label: (
-                <SizeTemplateItemTableModal
-                  selectId={props.selectId}
-                  key="修改尺码"
-                  title="修改尺码"
-                  onFinish={() => {
-                    message.success('修改成功');
-                    props?.action?.reload();
-                  }}
-                  node={{ type: 'update', value: props.record }}
-                >
-                  <div>修改尺码</div>
-                </SizeTemplateItemTableModal>
-              ),
-            },
+            ...(access.checkShowAuth('/size-template', ApiMethodEnum.PATCH)
+              ? [
+                  {
+                    key: 'modify',
+                    label: (
+                      <SizeTemplateItemTableModal
+                        selectId={props.selectId}
+                        key="修改尺码"
+                        title="修改尺码"
+                        onFinish={() => {
+                          message.success('修改成功');
+                          props?.action?.reload();
+                        }}
+                        node={{ type: 'update', value: props.record }}
+                      >
+                        <div>修改尺码</div>
+                      </SizeTemplateItemTableModal>
+                    ),
+                  },
+                ]
+              : []),
           ]}
         />
       }
@@ -122,9 +111,37 @@ const BusSizeTemplateTable: React.FC<{
   selectNode: BusSizeTemplateParentType | undefined;
 }> = (props) => {
   const actionRef = useRef<ActionType>();
+  const access = useAccess();
+
   useEffect(() => {
     actionRef.current?.reload();
   }, [props.selectId]);
+  /**@name 表格栏操作 */
+  const TableBarDom = (action: ActionType | undefined, selectId: number | undefined) => {
+    return [
+      selectId === undefined ? null : (
+        <Access
+          accessible={access.checkShowAuth('/size-template', ApiMethodEnum.POST)}
+          key="create"
+        >
+          <SizeTemplateItemTableModal
+            selectId={selectId}
+            key="新增尺码"
+            title="新增尺码"
+            node={{ type: 'create' }}
+            onFinish={() => {
+              message.success('新增成功');
+              action?.reload();
+            }}
+          >
+            <Button type="primary" key="create">
+              新增尺码
+            </Button>
+          </SizeTemplateItemTableModal>
+        </Access>
+      ),
+    ];
+  };
   const columns: ProColumns<BusSizeTemplateItemType>[] = [
     {
       title: '尺码名称',

@@ -30,6 +30,8 @@ import RoleModal from './components/RoleModal';
 import MenuTree from './components/MenuTree';
 import ApiTree from './components/ApiTree';
 import type { ApiTreeType, MenuTreeType, RoleTreeType } from '@/apis/person/typings';
+import { ApiMethodEnum } from '@/apis/person/typings';
+import { Access, useAccess } from 'umi';
 
 const Roles: React.FC = () => {
   const [menuTree, setMenuTree] = useState<MenuTreeType[]>([]);
@@ -41,6 +43,7 @@ const Roles: React.FC = () => {
   const [selectRole, setSelectRole] = useState<RoleTreeType | undefined>(undefined);
   const [fetchRoleInfoFormViewLoading, setFetchRoleInfoFormViewLoading] = useState(false);
   const [tabActiveKey, setTabActiveKey] = useState('menu');
+  const access = useAccess();
 
   useEffect(() => {
     if (selectRole !== undefined) {
@@ -84,26 +87,36 @@ const Roles: React.FC = () => {
           split="vertical"
         >
           <ProCard.TabPane key="menu" tab="菜单配置">
-            <MenuTree
-              authMenu={menuTree}
-              role={selectRole}
-              selectedMenus={roleInMenuIds}
-              onChange={(selectRoleInMenuIds) => {
-                setRoleInMenuIds(selectRoleInMenuIds);
-              }}
-            />
+            <Access
+              accessible={access.checkShowAuth('/role/menu/:id', ApiMethodEnum.PATCH)}
+              key="api"
+            >
+              <MenuTree
+                authMenu={menuTree}
+                role={selectRole}
+                selectedMenus={roleInMenuIds}
+                onChange={(selectRoleInMenuIds) => {
+                  setRoleInMenuIds(selectRoleInMenuIds);
+                }}
+              />
+            </Access>
           </ProCard.TabPane>
           {/* TODO:功能未开发暂时不支持 */}
-          {/* <ProCard.TabPane key="api" tab="接口配置">
-            <ApiTree
-              authApiTree={apiTree}
-              role={selectRole}
-              selectedMenus={roleInApiIds}
-              onChange={(selectRoleInApiIds) => {
-                setRoleInMenuIds(selectRoleInApiIds);
-              }}
-            />
-          </ProCard.TabPane> */}
+          <ProCard.TabPane key="api" tab="接口配置">
+            <Access
+              accessible={access.checkShowAuth('/role/api/:id', ApiMethodEnum.PATCH)}
+              key="api"
+            >
+              <ApiTree
+                authApiTree={apiTree}
+                role={selectRole}
+                selectedMenus={roleInApiIds}
+                onChange={(selectRoleInApiIds) => {
+                  setRoleInMenuIds(selectRoleInApiIds);
+                }}
+              />
+            </Access>
+          </ProCard.TabPane>
         </ProCard>
       </Col>
     </Row>
@@ -120,6 +133,8 @@ function RoleTree(props: { onSelect?: (select: RoleTreeType | undefined) => void
     visible: false,
     node: {},
   });
+  const access = useAccess();
+
   const MenuId = 'roleMenu';
   const { show } = useContextMenu({ id: MenuId });
   useEffect(() => {
@@ -150,15 +165,17 @@ function RoleTree(props: { onSelect?: (select: RoleTreeType | undefined) => void
       style={{ minHeight: '100%' }}
       extra={
         <Space>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              setRoleOperationModal({ node: {}, type: 'create', visible: true });
-            }}
-          >
-            新增角色
-          </Button>
+          <Access accessible={access.checkShowAuth('/role', ApiMethodEnum.POST)} key="create">
+            <Button
+              type="link"
+              size="small"
+              onClick={() => {
+                setRoleOperationModal({ node: {}, type: 'create', visible: true });
+              }}
+            >
+              新增角色
+            </Button>
+          </Access>
         </Space>
       }
     >
@@ -172,40 +189,44 @@ function RoleTree(props: { onSelect?: (select: RoleTreeType | undefined) => void
         }}
       />
       <Menu id={MenuId}>
-        <Item
-          onClick={() => {
-            if (rightSelectRole) {
-              setRoleOperationModal({
-                node: rightSelectRole as RoleTreeType,
-                type: 'update',
-                visible: true,
-              });
-            }
-          }}
-        >
-          <Space>
-            <PlusOutlined />
-            修改角色
-          </Space>
-        </Item>
-        <Item
-          onClick={() => {
-            if (rightSelectRole) {
-              Modal.confirm({
-                title: `此次操作可能会影响到与该角色有关的用户使用,确定要将角色[${rightSelectRole.name}]删除吗?`,
-                onOk: async () => {
-                  await deleteRole(rightSelectRole.id);
-                  return await fetchRoleTreeFormView();
-                },
-              });
-            }
-          }}
-        >
-          <Space>
-            <MinusOutlined />
-            删除角色
-          </Space>
-        </Item>
+        <Access accessible={access.checkShowAuth('/role/:id', ApiMethodEnum.PATCH)} key="update">
+          <Item
+            onClick={() => {
+              if (rightSelectRole) {
+                setRoleOperationModal({
+                  node: rightSelectRole as RoleTreeType,
+                  type: 'update',
+                  visible: true,
+                });
+              }
+            }}
+          >
+            <Space>
+              <PlusOutlined />
+              修改角色
+            </Space>
+          </Item>
+        </Access>
+        <Access accessible={access.checkShowAuth('/role/:id', ApiMethodEnum.DELETE)} key="delete">
+          <Item
+            onClick={() => {
+              if (rightSelectRole) {
+                Modal.confirm({
+                  title: `此次操作可能会影响到与该角色有关的用户使用,确定要将角色[${rightSelectRole.name}]删除吗?`,
+                  onOk: async () => {
+                    await deleteRole(rightSelectRole.id);
+                    return await fetchRoleTreeFormView();
+                  },
+                });
+              }
+            }}
+          >
+            <Space>
+              <MinusOutlined />
+              删除角色
+            </Space>
+          </Item>
+        </Access>
       </Menu>
       <Tree<RoleTreeType>
         defaultExpandAll={true}

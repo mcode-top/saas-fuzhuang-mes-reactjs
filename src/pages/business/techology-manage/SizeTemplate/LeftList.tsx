@@ -15,6 +15,8 @@ import SizeTemplateParentListModal from './ListModal';
 import storageDataSource from '@/utils/storage';
 import { STORAGE_SIZE_TEMPLATE_LIST } from '@/configs/storage.config';
 import type { RightMenuInstance } from '@/components/typing';
+import { ApiMethodEnum } from '@/apis/person/typings';
+import { useAccess, Access } from 'umi';
 
 const BusSizeTemplateLeftList: React.FC<{
   onSelect: (selectId: number | undefined, node: BusSizeTemplateParentType | undefined) => void;
@@ -30,6 +32,8 @@ const BusSizeTemplateLeftList: React.FC<{
   const updateModalRef = useRef<HTMLDivElement>(null);
   /**@name 查看尺码模板对话框*/
   const watchModalRef = useRef<HTMLDivElement>(null);
+  const access = useAccess();
+
   useEffect(() => {
     props?.onSelect?.(
       selectId,
@@ -62,16 +66,21 @@ const BusSizeTemplateLeftList: React.FC<{
       }
       extra={
         <Space>
-          <SizeTemplateParentListModal
-            node={{ type: 'create' }}
-            title="新增尺码模板"
-            onFinish={() => {
-              requestList();
-              message.success('新增成功');
-            }}
+          <Access
+            accessible={access.checkShowAuth('/size-template', ApiMethodEnum.POST)}
+            key="create"
           >
-            <Button type="link">新增尺码模板</Button>
-          </SizeTemplateParentListModal>
+            <SizeTemplateParentListModal
+              node={{ type: 'create' }}
+              title="新增尺码模板"
+              onFinish={() => {
+                requestList();
+                message.success('新增成功');
+              }}
+            >
+              <Button type="link">新增尺码模板</Button>
+            </SizeTemplateParentListModal>
+          </Access>
           <LoadingButton type="link" icon={<ReloadOutlined />} onLoadingClick={requestList}>
             刷新
           </LoadingButton>
@@ -143,46 +152,58 @@ const RightMenuDom = forwardRef(
     useImperativeHandle(ref, () => ({
       show,
     }));
+    const access = useAccess();
+
     return (
       <Menu id={MenuId}>
-        <Item
-          key="modify"
-          onClick={() => {
-            props?.updateRef?.current?.click?.();
-          }}
+        <Access
+          accessible={access.checkShowAuth('/size-template', ApiMethodEnum.PATCH)}
+          key="update"
         >
-          <Space>
-            <PlusOutlined />
-            修改尺码模板
-          </Space>
-        </Item>
-        <Item
+          <Item
+            key="modify"
+            onClick={() => {
+              props?.updateRef?.current?.click?.();
+            }}
+          >
+            <Space>
+              <PlusOutlined />
+              修改尺码模板
+            </Space>
+          </Item>
+        </Access>
+        <Access
+          accessible={access.checkShowAuth('/size-template', ApiMethodEnum.DELETE)}
           key="delete"
-          onClick={() => {
-            Modal.confirm({
-              title: '系统提示',
-              content: `您确定要删除[${props.record.name}]尺码模板吗?删除后尺码将不存在`,
-              onOk: () => {
-                return new Promise(async (resolve, reject) => {
-                  try {
-                    await fetchRemoveOneParent(props.record.id as any);
-                    props.refresh();
-                    message.success('删除成功');
-                    resolve(true);
-                  } catch (error) {
-                    reject(error);
-                    console.error(error);
-                  }
-                });
-              },
-            });
-          }}
         >
-          <Space>
-            <MinusOutlined />
-            删除尺码模板
-          </Space>
-        </Item>
+          <Item
+            key="delete"
+            onClick={() => {
+              Modal.confirm({
+                title: '系统提示',
+                content: `您确定要删除[${props.record.name}]尺码模板吗?删除后尺码将不存在`,
+                onOk: () => {
+                  return new Promise(async (resolve, reject) => {
+                    try {
+                      await fetchRemoveOneParent(props.record.id as any);
+                      props.refresh();
+                      message.success('删除成功');
+                      resolve(true);
+                    } catch (error) {
+                      reject(error);
+                      console.error(error);
+                    }
+                  });
+                },
+              });
+            }}
+          >
+            <Space>
+              <MinusOutlined />
+              删除尺码模板
+            </Space>
+          </Item>
+        </Access>
       </Menu>
     );
   },

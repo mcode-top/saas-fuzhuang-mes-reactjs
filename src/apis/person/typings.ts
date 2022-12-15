@@ -9,6 +9,7 @@ export enum ApiTypeEnum {
   LINK = '1',
 }
 
+/**@name API接口类型 */
 export enum ApiMethodEnum {
   GET = '0',
   POST = '1',

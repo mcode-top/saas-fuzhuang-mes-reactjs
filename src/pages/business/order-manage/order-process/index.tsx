@@ -1,5 +1,6 @@
 import { fetchOrderContractProcessList } from '@/apis/business/order-manage/order-process';
 import type { OrderContractProcessType } from '@/apis/business/order-manage/order-process/typing';
+import { ApiMethodEnum } from '@/apis/person/typings';
 import { OrderContractTypeValueEnum } from '@/configs/commValueEnum';
 import { COM_PRO_TABLE_TIME, REQUEST_PREFIX, WEB_REQUEST_URL } from '@/configs/index.config';
 import { nestPaginationTable } from '@/utils/proTablePageQuery';
@@ -9,7 +10,7 @@ import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { Button, DatePicker, Dropdown, Menu, Modal } from 'antd';
 import { useRef } from 'react';
-import { useLocation } from 'umi';
+import { useAccess, useLocation } from 'umi';
 import OrderProcessAddModal from './components/OrderProcessAddModal';
 import OrderProcessLogTableModal from './components/OrderProcessLogTableModal';
 const { RangePicker } = DatePicker;
@@ -17,6 +18,7 @@ const { RangePicker } = DatePicker;
 const OrderContractProcess: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const location = useLocation();
+  const access = useAccess();
   const columns: ProColumns<OrderContractProcessType>[] = [
     {
       title: '订单单号',
@@ -57,17 +59,21 @@ const OrderContractProcess: React.FC = () => {
                       </OrderProcessLogTableModal>
                     ),
                   },
-                  {
-                    key: 'modfiy',
-                    label: (
-                      <OrderProcessAddModal
-                        onFinish={() => actionRef.current?.reload()}
-                        contractNumber={entity.contractNumber}
-                      >
-                        <div onClick={() => {}}>填写流程记录</div>
-                      </OrderProcessAddModal>
-                    ),
-                  },
+                  ...(access.checkShowAuth('/order-process/add', ApiMethodEnum.POST)
+                    ? [
+                        {
+                          key: 'modfiy',
+                          label: (
+                            <OrderProcessAddModal
+                              onFinish={() => actionRef.current?.reload()}
+                              contractNumber={entity.contractNumber}
+                            >
+                              <div onClick={() => {}}>填写流程记录</div>
+                            </OrderProcessAddModal>
+                          ),
+                        },
+                      ]
+                    : []),
                 ].filter((item) => {
                   return true;
                 })}

@@ -5,6 +5,7 @@ import {
   fetchManyRemoveWorkProcess,
   fetchWorkProcessList,
 } from '@/apis/business/techology-manage/work-process';
+import { ApiMethodEnum } from '@/apis/person/typings';
 import LoadingButton from '@/components/Comm/LoadingButton';
 import { nestPaginationTable } from '@/utils/proTablePageQuery';
 import { SettingOutlined } from '@ant-design/icons';
@@ -14,47 +15,35 @@ import { Button, Dropdown, Menu, message, Space, Table } from 'antd';
 import react, { useRef } from 'react';
 
 import React from 'react';
-import { Access } from 'umi';
+import { Access, useAccess } from 'umi';
 import WorkProcessTableModal from './TableModal';
 import type { BusWorkProcessType } from './typing';
-
-/**@name 表格栏操作 */
-const TableBarDom = (action: ActionType | undefined) => {
-  return [
-    <WorkProcessTableModal
-      key="新增工序"
-      title="新增工序"
-      node={{ type: 'create' }}
-      onFinish={() => {
-        message.success('新增成功');
-        action?.reload();
-      }}
-    >
-      <Button type="primary" key="create">
-        新增工序
-      </Button>
-    </WorkProcessTableModal>,
-  ];
-};
 
 /**@name 表格选择操作 */
 const TableAlertOptionDom: React.FC<{
   selectedRowKeys: (string | number)[];
   action: ActionType | undefined;
 }> = (props) => {
+  const access = useAccess();
+
   return (
     <Space size={16}>
-      <LoadingButton
-        onLoadingClick={async () =>
-          await fetchManyRemoveWorkProcess(props.selectedRowKeys as number[]).then(() => {
-            props?.action?.clearSelected?.();
-            props?.action?.reload();
-            message.success('删除成功');
-          })
-        }
+      <Access
+        accessible={access.checkShowAuth('/work-process/many-remove', ApiMethodEnum.POST)}
+        key="delete"
       >
-        批量删除
-      </LoadingButton>
+        <LoadingButton
+          onLoadingClick={async () =>
+            await fetchManyRemoveWorkProcess(props.selectedRowKeys as number[]).then(() => {
+              props?.action?.clearSelected?.();
+              props?.action?.reload();
+              message.success('删除成功');
+            })
+          }
+        >
+          批量删除
+        </LoadingButton>
+      </Access>
     </Space>
   );
 };
@@ -64,6 +53,8 @@ const TableOperationDom: React.FC<{
   record: BusWorkProcessType;
   action: ActionType | undefined;
 }> = (props) => {
+  const access = useAccess();
+
   return (
     <Dropdown
       key="Dropdown"
@@ -83,22 +74,26 @@ const TableOperationDom: React.FC<{
                 </WorkProcessTableModal>
               ),
             },
-            {
-              key: 'modify',
-              label: (
-                <WorkProcessTableModal
-                  key="修改工序"
-                  title="修改工序"
-                  onFinish={() => {
-                    message.success('修改成功');
-                    props?.action?.reload();
-                  }}
-                  node={{ type: 'update', value: props.record }}
-                >
-                  <div>修改工序</div>
-                </WorkProcessTableModal>
-              ),
-            },
+            ...(access.checkShowAuth('/work-process', ApiMethodEnum.PATCH)
+              ? [
+                  {
+                    key: 'modify',
+                    label: (
+                      <WorkProcessTableModal
+                        key="修改工序"
+                        title="修改工序"
+                        onFinish={() => {
+                          message.success('修改成功');
+                          props?.action?.reload();
+                        }}
+                        node={{ type: 'update', value: props.record }}
+                      >
+                        <div>修改工序</div>
+                      </WorkProcessTableModal>
+                    ),
+                  },
+                ]
+              : []),
           ]}
         />
       }
@@ -112,6 +107,7 @@ const TableOperationDom: React.FC<{
 
 const BusStation: React.FC = () => {
   const actionRef = useRef<ActionType>();
+  const access = useAccess();
 
   const columns: ProColumns<BusWorkProcessType>[] = [
     {
@@ -141,6 +137,27 @@ const BusStation: React.FC = () => {
       },
     },
   ];
+  /**@name 表格栏操作 */
+  const TableBarDom = (action: ActionType | undefined) => {
+    return [
+      <Access accessible={access.checkShowAuth('/work-process', ApiMethodEnum.POST)} key="create">
+        <WorkProcessTableModal
+          key="新增工序"
+          title="新增工序"
+          node={{ type: 'create' }}
+          onFinish={() => {
+            message.success('新增成功');
+            action?.reload();
+          }}
+        >
+          <Button type="primary" key="create">
+            新增工序
+          </Button>
+        </WorkProcessTableModal>
+      </Access>,
+    ];
+  };
+
   return (
     <ProTable
       columns={columns}

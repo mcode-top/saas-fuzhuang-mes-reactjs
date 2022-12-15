@@ -23,6 +23,8 @@ import { GoodsExcelPutInTemplate, GoodsImportExcelPutIn } from './GoodsExcelOper
 import ExcelHintGoodsPutInModal from './CheckExcelGoodsPutInModal';
 import ManyPutOutInGoods from './ManyPutOutInGoods';
 import ProduceGoodsManyPutInModal from './ProduceGoodsManyPutInModal';
+import { ApiMethodEnum } from '@/apis/person/typings';
+import { useAccess, Access } from 'umi';
 
 /**@name 表格栏操作 */
 const TableBarDom = (
@@ -31,58 +33,80 @@ const TableBarDom = (
 ) => {
   const [v, setV] = useState<any>();
   const excelRef = React.useRef<any>();
+  const access = useAccess();
+
   if (!shelfNode) {
     return [];
   }
   return [
-    <GoodsPutInModal
-      key="其他货品入库"
-      title="其他货品入库"
-      node={{ type: 'create', value: { shelfId: shelfNode.id } }}
-      onFinish={() => {
-        message.success('货品入库成功');
-        action?.reload();
-      }}
+    <Access
+      accessible={access.checkShowAuth('/warehouse/goods/put-in-out', ApiMethodEnum.POST)}
+      key="put-in-out"
     >
-      <Button type="primary" key="create">
-        其他货品入库
+      <GoodsPutInModal
+        key="其他货品入库"
+        title="其他货品入库"
+        node={{ type: 'create', value: { shelfId: shelfNode.id } }}
+        onFinish={() => {
+          message.success('货品入库成功');
+          action?.reload();
+        }}
+      >
+        <Button type="primary" key="create">
+          其他货品入库
+        </Button>
+      </GoodsPutInModal>
+    </Access>,
+    <Access
+      accessible={access.checkShowAuth('/warehouse/goods/put-in-out', ApiMethodEnum.POST)}
+      key="put-in-out"
+    >
+      <ProduceGoodsManyPutInModal
+        key="成衣批量入库"
+        shelfId={shelfNode.id}
+        title="成衣批量入库"
+        onFinish={() => {
+          message.success('货品批量入库成功');
+          action?.reload();
+        }}
+      >
+        <Button type="primary" key="manyCreate">
+          成衣批量入库
+        </Button>
+      </ProduceGoodsManyPutInModal>
+    </Access>,
+    <Access
+      accessible={access.checkShowAuth('/warehouse/goods/put-in-out', ApiMethodEnum.POST)}
+      key="put-in-out"
+    >
+      <ExcelHintGoodsPutInModal
+        onFinish={() => {
+          action?.reload?.();
+        }}
+        key="excel-modal"
+        shelfId={shelfNode.id}
+        data={v}
+        actionRef={action as any}
+      >
+        <div key="excel-modal" ref={excelRef} />
+      </ExcelHintGoodsPutInModal>
+    </Access>,
+    <Access
+      accessible={access.checkShowAuth('/warehouse/goods/put-in-out', ApiMethodEnum.POST)}
+      key="put-in-out"
+    >
+      <Button
+        type="primary"
+        key="excel-export"
+        onClick={async () => {
+          const data = await GoodsImportExcelPutIn();
+          setV(data);
+          excelRef?.current?.click?.();
+        }}
+      >
+        Excel批量导入库
       </Button>
-    </GoodsPutInModal>,
-    <ProduceGoodsManyPutInModal
-      key="成衣批量入库"
-      shelfId={shelfNode.id}
-      title="成衣批量入库"
-      onFinish={() => {
-        message.success('货品批量入库成功');
-        action?.reload();
-      }}
-    >
-      <Button type="primary" key="manyCreate">
-        成衣批量入库
-      </Button>
-    </ProduceGoodsManyPutInModal>,
-    <ExcelHintGoodsPutInModal
-      onFinish={() => {
-        action?.reload?.();
-      }}
-      key="excel-modal"
-      shelfId={shelfNode.id}
-      data={v}
-      actionRef={action as any}
-    >
-      <div key="excel-modal" ref={excelRef} />
-    </ExcelHintGoodsPutInModal>,
-    <Button
-      type="primary"
-      key="excel-export"
-      onClick={async () => {
-        const data = await GoodsImportExcelPutIn();
-        setV(data);
-        excelRef?.current?.click?.();
-      }}
-    >
-      Excel批量导入库
-    </Button>,
+    </Access>,
 
     <Button key="excel-template-download" type="primary" onClick={GoodsExcelPutInTemplate}>
       Excel入库模板下载
@@ -96,35 +120,46 @@ const TableAlertOptionDom: React.FC<{
   action: ActionType | undefined;
 }> = (props) => {
   const wContext = useContext(WarehouseContext);
+  const access = useAccess();
 
   return (
     <Space size={16}>
-      <ManyPutOutInGoods
-        warehouseType={wContext.currentWarehouse?.type as any}
-        type={BusWarehouseLogTypeEnum.In}
-        title="批量入库"
-        value={props.selectedRows}
-        onFinish={() => {
-          message.success('操作成功');
-          wContext.goodsAction?.current?.clearSelected?.();
-          wContext.goodsAction?.current?.reload();
-        }}
+      <Access
+        accessible={access.checkShowAuth('/warehouse/goods/put-in-out', ApiMethodEnum.POST)}
+        key="put-in-out"
       >
-        <Button type="primary">批量入库</Button>
-      </ManyPutOutInGoods>
-      <ManyPutOutInGoods
-        warehouseType={wContext.currentWarehouse?.type as any}
-        type={BusWarehouseLogTypeEnum.Out}
-        title="批量出库"
-        value={props.selectedRows}
-        onFinish={() => {
-          message.success('操作成功');
-          wContext.goodsAction?.current?.clearSelected?.();
-          wContext.goodsAction?.current?.reload();
-        }}
+        <ManyPutOutInGoods
+          warehouseType={wContext.currentWarehouse?.type as any}
+          type={BusWarehouseLogTypeEnum.In}
+          title="批量入库"
+          value={props.selectedRows}
+          onFinish={() => {
+            message.success('操作成功');
+            wContext.goodsAction?.current?.clearSelected?.();
+            wContext.goodsAction?.current?.reload();
+          }}
+        >
+          <Button type="primary">批量入库</Button>
+        </ManyPutOutInGoods>
+      </Access>
+      <Access
+        accessible={access.checkShowAuth('/warehouse/goods/put-in-out', ApiMethodEnum.POST)}
+        key="put-in-out"
       >
-        <Button type="primary">批量出库</Button>
-      </ManyPutOutInGoods>
+        <ManyPutOutInGoods
+          warehouseType={wContext.currentWarehouse?.type as any}
+          type={BusWarehouseLogTypeEnum.Out}
+          title="批量出库"
+          value={props.selectedRows}
+          onFinish={() => {
+            message.success('操作成功');
+            wContext.goodsAction?.current?.clearSelected?.();
+            wContext.goodsAction?.current?.reload();
+          }}
+        >
+          <Button type="primary">批量出库</Button>
+        </ManyPutOutInGoods>
+      </Access>
     </Space>
   );
 };
@@ -135,6 +170,7 @@ const TableOperationDom: React.FC<{
   action: ActionType | undefined;
 }> = (props) => {
   const wContext = useContext(WarehouseContext);
+  const access = useAccess();
 
   return (
     <Dropdown
@@ -155,38 +191,42 @@ const TableOperationDom: React.FC<{
                 </GoodsOutInLogModal>
               ),
             },
-            {
-              key: 'put-out',
-              label: (
-                <GoodsPutOutModal
-                  type="put-out"
-                  title="货品出库"
-                  value={props.record}
-                  onFinish={() => {
-                    message.success('出库成功');
-                    props.action?.reload();
-                  }}
-                >
-                  <div>货品出库</div>
-                </GoodsPutOutModal>
-              ),
-            },
-            {
-              key: 'update-remark',
-              label: (
-                <GoodsPutOutModal
-                  type="update-remark"
-                  title="修改货品备注"
-                  value={props.record}
-                  onFinish={() => {
-                    message.success('修改货品备注成功');
-                    props.action?.reload();
-                  }}
-                >
-                  <div>修改备注</div>
-                </GoodsPutOutModal>
-              ),
-            },
+            ...(access.checkShowAuth('/warehouse/goods/put-in-out', ApiMethodEnum.POST)
+              ? [
+                  {
+                    key: 'put-out',
+                    label: (
+                      <GoodsPutOutModal
+                        type="put-out"
+                        title="货品出库"
+                        value={props.record}
+                        onFinish={() => {
+                          message.success('出库成功');
+                          props.action?.reload();
+                        }}
+                      >
+                        <div>货品出库</div>
+                      </GoodsPutOutModal>
+                    ),
+                  },
+                  {
+                    key: 'update-remark',
+                    label: (
+                      <GoodsPutOutModal
+                        type="update-remark"
+                        title="修改货品备注"
+                        value={props.record}
+                        onFinish={() => {
+                          message.success('修改货品备注成功');
+                          props.action?.reload();
+                        }}
+                      >
+                        <div>修改备注</div>
+                      </GoodsPutOutModal>
+                    ),
+                  },
+                ]
+              : []),
           ]}
         />
       }

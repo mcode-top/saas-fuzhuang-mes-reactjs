@@ -2,7 +2,7 @@
  * 工位管理
  */
 import { fetchManyRemoveStation, fetchStationList } from '@/apis/business/techology-manage/station';
-import type { UserListItem } from '@/apis/person/typings';
+import { ApiMethodEnum, UserListItem } from '@/apis/person/typings';
 import { fetchUserList } from '@/apis/person/users';
 import LoadingButton from '@/components/Comm/LoadingButton';
 import { nestPaginationTable } from '@/utils/proTablePageQuery';
@@ -13,47 +13,35 @@ import { Button, Dropdown, Menu, message, Space, Table } from 'antd';
 import react, { useRef } from 'react';
 
 import React from 'react';
-import { Access } from 'umi';
+import { Access, useAccess } from 'umi';
 import StationTableModal from './TableModal';
 import type { BusStationType } from './typing';
-
-/**@name 表格栏操作 */
-const TableBarDom = (action: ActionType | undefined) => {
-  return [
-    <StationTableModal
-      key="新增工位"
-      title="新增工位"
-      node={{ type: 'create' }}
-      onFinish={() => {
-        message.success('新增成功');
-        action?.reload();
-      }}
-    >
-      <Button type="primary" key="create">
-        新增工位
-      </Button>
-    </StationTableModal>,
-  ];
-};
 
 /**@name 表格选择操作 */
 const TableAlertOptionDom: React.FC<{
   selectedRowKeys: (string | number)[];
   action: ActionType | undefined;
 }> = (props) => {
+  const access = useAccess();
+
   return (
     <Space size={16}>
-      <LoadingButton
-        onLoadingClick={async () =>
-          await fetchManyRemoveStation(props.selectedRowKeys as number[]).then(() => {
-            props?.action?.clearSelected?.();
-            props?.action?.reload();
-            message.success('删除成功');
-          })
-        }
+      <Access
+        accessible={access.checkShowAuth('/station/many-remove', ApiMethodEnum.POST)}
+        key="create"
       >
-        批量删除
-      </LoadingButton>
+        <LoadingButton
+          onLoadingClick={async () =>
+            await fetchManyRemoveStation(props.selectedRowKeys as number[]).then(() => {
+              props?.action?.clearSelected?.();
+              props?.action?.reload();
+              message.success('删除成功');
+            })
+          }
+        >
+          批量删除
+        </LoadingButton>
+      </Access>
     </Space>
   );
 };
@@ -63,6 +51,8 @@ const TableOperationDom: React.FC<{
   record: BusStationType;
   action: ActionType | undefined;
 }> = (props) => {
+  const access = useAccess();
+
   return (
     <Dropdown
       key="Dropdown"
@@ -87,27 +77,31 @@ const TableOperationDom: React.FC<{
                 </StationTableModal>
               ),
             },
-            {
-              key: 'modify',
-              label: (
-                <StationTableModal
-                  key="修改工位"
-                  title="修改工位"
-                  onFinish={() => {
-                    message.success('修改成功');
-                    props?.action?.reload();
-                  }}
-                  node={{
-                    type: 'update',
-                    value: {
-                      stationId: props.record.id as number,
-                    },
-                  }}
-                >
-                  <div>修改工位</div>
-                </StationTableModal>
-              ),
-            },
+            ...(access.checkShowAuth('/station', ApiMethodEnum.PATCH)
+              ? [
+                  {
+                    key: 'modify',
+                    label: (
+                      <StationTableModal
+                        key="修改工位"
+                        title="修改工位"
+                        onFinish={() => {
+                          message.success('修改成功');
+                          props?.action?.reload();
+                        }}
+                        node={{
+                          type: 'update',
+                          value: {
+                            stationId: props.record.id as number,
+                          },
+                        }}
+                      >
+                        <div>修改工位</div>
+                      </StationTableModal>
+                    ),
+                  },
+                ]
+              : []),
           ]}
         />
       }
@@ -121,6 +115,28 @@ const TableOperationDom: React.FC<{
 
 const BusStation: React.FC = () => {
   const actionRef = useRef<ActionType>();
+  const access = useAccess();
+
+  /**@name 表格栏操作 */
+  const TableBarDom = (action: ActionType | undefined) => {
+    return [
+      <Access accessible={access.checkShowAuth('/station', ApiMethodEnum.POST)} key="create">
+        <StationTableModal
+          key="新增工位"
+          title="新增工位"
+          node={{ type: 'create' }}
+          onFinish={() => {
+            message.success('新增成功');
+            action?.reload();
+          }}
+        >
+          <Button type="primary" key="create">
+            新增工位
+          </Button>
+        </StationTableModal>
+      </Access>,
+    ];
+  };
 
   const columns: ProColumns<BusStationType>[] = [
     {

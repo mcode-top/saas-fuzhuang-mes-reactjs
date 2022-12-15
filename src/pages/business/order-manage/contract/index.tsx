@@ -7,6 +7,7 @@ import {
 import type { BusOrderContract } from '@/apis/business/order-manage/contract/typing';
 import { BusOrderTypeEnum } from '@/apis/business/order-manage/contract/typing';
 import { fetchOrderRecall } from '@/apis/business/order-manage/order-process';
+import { ApiMethodEnum } from '@/apis/person/typings';
 import { ActTaskModelTypeEnum } from '@/apis/process/typings';
 import {
   CustomerCompanyValueEnum,
@@ -23,7 +24,7 @@ import ProTable from '@ant-design/pro-table';
 import { Button, DatePicker, Dropdown, Menu, Modal, Tag } from 'antd';
 const { RangePicker } = DatePicker;
 import React, { useRef } from 'react';
-import { useLocation, useModel } from 'umi';
+import { Access, useAccess, useLocation, useModel } from 'umi';
 import OrderCollectionSlipAddLog from '../collection-slip/components/OrderCollectionSlipAddLog';
 import { PartToContractNumber } from '../delivery/components/OrderDeliveryInfo';
 import type { ContractLocationQuery } from './typing';
@@ -48,6 +49,8 @@ const OrderContract: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const location = useLocation();
   const { initialState } = useModel('@@initialState');
+  const access = useAccess();
+
   /**
    * 预览流程状态
    */
@@ -303,53 +306,57 @@ const OrderContract: React.FC = () => {
       actionRef={actionRef}
       toolBarRender={(action: ActionType | undefined) => {
         return [
-          <Button
-            type="primary"
-            key="create"
-            onClick={() => {
-              gotoContractInfo({
-                type: 'create',
-                infoTitle: `创建新合同单`,
-              });
-            }}
-          >
-            创建合同单
-          </Button>,
-          <Button
-            key="add-order"
-            onClick={() => {
-              let contractNumber = '';
-              Modal.confirm({
-                title: '请选择要追加订单的合同号',
-                width: 300,
-                content: (
-                  <PartToContractNumber
-                    orderType={[BusOrderTypeEnum.Normal, BusOrderTypeEnum.Add]}
-                    onChange={(v) => {
-                      contractNumber = v;
-                    }}
-                  />
-                ),
-                onOk: () => {
-                  return new Promise((res, rej) => {
-                    if (contractNumber) {
-                      res(true);
-                      gotoContractInfo({
-                        type: 'watch',
-                        orderType: BusOrderTypeEnum.Add,
-                        infoTitle: `合同单${contractNumber}-追加订单`,
-                        contractNumber,
-                      });
-                    } else {
-                      rej(false);
-                    }
-                  });
-                },
-              });
-            }}
-          >
-            追加订单
-          </Button>,
+          <Access accessible={access.checkShowAuth('/contract', ApiMethodEnum.POST)} key="create">
+            <Button
+              type="primary"
+              key="create"
+              onClick={() => {
+                gotoContractInfo({
+                  type: 'create',
+                  infoTitle: `创建新合同单`,
+                });
+              }}
+            >
+              创建合同单
+            </Button>
+          </Access>,
+          <Access accessible={access.checkShowAuth('/contract', ApiMethodEnum.POST)} key="create">
+            <Button
+              key="add-order"
+              onClick={() => {
+                let contractNumber = '';
+                Modal.confirm({
+                  title: '请选择要追加订单的合同号',
+                  width: 300,
+                  content: (
+                    <PartToContractNumber
+                      orderType={[BusOrderTypeEnum.Normal, BusOrderTypeEnum.Add]}
+                      onChange={(v) => {
+                        contractNumber = v;
+                      }}
+                    />
+                  ),
+                  onOk: () => {
+                    return new Promise((res, rej) => {
+                      if (contractNumber) {
+                        res(true);
+                        gotoContractInfo({
+                          type: 'watch',
+                          orderType: BusOrderTypeEnum.Add,
+                          infoTitle: `合同单${contractNumber}-追加订单`,
+                          contractNumber,
+                        });
+                      } else {
+                        rej(false);
+                      }
+                    });
+                  },
+                });
+              }}
+            >
+              追加订单
+            </Button>
+          </Access>,
         ];
       }}
       request={async (params, sort, filter) => {

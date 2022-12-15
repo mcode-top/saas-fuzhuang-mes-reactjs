@@ -1,5 +1,6 @@
 import { fetchRemoveWarehouseShelf, fetchWarehouseIdToShelfList } from '@/apis/business/warehouse';
 import type { BusWarehouseShelfType } from '@/apis/business/warehouse/typing';
+import { ApiMethodEnum } from '@/apis/person/typings';
 import SimpleColumnList from '@/components/Comm/SimpleColumnList';
 import type { RightMenuInstance } from '@/components/typing';
 import {
@@ -12,6 +13,7 @@ import { Button, Card, message, Modal, Space } from 'antd';
 import React, { useContext, useImperativeHandle } from 'react';
 import { useState } from 'react';
 import { Item, Menu, useContextMenu } from 'react-contexify';
+import { useAccess, Access } from 'umi';
 import { WarehouseContext } from '../context';
 import ShelfListModal from './ShelfListModal';
 
@@ -20,6 +22,7 @@ const ShelfSimpleSelectList: React.FC = () => {
   const [rightNode, setRightNode] = useState<BusWarehouseShelfType>();
   /**@name 右键菜单 */
   const rightMenuRef = React.useRef<RightMenuInstance>(null);
+  const access = useAccess();
 
   return (
     <Card
@@ -27,15 +30,20 @@ const ShelfSimpleSelectList: React.FC = () => {
       bodyStyle={{ padding: 0, flexGrow: 1, overflow: 'auto' }}
       extra={
         <Space>
-          <ShelfListModal
-            title="新增仓库货架"
-            node={{ type: 'create', value: { warehouseId: wContext.currentWarehouse?.id } }}
-            onFinish={() => {
-              wContext?.shelfAction?.current?.reload();
-            }}
+          <Access
+            accessible={access.checkShowAuth('/warehouse/shelf', ApiMethodEnum.POST)}
+            key="create"
           >
-            <Button type="link">新增仓库货架</Button>
-          </ShelfListModal>
+            <ShelfListModal
+              title="新增仓库货架"
+              node={{ type: 'create', value: { warehouseId: wContext.currentWarehouse?.id } }}
+              onFinish={() => {
+                wContext?.shelfAction?.current?.reload();
+              }}
+            >
+              <Button type="link">新增仓库货架</Button>
+            </ShelfListModal>
+          </Access>
           <Button
             type="link"
             onClick={() => {
@@ -53,7 +61,7 @@ const ShelfSimpleSelectList: React.FC = () => {
     >
       <RightMenuDom ref={rightMenuRef} record={rightNode as BusWarehouseShelfType} />
 
-      <SimpleColumnList<BusWarehouseShelfType>
+      <SimpleColumnList
         ref={wContext.shelfAction}
         columns={[
           {
@@ -74,7 +82,7 @@ const ShelfSimpleSelectList: React.FC = () => {
         onChange={(key, record) => {
           console.log(key, record);
 
-          wContext.setCurrentShelfNode?.(record);
+          wContext.setCurrentShelfNode?.(record as any);
         }}
         tableProps={{
           onRow: (record) => {
@@ -82,7 +90,7 @@ const ShelfSimpleSelectList: React.FC = () => {
               onContextMenu: (event) => {
                 rightMenuRef.current?.show(event);
                 setTimeout(() => {
-                  setRightNode(record);
+                  setRightNode(record as any);
                 }, 0);
               },
             };
@@ -122,6 +130,7 @@ const RightMenuDom = React.forwardRef(
     const updateModalRef = React.useRef<HTMLDivElement>(null);
     /**@name 查看尺码模板对话框*/
     const watchModalRef = React.useRef<HTMLDivElement>(null);
+    const access = useAccess();
 
     const MenuId = 'sizeTemplate';
     const { show } = useContextMenu({
@@ -165,44 +174,54 @@ const RightMenuDom = React.forwardRef(
               查看仓库货架
             </Space>
           </Item>
-          <Item
-            key="modify"
-            onClick={() => {
-              updateModalRef.current?.click();
-            }}
+          <Access
+            accessible={access.checkShowAuth('/warehouse/shelf', ApiMethodEnum.PATCH)}
+            key="update"
           >
-            <Space>
-              <PlusOutlined />
-              修改仓库货架
-            </Space>
-          </Item>
-          <Item
-            key="delete"
-            onClick={() => {
-              Modal.confirm({
-                title: '系统提示',
-                content: `删除货架后货架中的货品将被清除,您确定要删除[${props.record.name}]货架吗?`,
-                onOk: () => {
-                  return new Promise(async (resolve, reject) => {
-                    try {
-                      await fetchRemoveWarehouseShelf(props.record.id);
-                      wContext?.shelfAction?.current?.reload();
-                      message.success('删除成功');
-                      resolve(true);
-                    } catch (error) {
-                      reject(error);
-                      console.error(error);
-                    }
-                  });
-                },
-              });
-            }}
+            <Item
+              key="modify"
+              onClick={() => {
+                updateModalRef.current?.click();
+              }}
+            >
+              <Space>
+                <PlusOutlined />
+                修改仓库货架
+              </Space>
+            </Item>
+          </Access>
+          <Access
+            accessible={access.checkShowAuth('/warehouse/remove-shelf/:id', ApiMethodEnum.POST)}
+            key="create"
           >
-            <Space>
-              <MinusOutlined />
-              删除仓库货架
-            </Space>
-          </Item>
+            <Item
+              key="delete"
+              onClick={() => {
+                Modal.confirm({
+                  title: '系统提示',
+                  content: `删除货架后货架中的货品将被清除,您确定要删除[${props.record.name}]货架吗?`,
+                  onOk: () => {
+                    return new Promise(async (resolve, reject) => {
+                      try {
+                        await fetchRemoveWarehouseShelf(props.record.id);
+                        wContext?.shelfAction?.current?.reload();
+                        message.success('删除成功');
+                        resolve(true);
+                      } catch (error) {
+                        reject(error);
+                        console.error(error);
+                      }
+                    });
+                  },
+                });
+              }}
+            >
+              <Space>
+                <MinusOutlined />
+                删除仓库货架
+              </Space>
+            </Item>
+          </Access>
         </Menu>
       </>
     );

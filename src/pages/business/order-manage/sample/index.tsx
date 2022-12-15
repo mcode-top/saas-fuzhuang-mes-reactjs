@@ -9,6 +9,7 @@ import {
 import type { BusOrderContract } from '@/apis/business/order-manage/contract/typing';
 import { BusOrderTypeEnum } from '@/apis/business/order-manage/contract/typing';
 import { fetchOrderRecall } from '@/apis/business/order-manage/order-process';
+import { ApiMethodEnum } from '@/apis/person/typings';
 import { processRecall } from '@/apis/process/process';
 import { ActTaskModelTypeEnum } from '@/apis/process/typings';
 import {
@@ -25,7 +26,7 @@ import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { Button, Dropdown, Menu, Modal, Tag } from 'antd';
 import React, { useRef } from 'react';
-import { useLocation, useModel } from 'umi';
+import { Access, useAccess, useLocation, useModel } from 'umi';
 import OrderCollectionSlipAddLog from '../collection-slip/components/OrderCollectionSlipAddLog';
 import { gotoContractInfo } from '../contract';
 import type { SampleSendLocationQuery } from './typing';
@@ -46,6 +47,8 @@ const OrderSample: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const location = useLocation();
   const { initialState } = useModel('@@initialState');
+  const access = useAccess();
+
   /**
    * 预览流程状态
    */
@@ -255,45 +258,51 @@ const OrderSample: React.FC = () => {
       actionRef={actionRef}
       toolBarRender={(action: ActionType | undefined) => {
         return [
-          <Button
-            type="primary"
-            key="create-sample-proofing"
-            onClick={() => {
-              gotoContractInfo({
-                type: 'create',
-                infoTitle: `创建打样单`,
-                orderType: BusOrderTypeEnum.SampleProofing,
-              });
-            }}
-          >
-            创建打样单
-          </Button>,
-          <Button
-            type="primary"
-            key="create-sample-send"
-            onClick={() => {
-              gotoSampleSendInfo({
-                type: 'create',
-                infoTitle: `创建寄样单-送样`,
-                orderType: BusOrderTypeEnum.SampleSend,
-              });
-            }}
-          >
-            创建寄样单-送样
-          </Button>,
-          <Button
-            type="primary"
-            key="create-sample-charge"
-            onClick={() => {
-              gotoSampleSendInfo({
-                type: 'create',
-                infoTitle: `创建寄样单-收费`,
-                orderType: BusOrderTypeEnum.SampleCharge,
-              });
-            }}
-          >
-            创建寄样单-收费
-          </Button>,
+          <Access accessible={access.checkShowAuth('/contract', ApiMethodEnum.POST)} key="create">
+            <Button
+              type="primary"
+              key="create-sample-proofing"
+              onClick={() => {
+                gotoContractInfo({
+                  type: 'create',
+                  infoTitle: `创建打样单`,
+                  orderType: BusOrderTypeEnum.SampleProofing,
+                });
+              }}
+            >
+              创建打样单
+            </Button>
+          </Access>,
+          <Access accessible={access.checkShowAuth('/contract', ApiMethodEnum.POST)} key="create1">
+            <Button
+              type="primary"
+              key="create-sample-send"
+              onClick={() => {
+                gotoSampleSendInfo({
+                  type: 'create',
+                  infoTitle: `创建寄样单-送样`,
+                  orderType: BusOrderTypeEnum.SampleSend,
+                });
+              }}
+            >
+              创建寄样单-送样
+            </Button>
+          </Access>,
+          <Access accessible={access.checkShowAuth('/contract', ApiMethodEnum.POST)} key="create2">
+            <Button
+              type="primary"
+              key="create-sample-charge"
+              onClick={() => {
+                gotoSampleSendInfo({
+                  type: 'create',
+                  infoTitle: `创建寄样单-收费`,
+                  orderType: BusOrderTypeEnum.SampleCharge,
+                });
+              }}
+            >
+              创建寄样单-收费
+            </Button>
+          </Access>,
         ];
       }}
       request={async (params, sort, filter) => {

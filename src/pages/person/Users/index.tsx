@@ -105,34 +105,44 @@ function TableUser(props: { selectDeptId: number | undefined }) {
       render: (dom, data) => {
         return (
           <Space>
-            <Button
-              onClick={() => {
-                setUserOperationModal({
-                  node: { ...data, roleIds: data.roleList?.map((role) => role.id) },
-                  visible: true,
-                  type: 'update',
-                });
-              }}
+            <Access
+              accessible={access.checkShowAuth('/user/:id', ApiMethodEnum.PATCH)}
+              key="update"
             >
-              修改
-            </Button>
-            <Button
-              type="primary"
-              danger
-              onClick={() => {
-                Modal.confirm({
-                  title: `删除[${data.name}]用户`,
-                  content: '删除用户可能会导致与该用户绑定数据失效,这里建议将用户状态修改为禁用',
-                  okText: '删除',
-                  onOk: async () => {
-                    await deleteUser(data.id);
-                    await tableRef.current?.reload();
-                  },
-                });
-              }}
+              <Button
+                onClick={() => {
+                  setUserOperationModal({
+                    node: { ...data, roleIds: data.roleList?.map((role) => role.id) },
+                    visible: true,
+                    type: 'update',
+                  });
+                }}
+              >
+                修改
+              </Button>
+            </Access>
+            <Access
+              accessible={access.checkShowAuth('/user/:id', ApiMethodEnum.DELETE)}
+              key="DELTETE"
             >
-              删除
-            </Button>
+              <Button
+                type="primary"
+                danger
+                onClick={() => {
+                  Modal.confirm({
+                    title: `删除[${data.name}]用户`,
+                    content: '删除用户可能会导致与该用户绑定数据失效,这里建议将用户状态修改为禁用',
+                    okText: '删除',
+                    onOk: async () => {
+                      await deleteUser(data.id);
+                      await tableRef.current?.reload();
+                    },
+                  });
+                }}
+              >
+                删除
+              </Button>
+            </Access>
           </Space>
         );
       },

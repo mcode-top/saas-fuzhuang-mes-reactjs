@@ -8,6 +8,7 @@ import {
   fetchManyRemoveMaterial,
   fetchMaterialList,
 } from '@/apis/business/techology-manage/material';
+import { ApiMethodEnum } from '@/apis/person/typings';
 import LoadingButton from '@/components/Comm/LoadingButton';
 import { MaterialValueEnum } from '@/configs/commValueEnum';
 import { arrayAttributeChange } from '@/utils';
@@ -22,64 +23,34 @@ import { pick, reject } from 'lodash';
 import react, { useRef } from 'react';
 
 import React from 'react';
-import { Access } from 'umi';
+import { Access, useAccess } from 'umi';
 import { read, utils, writeFileXLSX } from 'xlsx';
 import MaterialTableModal from './TableModal';
 import type { BusMaterialType } from './typing';
 import { BusMaterialTypeEnum } from './typing';
-
-/**@name 表格栏操作 */
-const TableBarDom = (action: ActionType | undefined) => {
-  return [
-    <MaterialTableModal
-      key="新增物料"
-      title="新增物料"
-      node={{ type: 'create' }}
-      onFinish={() => {
-        message.success('新增成功');
-        action?.reload();
-      }}
-    >
-      <Button type="primary" key="create">
-        新增物料
-      </Button>
-    </MaterialTableModal>,
-    <LoadingButton
-      type="primary"
-      key="import"
-      onLoadingClick={async () => {
-        const data = await importExcel();
-        if (data) {
-          await HintModal(data, action);
-        }
-      }}
-    >
-      导入Excel
-    </LoadingButton>,
-    <Button type="primary" key="export" onClick={exportExcel}>
-      下载Excel模板
-    </Button>,
-  ];
-};
 
 /**@name 表格选择操作 */
 const TableAlertOptionDom: React.FC<{
   selectedRowKeys: (string | number)[];
   action: ActionType | undefined;
 }> = (props) => {
+  const access = useAccess();
+
   return (
     <Space size={16}>
-      <LoadingButton
-        onLoadingClick={async () =>
-          await fetchManyRemoveMaterial(props.selectedRowKeys as string[]).then(() => {
-            props?.action?.clearSelected?.();
-            props?.action?.reload();
-            message.success('删除成功');
-          })
-        }
-      >
-        批量删除
-      </LoadingButton>
+      <Access accessible={access.checkShowAuth('/material', ApiMethodEnum.POST)} key="delete">
+        <LoadingButton
+          onLoadingClick={async () =>
+            await fetchManyRemoveMaterial(props.selectedRowKeys as string[]).then(() => {
+              props?.action?.clearSelected?.();
+              props?.action?.reload();
+              message.success('删除成功');
+            })
+          }
+        >
+          批量删除
+        </LoadingButton>
+      </Access>
     </Space>
   );
 };
@@ -89,6 +60,8 @@ const TableOperationDom: React.FC<{
   record: BusMaterialType;
   action: ActionType | undefined;
 }> = (props) => {
+  const access = useAccess();
+
   return (
     <Dropdown
       key="Dropdown"
@@ -105,22 +78,26 @@ const TableOperationDom: React.FC<{
                 </MaterialTableModal>
               ),
             },
-            {
-              key: 'modify',
-              label: (
-                <MaterialTableModal
-                  key="修改物料"
-                  title="修改物料"
-                  onFinish={() => {
-                    message.success('修改成功');
-                    props?.action?.reload();
-                  }}
-                  node={{ type: 'update', value: props.record }}
-                >
-                  <div>修改物料</div>
-                </MaterialTableModal>
-              ),
-            },
+            ...(access.checkShowAuth('/material', ApiMethodEnum.PATCH)
+              ? [
+                  {
+                    key: 'modify',
+                    label: (
+                      <MaterialTableModal
+                        key="修改物料"
+                        title="修改物料"
+                        onFinish={() => {
+                          message.success('修改成功');
+                          props?.action?.reload();
+                        }}
+                        node={{ type: 'update', value: props.record }}
+                      >
+                        <div>修改物料</div>
+                      </MaterialTableModal>
+                    ),
+                  },
+                ]
+              : []),
           ]}
         />
       }
@@ -134,6 +111,45 @@ const TableOperationDom: React.FC<{
 
 const BusStation: React.FC = () => {
   const actionRef = useRef<ActionType>();
+  const access = useAccess();
+
+  /**@name 表格栏操作 */
+  const TableBarDom = (action: ActionType | undefined) => {
+    return [
+      <Access accessible={access.checkShowAuth('/material', ApiMethodEnum.POST)} key="create">
+        <MaterialTableModal
+          key="新增物料"
+          title="新增物料"
+          node={{ type: 'create' }}
+          onFinish={() => {
+            message.success('新增成功');
+            action?.reload();
+          }}
+        >
+          <Button type="primary" key="create">
+            新增物料
+          </Button>
+        </MaterialTableModal>
+      </Access>,
+      <Access accessible={access.checkShowAuth('/material', ApiMethodEnum.POST)} key="import">
+        <LoadingButton
+          type="primary"
+          key="import"
+          onLoadingClick={async () => {
+            const data = await importExcel();
+            if (data) {
+              await HintModal(data, action);
+            }
+          }}
+        >
+          导入Excel
+        </LoadingButton>
+      </Access>,
+      <Button type="primary" key="export" onClick={exportExcel}>
+        下载Excel模板
+      </Button>,
+    ];
+  };
 
   const columns: ProColumns<BusMaterialType>[] = [
     {

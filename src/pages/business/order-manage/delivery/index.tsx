@@ -1,6 +1,7 @@
 import { fetchOrderDeliveryList } from '@/apis/business/order-manage/delivery';
 import type { BusOrderDeliveryEntity } from '@/apis/business/order-manage/delivery/typing';
 import { fetchOrderRecall } from '@/apis/business/order-manage/order-process';
+import { ApiMethodEnum } from '@/apis/person/typings';
 import { processRecall } from '@/apis/process/process';
 import { ActProcessStatusEnum, ActTaskModelTypeEnum } from '@/apis/process/typings';
 import { OrderContractTypeValueEnum, ProcessValueEnum } from '@/configs/commValueEnum';
@@ -12,7 +13,7 @@ import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { Button, Dropdown, Menu, Modal } from 'antd';
 import { useRef } from 'react';
-import { useLocation, useModel } from 'umi';
+import { Access, useAccess, useLocation, useModel } from 'umi';
 import OrderDeliveryInfo from './components/OrderDeliveryInfo';
 export type DeliveryLocationQuery = {
   type: 'create' | 'watch' | 'approve' | 'update';
@@ -35,6 +36,7 @@ const OrderDelivery: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const location = useLocation();
   const { initialState } = useModel('@@initialState');
+  const access = useAccess();
   /**
    * 预览流程状态
    */
@@ -170,23 +172,28 @@ const OrderDelivery: React.FC = () => {
                       </div>
                     ),
                   },
-                  {
-                    key: 'modify',
-                    label: (
-                      <div
-                        onClick={() => {
-                          gotoDeliveryInfo({
-                            type: 'update',
-                            infoTitle: '修改发货单-' + entity.contractNumber + '-' + entity.id,
-                            contractNumber: entity.contractNumber,
-                            deliveryId: entity.id,
-                          });
-                        }}
-                      >
-                        修改发货单
-                      </div>
-                    ),
-                  },
+                  ...(access.checkShowAuth('/delivery/update/:deliveryId', ApiMethodEnum.PATCH)
+                    ? [
+                        {
+                          key: 'modify',
+                          label: (
+                            <div
+                              onClick={() => {
+                                gotoDeliveryInfo({
+                                  type: 'update',
+                                  infoTitle:
+                                    '修改发货单-' + entity.contractNumber + '-' + entity.id,
+                                  contractNumber: entity.contractNumber,
+                                  deliveryId: entity.id,
+                                });
+                              }}
+                            >
+                              修改发货单
+                            </div>
+                          ),
+                        },
+                      ]
+                    : []),
                   {
                     key: 'recall',
                     label: <div>撤回发货单</div>,
@@ -247,15 +254,20 @@ const OrderDelivery: React.FC = () => {
       rowKey="id"
       toolBarRender={(action: ActionType | undefined) => {
         return [
-          <Button
-            type="primary"
+          <Access
+            accessible={access.checkShowAuth('/delivery/create', ApiMethodEnum.POST)}
             key="create"
-            onClick={() => {
-              gotoDeliveryInfo({ type: 'create', infoTitle: '创建发货单' });
-            }}
           >
-            创建发货单
-          </Button>,
+            <Button
+              type="primary"
+              key="create"
+              onClick={() => {
+                gotoDeliveryInfo({ type: 'create', infoTitle: '创建发货单' });
+              }}
+            >
+              创建发货单
+            </Button>
+          </Access>,
         ];
       }}
       headerTitle="发货单列表"

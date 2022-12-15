@@ -9,12 +9,14 @@ import type {
   BusCustomerCompanyType,
   BusCustomerAddressType,
 } from '@/apis/business/customer/typing';
+import { ApiMethodEnum } from '@/apis/person/typings';
 import { STORAGE_CUSTOMER_ADDRESS_LIST } from '@/configs/storage.config';
 import storageDataSource from '@/utils/storage';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { Button, message, Popconfirm, Space, Table } from 'antd';
 import React, { useEffect } from 'react';
+import { useAccess, Access } from 'umi';
 import { busCustomerAddressExportExcelTemplate, busCustomerAddressImportExcel } from '../excel';
 import BusCustomerAddressModal from './CustomerAddressModal';
 
@@ -22,6 +24,8 @@ const CustomerAddressList: React.FC<{
   record: BusCustomerCompanyType;
 }> = (props) => {
   const actionRef = React.useRef<ActionType | undefined>(null);
+  const access = useAccess();
+
   useEffect(() => {
     actionRef.current?.reload();
   }, [props.record]);
@@ -36,30 +40,40 @@ const CustomerAddressList: React.FC<{
       render(t, value) {
         return (
           <Space>
-            <BusCustomerAddressModal
+            <Access
+              accessible={access.checkShowAuth('/customer/address', ApiMethodEnum.PATCH)}
               key="update"
-              title={`修改[${props.record.name}]的收货地址`}
-              onFinish={() => {
-                actionRef.current?.reload?.();
-              }}
-              node={{ type: 'update', value: { companyId: props.record.id, ...value } }}
             >
-              <Button type="link">修改</Button>
-            </BusCustomerAddressModal>
-            <Popconfirm
-              key="Popconfirm"
-              title="您确定要删除当前客户收货地址吗？"
-              onConfirm={async () => {
-                await fetchRemoveCustomerAddress(value.id);
-                actionRef.current?.reload?.();
-              }}
-              okText="确认删除"
-              cancelText="不删除"
+              <BusCustomerAddressModal
+                key="update"
+                title={`修改[${props.record.name}]的收货地址`}
+                onFinish={() => {
+                  actionRef.current?.reload?.();
+                }}
+                node={{ type: 'update', value: { companyId: props.record.id, ...value } }}
+              >
+                <Button type="link">修改</Button>
+              </BusCustomerAddressModal>
+            </Access>
+            <Access
+              accessible={access.checkShowAuth('/customer/remove-address/:id', ApiMethodEnum.POST)}
+              key="delete"
             >
-              <Button type="link" danger>
-                删除
-              </Button>
-            </Popconfirm>
+              <Popconfirm
+                key="Popconfirm"
+                title="您确定要删除当前客户收货地址吗？"
+                onConfirm={async () => {
+                  await fetchRemoveCustomerAddress(value.id);
+                  actionRef.current?.reload?.();
+                }}
+                okText="确认删除"
+                cancelText="不删除"
+              >
+                <Button type="link" danger>
+                  删除
+                </Button>
+              </Popconfirm>
+            </Access>
           </Space>
         );
       },
@@ -83,42 +97,52 @@ const CustomerAddressList: React.FC<{
       }}
       toolbar={{
         actions: [
-          <BusCustomerAddressModal
+          <Access
+            accessible={access.checkShowAuth('/customer/address', ApiMethodEnum.POST)}
             key="create"
-            title={`新增[${props.record.name}]的收货地址`}
-            node={{ type: 'create', value: { companyId: props.record.id } }}
-            onFinish={() => {
-              actionRef.current?.reload?.();
-            }}
           >
-            <Button key="primary" type="primary">
-              新增收货地址
-            </Button>
-          </BusCustomerAddressModal>,
-          <Button
-            key="批量导入客户联系人"
-            onClick={() => {
-              busCustomerAddressImportExcel().then((res) => {
-                if (res) {
-                  const result = res.filter((i) => {
-                    return i.name !== '' && i.phone !== '';
-                  });
-                  const loadingCustomer = message.loading('正在批量导入客户地址', 0);
-                  fetchManyExportExcelAddress(props.record.id, result)
-                    .then(() => {
-                      actionRef.current?.reload();
-                      message.success('导入成功');
-                    })
-                    .finally(() => {
-                      loadingCustomer();
+            <BusCustomerAddressModal
+              key="create"
+              title={`新增[${props.record.name}]的收货地址`}
+              node={{ type: 'create', value: { companyId: props.record.id } }}
+              onFinish={() => {
+                actionRef.current?.reload?.();
+              }}
+            >
+              <Button key="primary" type="primary">
+                新增收货地址
+              </Button>
+            </BusCustomerAddressModal>
+          </Access>,
+          <Access
+            accessible={access.checkShowAuth('/customer/address', ApiMethodEnum.POST)}
+            key="create"
+          >
+            <Button
+              key="批量导入客户联系人"
+              onClick={() => {
+                busCustomerAddressImportExcel().then((res) => {
+                  if (res) {
+                    const result = res.filter((i) => {
+                      return i.name !== '' && i.phone !== '';
                     });
-                }
-                props.record.id;
-              });
-            }}
-          >
-            批量导入客户地址
-          </Button>,
+                    const loadingCustomer = message.loading('正在批量导入客户地址', 0);
+                    fetchManyExportExcelAddress(props.record.id, result)
+                      .then(() => {
+                        actionRef.current?.reload();
+                        message.success('导入成功');
+                      })
+                      .finally(() => {
+                        loadingCustomer();
+                      });
+                  }
+                  props.record.id;
+                });
+              }}
+            >
+              批量导入客户地址
+            </Button>
+          </Access>,
           <Button
             key="下载客户联系人模板"
             onClick={() => busCustomerAddressExportExcelTemplate(props.record.name)}

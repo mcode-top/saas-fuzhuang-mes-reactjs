@@ -6,6 +6,7 @@ import {
 } from '@/apis/business/order-manage/manufacture';
 import type { BusOrderManufacture } from '@/apis/business/order-manage/manufacture/typing';
 import { fetchOrderRecall } from '@/apis/business/order-manage/order-process';
+import { ApiMethodEnum } from '@/apis/person/typings';
 import { processRecall } from '@/apis/process/process';
 import { ActProcessStatusEnum, ActTaskModelTypeEnum } from '@/apis/process/typings';
 import { OrderContractTypeValueEnum, ProcessValueEnum } from '@/configs/commValueEnum';
@@ -18,7 +19,7 @@ import ProTable from '@ant-design/pro-table';
 import { Button, Dropdown, Menu, message, Modal } from 'antd';
 import { isEmpty } from 'lodash';
 import React, { useRef } from 'react';
-import { useLocation, useModel } from 'umi';
+import { useAccess, useLocation, useModel } from 'umi';
 import BusMaterialSelect from '../../techology-manage/Material/components/MaterialSelect';
 import { getTableStyleName } from './helper';
 import ManufacturePutInStockModal from './Info/ManufacturePutInStockModal';
@@ -38,6 +39,8 @@ const OrderContract: React.FC = () => {
   const location = useLocation();
   const putInStockModalRef = useRef<{ show: (contractNumber: string) => any }>();
   const { initialState, setInitialState } = useModel('@@initialState');
+  const access = useAccess();
+
   /**
    * 预览流程状态
    */
@@ -142,22 +145,29 @@ const OrderContract: React.FC = () => {
               <Menu
                 key="menu"
                 items={[
-                  {
-                    key: 'start',
-                    label: (
-                      <div
-                        onClick={() => {
-                          gotoManufactureInfo({
-                            type: 'create',
-                            infoTitle: `编辑生产单-${getTableStyleName(entity)}`,
-                            id: entity.id,
-                          });
-                        }}
-                      >
-                        编辑生产单
-                      </div>
-                    ),
-                  },
+                  ...(access.checkShowAuth(
+                    '/manufacture/create/:contractNumber',
+                    ApiMethodEnum.POST,
+                  )
+                    ? [
+                        {
+                          key: 'start',
+                          label: (
+                            <div
+                              onClick={() => {
+                                gotoManufactureInfo({
+                                  type: 'create',
+                                  infoTitle: `编辑生产单-${getTableStyleName(entity)}`,
+                                  id: entity.id,
+                                });
+                              }}
+                            >
+                              编辑生产单
+                            </div>
+                          ),
+                        },
+                      ]
+                    : []),
                   {
                     key: 'watch',
                     label: (

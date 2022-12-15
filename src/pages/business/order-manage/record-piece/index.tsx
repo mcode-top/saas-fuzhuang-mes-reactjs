@@ -1,6 +1,7 @@
 import type { BusOrderManufacture } from '@/apis/business/order-manage/manufacture/typing';
 import { fetchManufactureUseModfiyRecordPieceList } from '@/apis/business/order-manage/record-piece';
 import { BusRecordPieceStatusEnum } from '@/apis/business/order-manage/record-piece/typing';
+import { ApiMethodEnum } from '@/apis/person/typings';
 import { OrderContractTypeValueEnum } from '@/configs/commValueEnum';
 import { COM_PRO_TABLE_TIME, REQUEST_PREFIX, WEB_REQUEST_URL } from '@/configs/index.config';
 import { nestPaginationTable } from '@/utils/proTablePageQuery';
@@ -10,7 +11,7 @@ import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { Dropdown, Menu, Button, DatePicker, Modal } from 'antd';
 import { useRef } from 'react';
-import { useLocation } from 'umi';
+import { useAccess, useLocation } from 'umi';
 import BusMaterialSelect from '../../techology-manage/Material/components/MaterialSelect';
 import { getTableStyleName } from '../manufacture/helper';
 import RecordPieceAddModal from './components/RecordPieceAddModal';
@@ -20,6 +21,8 @@ const { RangePicker } = DatePicker;
 const OrderRecordPiece: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const location = useLocation();
+  const access = useAccess();
+
   const columns: ProColumns<BusOrderManufacture>[] = [
     {
       title: '订单单号',
@@ -110,21 +113,25 @@ const OrderRecordPiece: React.FC = () => {
                         ),
                       }
                     : null,
-                  {
-                    key: 'modfiy',
-                    label: (
-                      <RecordPieceAddModal
-                        type="add"
-                        title="填写计件单"
-                        value={{ manufactureId: entity.id }}
-                        onFinish={() => {
-                          actionRef.current?.reload();
-                        }}
-                      >
-                        <div onClick={() => {}}>填写计件单</div>
-                      </RecordPieceAddModal>
-                    ),
-                  },
+                  ...(access.checkShowAuth('/record-piece/add', ApiMethodEnum.POST)
+                    ? [
+                        {
+                          key: 'modfiy',
+                          label: (
+                            <RecordPieceAddModal
+                              type="add"
+                              title="填写计件单"
+                              value={{ manufactureId: entity.id }}
+                              onFinish={() => {
+                                actionRef.current?.reload();
+                              }}
+                            >
+                              <div onClick={() => {}}>填写计件单</div>
+                            </RecordPieceAddModal>
+                          ),
+                        },
+                      ]
+                    : []),
                 ].filter((item) => {
                   return true;
                 })}

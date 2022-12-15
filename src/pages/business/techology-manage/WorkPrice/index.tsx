@@ -5,6 +5,7 @@ import {
   fetchManyRemoveWorkPrice,
   fetchWorkPriceList,
 } from '@/apis/business/techology-manage/work-price';
+import { ApiMethodEnum } from '@/apis/person/typings';
 import LoadingButton from '@/components/Comm/LoadingButton';
 import { nestPaginationTable } from '@/utils/proTablePageQuery';
 import { SettingOutlined } from '@ant-design/icons';
@@ -14,47 +15,35 @@ import { Button, Dropdown, Menu, message, Space, Table } from 'antd';
 import react, { useRef } from 'react';
 
 import React from 'react';
-import { Access } from 'umi';
+import { Access, useAccess } from 'umi';
 import WorkPriceTableModal, { busWorkPriceExportExcel } from './TableModal';
 import type { BusWorkPriceType } from './typing';
-
-/**@name 表格栏操作 */
-const TableBarDom = (action: ActionType | undefined) => {
-  return [
-    <WorkPriceTableModal
-      key="新增工价"
-      title="新增工价"
-      node={{ type: 'create' }}
-      onFinish={() => {
-        message.success('新增成功');
-        action?.reload();
-      }}
-    >
-      <Button type="primary" key="create">
-        新增工价
-      </Button>
-    </WorkPriceTableModal>,
-  ];
-};
 
 /**@name 表格选择操作 */
 const TableAlertOptionDom: React.FC<{
   selectedRowKeys: (string | number)[];
   action: ActionType | undefined;
 }> = (props) => {
+  const access = useAccess();
+
   return (
     <Space size={16}>
-      <LoadingButton
-        onLoadingClick={async () =>
-          await fetchManyRemoveWorkPrice(props.selectedRowKeys as number[]).then(() => {
-            props?.action?.clearSelected?.();
-            props?.action?.reload();
-            message.success('删除成功');
-          })
-        }
+      <Access
+        accessible={access.checkShowAuth('/work-price/many-remove', ApiMethodEnum.POST)}
+        key="delete"
       >
-        批量删除
-      </LoadingButton>
+        <LoadingButton
+          onLoadingClick={async () =>
+            await fetchManyRemoveWorkPrice(props.selectedRowKeys as number[]).then(() => {
+              props?.action?.clearSelected?.();
+              props?.action?.reload();
+              message.success('删除成功');
+            })
+          }
+        >
+          批量删除
+        </LoadingButton>
+      </Access>
     </Space>
   );
 };
@@ -64,6 +53,8 @@ const TableOperationDom: React.FC<{
   record: BusWorkPriceType;
   action: ActionType | undefined;
 }> = (props) => {
+  const access = useAccess();
+
   return (
     <Dropdown
       key="Dropdown"
@@ -80,22 +71,26 @@ const TableOperationDom: React.FC<{
                 </WorkPriceTableModal>
               ),
             },
-            {
-              key: 'modify',
-              label: (
-                <WorkPriceTableModal
-                  key="修改工价"
-                  title="修改工价"
-                  onFinish={() => {
-                    message.success('修改成功');
-                    props?.action?.reload();
-                  }}
-                  node={{ type: 'update', value: props.record }}
-                >
-                  <div>修改工价</div>
-                </WorkPriceTableModal>
-              ),
-            },
+            ...(access.checkShowAuth('/work-process', ApiMethodEnum.PATCH)
+              ? [
+                  {
+                    key: 'modify',
+                    label: (
+                      <WorkPriceTableModal
+                        key="修改工价"
+                        title="修改工价"
+                        onFinish={() => {
+                          message.success('修改成功');
+                          props?.action?.reload();
+                        }}
+                        node={{ type: 'update', value: props.record }}
+                      >
+                        <div>修改工价</div>
+                      </WorkPriceTableModal>
+                    ),
+                  },
+                ]
+              : []),
             {
               key: 'export',
               label: '导出工价',
@@ -118,7 +113,28 @@ const TableOperationDom: React.FC<{
 
 const BusStation: React.FC = () => {
   const actionRef = useRef<ActionType>();
+  const access = useAccess();
 
+  /**@name 表格栏操作 */
+  const TableBarDom = (action: ActionType | undefined) => {
+    return [
+      <Access accessible={access.checkShowAuth('/work-process', ApiMethodEnum.POST)} key="create">
+        <WorkPriceTableModal
+          key="新增工价"
+          title="新增工价"
+          node={{ type: 'create' }}
+          onFinish={() => {
+            message.success('新增成功');
+            action?.reload();
+          }}
+        >
+          <Button type="primary" key="create">
+            新增工价
+          </Button>
+        </WorkPriceTableModal>
+      </Access>,
+    ];
+  };
   const columns: ProColumns<BusWorkPriceType>[] = [
     {
       title: '工价名称',

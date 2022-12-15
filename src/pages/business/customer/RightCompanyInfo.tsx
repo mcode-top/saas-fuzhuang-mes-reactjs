@@ -5,6 +5,7 @@ import {
 } from '@/apis/business/customer';
 import type { BusCustomerCompanyType } from '@/apis/business/customer/typing';
 import { BusCustomerTypeEnum } from '@/apis/business/customer/typing';
+import { ApiMethodEnum } from '@/apis/person/typings';
 import LoadingButton from '@/components/Comm/LoadingButton';
 import { CustomerCompanyValueEnum } from '@/configs/commValueEnum';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
@@ -15,6 +16,7 @@ import type { FormInstance } from 'antd';
 import { message } from 'antd';
 import { Button, Form, Popconfirm, Tabs } from 'antd';
 import { useState } from 'react';
+import { useAccess, Access } from 'umi';
 import CustomerAddressList from './address/CustomerAddressList';
 import CustomerContacterList from './contacter/CustomerContacterList';
 import { busCustomerExportExcelTemplate, busCustomerImportExcel } from './excel';
@@ -25,6 +27,8 @@ const RightCompanyInfo: React.FC<{
 }> = (props) => {
   const [readonly, setReadonly] = useState<boolean>(true);
   const [formRef] = Form.useForm();
+  const access = useAccess();
+
   return (
     <PageContainer
       style={{ margin: 0 }}
@@ -42,50 +46,59 @@ const RightCompanyInfo: React.FC<{
         },
       ]}
       extra={[
-        <Button
-          key="批量导入客户信息"
-          onClick={() => {
-            busCustomerImportExcel().then((res) => {
-              if (res) {
-                const result = res
-                  .filter((i) => {
-                    return i.name !== '' && i.address !== '';
-                  })
-                  .map((i) => {
-                    let type = BusCustomerTypeEnum.Normal;
-                    if (i.type === 'VIP客户') {
-                      type = BusCustomerTypeEnum.VIP;
-                    }
-                    return { ...i, type };
-                  });
-                const loadingCustomer = message.loading('正在批量导入客户信息', 0);
-                fetchManyExportExcelCustomer(result)
-                  .then(() => {
-                    props.onChange?.('company');
-                    message.success('导入成功');
-                  })
-                  .finally(() => {
-                    loadingCustomer();
-                  });
-              }
-            });
-          }}
+        <Access
+          accessible={access.checkShowAuth('/customer/company', ApiMethodEnum.POST)}
+          key="create"
         >
-          批量导入客户信息
-        </Button>,
+          <Button
+            key="批量导入客户信息"
+            onClick={() => {
+              busCustomerImportExcel().then((res) => {
+                if (res) {
+                  const result = res
+                    .filter((i) => {
+                      return i.name !== '' && i.address !== '';
+                    })
+                    .map((i) => {
+                      let type = BusCustomerTypeEnum.Normal;
+                      if (i.type === 'VIP客户') {
+                        type = BusCustomerTypeEnum.VIP;
+                      }
+                      return { ...i, type };
+                    });
+                  const loadingCustomer = message.loading('正在批量导入客户信息', 0);
+                  fetchManyExportExcelCustomer(result)
+                    .then(() => {
+                      props.onChange?.('company');
+                      message.success('导入成功');
+                    })
+                    .finally(() => {
+                      loadingCustomer();
+                    });
+                }
+              });
+            }}
+          >
+            批量导入客户信息
+          </Button>
+        </Access>,
         <Button key="下载客户信息模板" onClick={busCustomerExportExcelTemplate}>
           下载客户信息模板
         </Button>,
-
-        <Button
-          key="1"
-          hidden={!readonly}
-          onClick={() => {
-            setReadonly(false);
-          }}
+        <Access
+          accessible={access.checkShowAuth('/customer/company', ApiMethodEnum.PATCH)}
+          key="update"
         >
-          修改客户
-        </Button>,
+          <Button
+            key="1"
+            hidden={!readonly}
+            onClick={() => {
+              setReadonly(false);
+            }}
+          >
+            修改客户
+          </Button>
+        </Access>,
 
         <LoadingButton
           hidden={readonly}
@@ -114,20 +127,25 @@ const RightCompanyInfo: React.FC<{
         >
           取消修改
         </Button>,
-        <Popconfirm
-          key="Popconfirm"
-          title="如果删除客户公司则联系人与地址将不存在，您确定要删除当前客户公司吗？"
-          onConfirm={async () => {
-            await fetchRemoveCustomerCompany(props.record.id);
-            props.onChange?.('company');
-          }}
-          okText="确认删除"
-          cancelText="不删除"
+        <Access
+          accessible={access.checkShowAuth('/customer/remove-company/:id', ApiMethodEnum.POST)}
+          key="deltet"
         >
-          <Button key="3" danger>
-            删除当前客户
-          </Button>
-        </Popconfirm>,
+          <Popconfirm
+            key="Popconfirm"
+            title="如果删除客户公司则联系人与地址将不存在，您确定要删除当前客户公司吗？"
+            onConfirm={async () => {
+              await fetchRemoveCustomerCompany(props.record.id);
+              props.onChange?.('company');
+            }}
+            okText="确认删除"
+            cancelText="不删除"
+          >
+            <Button key="3" danger>
+              删除当前客户
+            </Button>
+          </Popconfirm>
+        </Access>,
       ]}
     />
   );

@@ -1,5 +1,6 @@
 import { fetchCustomerCompanyList } from '@/apis/business/customer';
 import type { BusCustomerCompanyType } from '@/apis/business/customer/typing';
+import { ApiMethodEnum } from '@/apis/person/typings';
 import type { SimpleColumnListRef } from '@/components/Comm/SimpleColumnList';
 import SimpleColumnList from '@/components/Comm/SimpleColumnList';
 import { STORAGE_CUSTOMER_COMPANY_LIST } from '@/configs/storage.config';
@@ -14,6 +15,7 @@ import {
 import { Button, Card, Divider, Input, Space, Table, Tooltip } from 'antd';
 import React from 'react';
 import { useState } from 'react';
+import { Access, useAccess } from 'umi';
 import BusCustomerCompanyModal from './CustomerCompanyModal';
 
 const BusCustomerLeftListDom: React.FC<{
@@ -21,6 +23,8 @@ const BusCustomerLeftListDom: React.FC<{
   actionRef?: React.RefObject<SimpleColumnListRef>;
 }> = (props) => {
   const [selectRecord, setSelectRecord] = useState<BusCustomerCompanyType>();
+  const access = useAccess();
+
   function onChange(record: any) {
     setSelectRecord(record);
     props.onChange(record);
@@ -32,15 +36,20 @@ const BusCustomerLeftListDom: React.FC<{
       bodyStyle={{ padding: 0, flexGrow: 1, overflow: 'auto' }}
       extra={
         <Space size="small">
-          <BusCustomerCompanyModal
-            title="新增客户公司"
-            node={{ type: 'create' }}
-            onFinish={() => {
-              props.actionRef?.current?.reload?.();
-            }}
+          <Access
+            accessible={access.checkShowAuth('/customer/company', ApiMethodEnum.POST)}
+            key="create"
           >
-            <Button type="link">新增客户公司</Button>
-          </BusCustomerCompanyModal>
+            <BusCustomerCompanyModal
+              title="新增客户公司"
+              node={{ type: 'create' }}
+              onFinish={() => {
+                props.actionRef?.current?.reload?.();
+              }}
+            >
+              <Button type="link">新增客户公司</Button>
+            </BusCustomerCompanyModal>
+          </Access>
           <Button type="link" onClick={() => props.actionRef?.current?.reload?.()}>
             刷新
           </Button>
