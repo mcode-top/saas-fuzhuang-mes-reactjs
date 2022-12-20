@@ -1,6 +1,6 @@
 import { fetchFuzzyFindAllWarehouseInGoods } from '@/apis/business/warehouse';
 import type { BusWarehouseGoodsType } from '@/apis/business/warehouse/typing';
-import { Button, Card, Col, Empty, Form, Input, Row, Space, Spin, Table } from 'antd';
+import { Button, Card, Col, Empty, Form, Input, Row, Space, Spin, Switch, Table } from 'antd';
 import type { ColumnsType } from 'antd/lib/table';
 import moment from 'moment';
 import { useState } from 'react';
@@ -48,6 +48,9 @@ const WarehouseFuzzySearchGoodsList: React.FC = () => {
               </Form.Item>
               <Form.Item label="颜色" name="color">
                 <Input style={{ width: 150 }} />
+              </Form.Item>
+              <Form.Item label="同时查询库存为0的货品" name="isBlank">
+                <Switch />
               </Form.Item>
               <Form.Item>
                 <Space>

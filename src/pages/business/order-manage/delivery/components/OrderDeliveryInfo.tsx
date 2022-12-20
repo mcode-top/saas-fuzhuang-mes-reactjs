@@ -153,7 +153,7 @@ const OrderDeliveryInfo: React.FC = () => {
                   }
                 }}
               >
-                导出生产单
+                导出发货单
               </Button>
               <LoadingButton
                 hidden={query?.type !== 'create'}

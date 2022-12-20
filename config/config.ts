@@ -60,6 +60,7 @@ export default defineConfig({
   //     projectName: 'swagger',
   //   },
   // ],
+  access: {},
   nodeModulesTransform: {
     type: 'none',
   },

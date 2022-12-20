@@ -54,7 +54,7 @@ const OrderContractProcess: React.FC = () => {
                   {
                     key: 'watch',
                     label: (
-                      <OrderProcessLogTableModal processLog={entity.processLog}>
+                      <OrderProcessLogTableModal contractNumber={entity.contractNumber}>
                         <div onClick={() => {}}>查看流程记录</div>
                       </OrderProcessLogTableModal>
                     ),

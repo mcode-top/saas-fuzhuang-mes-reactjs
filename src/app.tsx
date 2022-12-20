@@ -172,17 +172,11 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
 };
 export function render(oldRender: () => void) {
   const originPath = history.location.pathname;
-  console.log(isUUID(originPath.split('/')[1]), "isUUID(originPath.split('/')[1])");
+  setCreateHistoryOptions({
+    basename: `/fz/${originPath.split('/')[1]}/`, //你要设置的前缀
+  });
+  sessionStorage.setItem(TENANT_SESSION_PATH, originPath.split('/')[1]);
 
-  // 初始化定义租客
-  if (isUUID(originPath.split('/')[1])) {
-    setCreateHistoryOptions({
-      basename: `/fz/${originPath.split('/')[1]}/`, //你要设置的前缀
-    });
-    sessionStorage.setItem(TENANT_SESSION_PATH, originPath.split('/')[1]);
-  } else {
-    //TODO:待补充租客不存在
-  }
   oldRender();
 }
 /**

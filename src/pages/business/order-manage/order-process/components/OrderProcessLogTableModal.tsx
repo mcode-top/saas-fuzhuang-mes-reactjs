@@ -1,22 +1,39 @@
-import { fetchOrderContractProcessAdd } from '@/apis/business/order-manage/order-process';
+import {
+  fetchOrderContractProcessAdd,
+  fetchWatchContractProcessLogList,
+} from '@/apis/business/order-manage/order-process';
 import type { ContractProcessLog } from '@/apis/business/order-manage/order-process/typing';
 import { ContractProcessEnum } from '@/apis/business/order-manage/order-process/typing';
 import { OrderContractTypeValueEnum as BusOrderContractTypeValueEnum } from '@/configs/commValueEnum';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import { ProFormSelect } from '@ant-design/pro-form';
 import { ModalForm, ProFormTextArea } from '@ant-design/pro-form';
-import { Table } from 'antd';
-import { useRef } from 'react';
+import { Spin, Table } from 'antd';
+import { useEffect, useRef, useState } from 'react';
 
 const OrderProcessLogTableModal: React.FC<{
-  processLog: ContractProcessLog[];
+  contractNumber: string;
   children: JSX.Element;
 }> = (props) => {
   const formRef = useRef<ProFormInstance>();
-
+  const [loading, setLoading] = useState(false);
+  const [processLog, setProcessLog] = useState([]);
+  useEffect(() => {
+    loadProcessLogDataSource(props.contractNumber);
+  }, [props.contractNumber]);
+  function loadProcessLogDataSource(contractNumber: string) {
+    setLoading(true);
+    return fetchWatchContractProcessLogList(contractNumber)
+      .then((res) => {
+        setProcessLog(res.data);
+      })
+      .finally(() => setLoading(false));
+  }
   return (
     <ModalForm width={700} title={'查看流程记录'} formRef={formRef} trigger={props.children}>
-      <OrderProcessLogTable processLog={props.processLog} />
+      <Spin spinning={loading}>
+        <OrderProcessLogTable processLog={processLog} />
+      </Spin>
     </ModalForm>
   );
 };

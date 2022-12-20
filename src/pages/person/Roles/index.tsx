@@ -107,14 +107,16 @@ const Roles: React.FC = () => {
               accessible={access.checkShowAuth('/role/api/:id', ApiMethodEnum.PATCH)}
               key="api"
             >
-              <ApiTree
-                authApiTree={apiTree}
-                role={selectRole}
-                selectedMenus={roleInApiIds}
-                onChange={(selectRoleInApiIds) => {
-                  setRoleInMenuIds(selectRoleInApiIds);
-                }}
-              />
+              <div>
+                <ApiTree
+                  authApiTree={apiTree}
+                  role={selectRole}
+                  selectedMenus={roleInApiIds}
+                  onChange={(selectRoleInApiIds) => {
+                    setRoleInMenuIds(selectRoleInApiIds);
+                  }}
+                />
+              </div>
             </Access>
           </ProCard.TabPane>
         </ProCard>

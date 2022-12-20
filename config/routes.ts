@@ -112,6 +112,7 @@ const originRoutes: Router[] = [
         key: 'contract-info',
         name: '合同单详情',
         hideInMenu: true,
+        white: true,
         component: './business/order-manage/contract/Info',
       },
       {
@@ -130,6 +131,7 @@ const originRoutes: Router[] = [
         path: '/order-manage/info-manufacture',
         key: 'manufacture-info',
         name: '生产单详情',
+        white: true,
         hideInMenu: true,
         component: './business/order-manage/manufacture/Info',
       },
@@ -150,6 +152,7 @@ const originRoutes: Router[] = [
         name: '发货单详情',
         key: 'delivery',
         hideInMenu: true,
+        white: true,
         component: './business/order-manage/delivery/components/OrderDeliveryInfo.tsx',
       },
       {
@@ -170,12 +173,14 @@ const originRoutes: Router[] = [
         key: 'sample-info-proofing',
         name: '样品单-打样单详情',
         hideInMenu: true,
+        white: true,
         component: './business/order-manage/contract/Info',
       },
       {
         path: '/order-manage/sample-info-send',
         key: 'sample-info-send',
         name: '样品单-寄样单详情',
+        white: true,
         hideInMenu: true,
         component: './business/order-manage/sample/components/SampleSendForm',
       },

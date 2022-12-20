@@ -71,7 +71,7 @@ const TableOperationDom: React.FC<{
                 </WorkPriceTableModal>
               ),
             },
-            ...(access.checkShowAuth('/work-process', ApiMethodEnum.PATCH)
+            ...(access.checkShowAuth('/work-price', ApiMethodEnum.PATCH)
               ? [
                   {
                     key: 'modify',
@@ -118,7 +118,7 @@ const BusStation: React.FC = () => {
   /**@name 表格栏操作 */
   const TableBarDom = (action: ActionType | undefined) => {
     return [
-      <Access accessible={access.checkShowAuth('/work-process', ApiMethodEnum.POST)} key="create">
+      <Access accessible={access.checkShowAuth('/work-price', ApiMethodEnum.POST)} key="create">
         <WorkPriceTableModal
           key="新增工价"
           title="新增工价"

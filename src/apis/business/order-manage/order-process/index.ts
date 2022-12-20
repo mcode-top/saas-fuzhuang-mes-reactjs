@@ -19,6 +19,12 @@ export function fetchOrderContractProcessAdd(data: ContractProcessAddDto) {
     data,
   });
 }
+/**@name 查看合同流程记录 */
+export function fetchWatchContractProcessLogList(contractNumber: string) {
+  return request<RESULT_SUCCESS>('/order-process/watch/' + contractNumber, {
+    method: 'GET',
+  });
+}
 /**@name 获取未完成的合同流程(前20个) */
 export function fetchUndoneContractList(partContractNumber: string) {
   return request<RESULT_SUCCESS>('/order-process/undone-contract-list', {

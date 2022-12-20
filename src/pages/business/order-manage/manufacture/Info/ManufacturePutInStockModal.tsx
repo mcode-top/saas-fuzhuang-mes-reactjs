@@ -153,8 +153,8 @@ export const PutInStockFormTable: React.FC<{
         { title: '物料信息', dataIndex: 'materialInfo' },
         { title: '尺码信息', dataIndex: 'sizeInfo' },
         { title: '颜色', dataIndex: 'color' },
-        { title: '需要入库数量', dataIndex: 'needQuantity' },
-        { title: '已入库数量', dataIndex: 'beenInQuantity' },
+        { title: '需要操作数量', dataIndex: 'needQuantity' },
+        { title: '已操作数量', dataIndex: 'beenInQuantity' },
         { title: '已发货数量', dataIndex: 'beenOutQuantity' },
         {
           title: '现有库存',
@@ -311,13 +311,13 @@ export const PutInStockFormList = React.forwardRef(
                 colProps={{ span: 3 }}
                 name="needQuantity"
                 readonly={true}
-                label="合同单需要入库数量"
+                label="合同单需要操作数量"
               />
               <ProFormDigit
                 colProps={{ span: 2 }}
                 name="beenInQuantity"
                 readonly={true}
-                label="已入库数量"
+                label="已操作数量"
               />
               <ProFormDigit
                 colProps={{ span: 2 }}
@@ -335,7 +335,7 @@ export const PutInStockFormList = React.forwardRef(
                 name="quantity"
                 fieldProps={{ defaultValue: 0 }}
                 rules={[{ required: true }]}
-                label="填写入库数量"
+                label="填写操作数量"
                 min={0}
               />
             </ProFormGroup>

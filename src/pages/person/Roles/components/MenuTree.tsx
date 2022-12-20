@@ -88,7 +88,33 @@ export default function MenuTree(props: {
           );
         }}
         onCheck={(keys, event) => {
-          setCheckedKeys(keys as TreeSelectKeys);
+          let selectKeys = (keys as TreeSelectKeys).checked;
+          // 如果选择的是目录则支持一键选择或一键取消
+          if (event.node.type === MenuTypeEnum.CATALOG) {
+            if (event.checked) {
+              event.node.children?.forEach((i) => {
+                const findIndex = selectKeys.findIndex((s) => s === i.id);
+                if (findIndex === -1) {
+                  selectKeys.push(i.id);
+                }
+              });
+            } else {
+              selectKeys = selectKeys.filter((s) => {
+                const findIndex = event.node.children?.findIndex((i) => s === i.id);
+                if (findIndex === -1 || findIndex === undefined) {
+                  return true;
+                } else {
+                  return false;
+                }
+              });
+            }
+          } else if (event.node.type === MenuTypeEnum.MENU) {
+            // 如果选择的是菜单则自动添加父级目录
+            if (selectKeys.findIndex((s) => s === event.node.parentId) === -1) {
+              selectKeys.push(event.node.parentId);
+            }
+          }
+          setCheckedKeys({ ...(keys as TreeSelectKeys), checked: selectKeys });
         }}
         checkedKeys={checkedKeys}
         expandedKeys={autoOpenTreeKeys}

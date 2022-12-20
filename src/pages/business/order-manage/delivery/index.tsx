@@ -2,7 +2,6 @@ import { fetchOrderDeliveryList } from '@/apis/business/order-manage/delivery';
 import type { BusOrderDeliveryEntity } from '@/apis/business/order-manage/delivery/typing';
 import { fetchOrderRecall } from '@/apis/business/order-manage/order-process';
 import { ApiMethodEnum } from '@/apis/person/typings';
-import { processRecall } from '@/apis/process/process';
 import { ActProcessStatusEnum, ActTaskModelTypeEnum } from '@/apis/process/typings';
 import { OrderContractTypeValueEnum, ProcessValueEnum } from '@/configs/commValueEnum';
 import { COM_PRO_TABLE_TIME } from '@/configs/index.config';
@@ -14,7 +13,6 @@ import ProTable from '@ant-design/pro-table';
 import { Button, Dropdown, Menu, Modal } from 'antd';
 import { useRef } from 'react';
 import { Access, useAccess, useLocation, useModel } from 'umi';
-import OrderDeliveryInfo from './components/OrderDeliveryInfo';
 export type DeliveryLocationQuery = {
   type: 'create' | 'watch' | 'approve' | 'update';
   contractNumber?: string;

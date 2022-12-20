@@ -1,13 +1,13 @@
 import SelectSystemPersonButton from '@/components/Comm/FormlyComponents/SelectSystemPersonButton';
 import { STORAGE_WORK_PROCESS_LIST } from '@/configs/storage.config';
-import { arrayAttributeChange, arrayToObject } from '@/utils';
+import { arrayAttributeChange, arrayToObject, jsonUniq } from '@/utils';
 import storageDataSource from '@/utils/storage';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import { ProFormSelect } from '@ant-design/pro-form';
 import ProForm, { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import type { EditableFormInstance, ProColumns } from '@ant-design/pro-table';
 import { ActionType, EditableProTable } from '@ant-design/pro-table';
-import { Button, Form, InputNumber, List, Modal, Select, Table } from 'antd';
+import { Button, Form, InputNumber, List, Modal, Select, Table, message } from 'antd';
 import React, { forwardRef, useImperativeHandle, useRef, useState, useEffect } from 'react';
 import type { BusWorkPriceItem, BusWorkPriceType } from './typing';
 import { read, utils, writeFileXLSX } from 'xlsx';
@@ -38,6 +38,11 @@ const WorkPriceTableModal: React.FC<{
       try {
         const value = await formRef.current?.validateFields();
         const editData = await editRef.current.getValues();
+        const uniqData = jsonUniq(editData || [], 'workProcessId');
+        if (uniqData?.length !== editData?.length) {
+          message.warning('工价单有重复数据');
+          throw new Error('工价单有重复数据');
+        }
         if (props.node.type === 'create') {
           await fetchCreateWorkPrice({ ...value, data: editData });
         } else if (props.node.type === 'update') {

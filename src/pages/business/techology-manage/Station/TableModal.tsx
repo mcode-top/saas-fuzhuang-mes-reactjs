@@ -43,7 +43,11 @@ const StationTableModal: React.FC<{
         if (props.node.type === 'create') {
           await fetchCreateStation(value);
         } else if (props.node.type === 'update') {
-          await fetchUpdateStation({ ...(props.node?.value || {}), ...value });
+          await fetchUpdateStation({
+            ...(props.node?.value || {}),
+            ...value,
+            id: props.node?.value?.stationId,
+          });
         }
         props?.onFinish?.(value);
         resolve(true);

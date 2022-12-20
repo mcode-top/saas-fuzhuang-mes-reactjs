@@ -76,7 +76,7 @@ const OrderContractInfo: React.FC = () => {
   /**@name 设置合同数据 */
   function setContractValues(contractNumber: string) {
     return fetchWatchContract(contractNumber).then((res) => {
-      const values = res.data;
+      const values = { ...res.data, operatorId: res?.data?.process?.operatorId };
       if (query.orderType === BusOrderTypeEnum.Add) {
         // 如果是加单则修改款式中的数量将其归零
         values.styleDemand = values.styleDemand.map((style) => {
@@ -115,7 +115,9 @@ const OrderContractInfo: React.FC = () => {
   }
   /**@name 审核合同单 */
   async function approveContract(isAgree: boolean) {
-    await formRef.current?.validateFields();
+    if (isAgree) {
+      await formRef.current?.validateFields();
+    }
 
     return new Promise((resolve, reject) => {
       let value = '';
@@ -273,7 +275,6 @@ const OrderContractInfo: React.FC = () => {
         <BusSelectUser
           label="跟进人"
           colProps={{ span: 8 }}
-          initialValue={initialState?.currentUser?.id}
           placeholder="请输入名称"
           name="operatorId"
           width="sm"

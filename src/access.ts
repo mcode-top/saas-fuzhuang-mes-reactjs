@@ -1,4 +1,4 @@
-import type { ApiMethodEnum, MenuTreeType } from '@/apis/person/typings';
+import type { ApiMethodEnum, ApiTreeType, MenuTreeType } from '@/apis/person/typings';
 import type { RouteContextType } from '@ant-design/pro-layout';
 import { isEmpty } from 'lodash';
 import { Router } from 'umi';
@@ -13,34 +13,38 @@ import type { InitialStateType } from './app';
 export default function access(initialState: InitialStateType) {
   const { currentUser } = initialState || {};
   const authMenus = currentUser?.menus?.reduce<Record<string, boolean>>((p, n) => {
-    p[n.name + '_' + n.router] = true;
+    p[n.router] = true;
     n.children?.forEach((e) => {
-      p[e.name + '_' + e.router] = true;
+      p[e.router] = true;
     });
     return p;
   }, {});
   const isAdmin = currentUser?.isAdmin;
-  const apis = currentUser?.apis;
+  // 将树变扁变可搜索对象
+  const authApis = currentUser?.apis?.reduce<Record<string, ApiTreeType>>((p, n) => {
+    if (n.children) {
+      n.children.forEach((api) => {
+        p[`${api.method}_${api.uri}`] = api;
+      });
+    }
+    return p;
+  }, {});
   return {
     /**
      * 菜单权限
      */
     menuAuth: (route: { access: string; name: string; path: string }) => {
+      console.log('====================================');
+      console.log(authMenus, authMenus?.[route.path]);
+      console.log('====================================');
       // TODO:待补充
-      if (route.access === 'menuAuth') {
-        return Boolean(authMenus?.[route.name + '_' + route.path]);
-      }
-      return true;
+      return Boolean(authMenus?.[route.path]);
     },
     /**@name 检查显示权限 */
     checkShowAuth(url: string, method: ApiMethodEnum) {
-      return isAdmin || apis?.findIndex((api) => api?.uri === url && api?.method === method) !== -1;
+      return Boolean(isAdmin || authApis?.[`${method}_${url}`]);
     },
-    checkApi: (url: string, version = 1) => {
-      return (
-        isAdmin || apis?.findIndex((api) => api?.uri === formatVersonToFullUrl(url, version)) !== -1
-      );
-    },
+
     checkFileManage: (
       fileAuthGroup: FileManageFileAuthGroup[],
       authMode: FileManageAuthModeEnum,

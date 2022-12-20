@@ -81,7 +81,7 @@ export type RoleTreeType = {
 export type MenuTreeType = {
   name: string;
   id: number;
-  router?: string;
+  router: string;
   type: MenuTypeEnum;
   icon?: string;
   label: string;

@@ -7,7 +7,8 @@ import { ProFormItem } from '@ant-design/pro-form';
 import { ProFormGroup } from '@ant-design/pro-form';
 import ProForm, { ProFormDependency, ProFormList, ProFormMoney } from '@ant-design/pro-form';
 import { Alert, Empty, Table } from 'antd';
-import React, { useState } from 'react';
+import { isEmpty } from 'lodash';
+import React, { useState, useEffect } from 'react';
 
 /**@name 工序工价可编辑列表 */
 const EditWorkProcessWrokPriceList: React.FC<{
@@ -204,6 +205,14 @@ export const WrokPriceAndWorkProcessReadonlyTable: React.FC<{
   value?: BusManufactureWorkPriceTable[];
   title?: string | boolean;
 }> = (props) => {
+  const [expandedKeys, setExpandeKeys] = useState<number[]>([]);
+  useEffect(() => {
+    setExpandeKeys(
+      props.value?.map((item) => {
+        return item.workPriceId;
+      }) || [],
+    );
+  }, [props.value]);
   /**@name 展开的工序工价 */
   const expandedWorkProcessWrokPrice = (r: BusManufactureWorkPriceTable) => {
     return (
@@ -232,7 +241,7 @@ export const WrokPriceAndWorkProcessReadonlyTable: React.FC<{
       />
     );
   };
-  return props.value ? (
+  return !isEmpty(props.value) ? (
     <Table
       dataSource={props.value?.map((item) => {
         return {
@@ -249,9 +258,10 @@ export const WrokPriceAndWorkProcessReadonlyTable: React.FC<{
       expandable={{
         expandedRowRender: expandedWorkProcessWrokPrice,
         defaultExpandAllRows: true,
-        defaultExpandedRowKeys: props.value?.map((item) => {
-          return item.workPriceId;
-        }),
+        expandedRowKeys: expandedKeys,
+        onExpandedRowsChange(inExpandedKeys) {
+          setExpandeKeys(inExpandedKeys as number[]);
+        },
       }}
       columns={[
         {
